@@ -37,3 +37,6 @@ hs_err_pid*
 
 # Если игнорируемое уже в репозитории, удалить так:
 # git rm --cached <file>
+
+/.idea/
+Diplom.iml
