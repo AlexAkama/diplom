@@ -1,13 +1,53 @@
 package main;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import model.CaptchaCode;
+import model.GlobalSetting;
+import model.GlobalSettings;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-@SpringBootApplication
+import java.util.Date;
+
+//@SpringBootApplication
 public class Main {
     public static void main(String[] args) {
-        SpringApplication.run(Main.class);
+        createDatabase();
+        //SpringApplication.run(Main.class);
     }
+
+    private static void createDatabase() {
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure("createDB.cfg.xml")
+                .build();
+
+        try (SessionFactory sessionFactory = new MetadataSources(registry)
+                .buildMetadata()
+                .buildSessionFactory()) {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            GlobalSetting multiUserMode = new GlobalSetting(
+                    GlobalSettings.MULTIUSER_MODE.name(),
+                    GlobalSettings.MULTIUSER_MODE.description());
+            session.save(multiUserMode);
+            GlobalSetting postPreModeration = new GlobalSetting(
+                    GlobalSettings.POST_PREMODERATION.name(),
+                    GlobalSettings.POST_PREMODERATION.description());
+            session.save(postPreModeration);
+            GlobalSetting statisticsIsPublic = new GlobalSetting(
+                    GlobalSettings.STATISTICS_IS_PUBLIC.name(),
+                    GlobalSettings.STATISTICS_IS_PUBLIC.description());
+            session.save(statisticsIsPublic);
+
+            session.getTransaction().commit();
+            session.close();
+
+        }
+    }
+
 }
 
 // Этап подготовительный
@@ -35,28 +75,28 @@ public class Main {
 // Сделать так, чтобы при входе на главную страницу открывался шаблон index.html
 // (аналогично тому, как это сделано в проекте “BookLibrary”). - СДЕЛАНО
 
-//TODO На этом этапе необходимо слить изменения в ветку master и отправить на проверку преподавателю.
+// На этом этапе необходимо слить изменения в ветку master и отправить на проверку преподавателю.
 
-// Этап 2
+//TODO Этап 2
 //TODO Создать структуру базы данных с помощью сущностей Hibernate в пакете model,
 // по примеру проекта “BookLibrary”. Структура базы данных описана в файле “db.pdf”.
 
 // TODO На этом этапе необходимо слить изменения в ветку master и отправить на проверку.
 
 // Этап 3
-//TODO Реализовать сначала методы API для получения информации о блоге(/api/init) и
+// Реализовать сначала методы API для получения информации о блоге(/api/init) и
 // для получения постов(/api/post),а затем и все остальные методы API в соответствии
 // с документацией в файле “api.pdf”. Для ускорения разработки приложения вы можете
 // тестировать API с помощью таких сервисов как Talend API Tester-Free Edition
 // (расширение для браузера Google Chrome)или приложение Postman(Win/Mac OS/Linux).
 
-//TODO Сделать так,чтобы при открытии вашего приложения по ссылкам(например,/post/534/)
+// Сделать так,чтобы при открытии вашего приложения по ссылкам(например,/post/534/)
 // тоже выдавался файл index.html. Frontend-приложение при этом само определит,
 // какую информацию нужно загрузить.В случае,если запрошена страница по адресу,
 // который не существует(например,какой-нибудь/fhdsjfhkjsdf/), переадресовывать на страницу/404/,
 // на которой выдавать всё ту же страницу index.html с кодом ответа 404.
 // Frontend-приложение автоматически определит,по какому адресу был запрос,и отобразит ошибку 404.
 
-//TODO видимо отправить преподаваьелю
+// видимо отправить преподаваьелю
 
-//TODO Размещение проекта для демонстрации на защите
+// Размещение проекта для демонстрации на защите
