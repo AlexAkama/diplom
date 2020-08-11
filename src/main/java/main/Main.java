@@ -1,51 +1,12 @@
 package main;
 
-import model.CaptchaCode;
-import model.GlobalSetting;
-import model.GlobalSettings;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Date;
-
-//@SpringBootApplication
+@SpringBootApplication
 public class Main {
     public static void main(String[] args) {
-        createDatabase();
-        //SpringApplication.run(Main.class);
-    }
-
-    private static void createDatabase() {
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure("createDB.cfg.xml")
-                .build();
-
-        try (SessionFactory sessionFactory = new MetadataSources(registry)
-                .buildMetadata()
-                .buildSessionFactory()) {
-            Session session = sessionFactory.openSession();
-            session.beginTransaction();
-
-            GlobalSetting multiUserMode = new GlobalSetting(
-                    GlobalSettings.MULTIUSER_MODE.name(),
-                    GlobalSettings.MULTIUSER_MODE.description());
-            session.save(multiUserMode);
-            GlobalSetting postPreModeration = new GlobalSetting(
-                    GlobalSettings.POST_PREMODERATION.name(),
-                    GlobalSettings.POST_PREMODERATION.description());
-            session.save(postPreModeration);
-            GlobalSetting statisticsIsPublic = new GlobalSetting(
-                    GlobalSettings.STATISTICS_IS_PUBLIC.name(),
-                    GlobalSettings.STATISTICS_IS_PUBLIC.description());
-            session.save(statisticsIsPublic);
-
-            session.getTransaction().commit();
-            session.close();
-
-        }
+        SpringApplication.run(Main.class);
     }
 
 }
