@@ -2,7 +2,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `is_moderator` tinyint(4) NOT NULL,
+  `is_moderator` integer(4) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `photo` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `posts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `is_active` tinyint(4) NOT NULL,
+  `is_active` integer(4) NOT NULL,
   `moderation_status` varchar(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'NEW',
   `text` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime(6) NOT NULL,
@@ -67,8 +67,8 @@ CREATE TABLE `tag2post` (
   `post_id` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `relation_post_uk` (`post_id`),
-  UNIQUE KEY `relation_tag_uk` (`tag_id`),
+  KEY `relation_tag_fk` (`post_id`),
+  KEY `relation_post_fk` (`tag_id`),
   CONSTRAINT `relation_tag_fk` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`),
   CONSTRAINT `relation_post_fk` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

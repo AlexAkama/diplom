@@ -1,4 +1,4 @@
-package model;
+package diploma.model;
 
 import javax.persistence.*;
 
@@ -29,4 +29,19 @@ public class GlobalSetting {
         this.value = GlobalSettingsValue.NO;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public GlobalSettingsValue getValue() {
+        return value;
+    }
+
+    public void setValue(GlobalSettingsValue value) {
+        this.value = value;
+    }
 }

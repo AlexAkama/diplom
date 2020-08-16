@@ -1,4 +1,4 @@
-package model;
+package diploma.model;
 
 public enum GlobalSettings {
     MULTIUSER_MODE("Многопользовательский режим "),

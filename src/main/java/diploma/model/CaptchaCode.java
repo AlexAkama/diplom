@@ -1,6 +1,4 @@
-package model;
-
-import org.hibernate.annotations.Type;
+package diploma.model;
 
 import javax.persistence.*;
 import java.util.Date;
