@@ -45,17 +45,18 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/api/tag")
-    public TagResponse getTags() {
+    public TagDto getTags() {
         List<Tag> tagList;
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
+            //FIXME доделать весы тега
             String hql = "FROM " + Tag.class.getSimpleName();
             tagList = session.createQuery(hql).getResultList();
 
             transaction.commit();
         }
-        return new TagResponse(tagList);
+        return new TagDto(tagList);
 
     }
 
@@ -82,10 +83,10 @@ public class ApiGeneralController {
         return settingsMap;
     }
 
-    private static class TagResponse {
-        List<Tag> tagList;
+    private static class TagDto {
+        private List<Tag> tagList;
 
-        public TagResponse(List<Tag> tagList) {
+        public TagDto(List<Tag> tagList) {
             this.tagList = tagList;
         }
 

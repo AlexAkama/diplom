@@ -1,10 +1,10 @@
 package diploma.controller;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import diploma.main.Connection;
 import diploma.model.Post;
 import diploma.model.PostComment;
 import diploma.model.PostVote;
-import diploma.model.TagToPostRelation;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,35 +12,33 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.Entity;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @RestController
 public class ApiPostController {
 
-    public static final String basePostCondition = "is_active=1 AND moderation_status='ACCEPTED' AND time < NOW()";
+    private static final String baseCondition = "is_active=1 AND moderation_status='ACCEPTED' AND time < NOW()";
 
     @GetMapping("/api/post")
-    public PostResponse getPostResponse(
+    public PostListDto getPostList(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("mode") String mode
     ) {
-        return new PostResponse("", offset, limit, convertToSort(mode));
+        return new PostListDto("", offset, limit, getSort(mode));
 
     }
 
     @GetMapping("/api/post/{id}")
-    public PostIdResponse getPostIdResponse(@PathVariable int id) {
-        return new PostIdResponse();
+    public PostByIdDto getPostById(@PathVariable int id) {
+        return new PostByIdDto();
     }
 
     @GetMapping("/api/post/search")
-    public PostResponse getSearchResponse(
+    public PostListDto getSearchList(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("query") String searchText
@@ -54,11 +52,11 @@ public class ApiPostController {
                 + " in (select t.id from Tag t where t.name like '%:text%'))";
         selectCondition = selectCondition.replaceAll(":text", searchText);
 
-        return new PostResponse(selectCondition, offset, limit);
+        return new PostListDto(selectCondition, offset, limit);
     }
 
     @GetMapping("/api/post/byTag")
-    public PostResponse getByTagResponse(
+    public PostListDto getByTag(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("tag") String tag
@@ -67,24 +65,25 @@ public class ApiPostController {
         String byTagCondition = "id in (select ttp.post.id from TagToPostRelation ttp where ttp.tag.id = " +
                 "(select t.id from Tag t where t.name = '" + tag + "'))";
 
-        return new PostResponse(byTagCondition, offset, limit);
+        return new PostListDto(byTagCondition, offset, limit);
 
     }
 
-    @GetMapping("/api/pos/byDate")
-    public PostResponse getByDateResponse(
+    @GetMapping("/api/post/byDate")
+    public PostListDto getByDate(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("date") String date
     ) {
 
+        //FIXME запрос НЕ РАБОТАЕТ!!!
         String byDateCondition = "date_format(time, '%Y-%m-%d') = " + date;
 
-        return new PostResponse(byDateCondition, offset, limit);
+        return new PostListDto(byDateCondition, offset, limit);
     }
 
     @GetMapping("/api/calendar")
-    public CalendarResponse getCalendarResponse(
+    public CalendarDto getCalendar(
             @RequestParam("year") int year
     ) {
         String yearsHql = "select date_format(time, '%Y') as year from Post group by year order by year desc";
@@ -92,27 +91,33 @@ public class ApiPostController {
                 + " where year(time) = " + year
                 + " group by date"
                 + " order by date desc";
+
         List<String> years;
-        List<Object> r;
+        List<Object[]> postsInDayList;
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
             years = session.createQuery(yearsHql).getResultList();
-            r = session.createQuery(postsHql).getResultList();
+            postsInDayList = session.createQuery(postsHql).getResultList();
 
             transaction.commit();
-
         }
 
-        return new CalendarResponse(years, r);
+        Map<String, Long> postsInDay = new HashMap<>();
+        for (Object[] row : postsInDayList) {
+            postsInDay.put((String) row[0], (Long) row[1]);
+        }
+
+        return new CalendarDto(years, postsInDay);
     }
 
 
-    private static ResponsePost createResponsePost(Post post) {
-        ResponsePost responsePost = new ResponsePost();
-        responsePost.setId(post.getId());
+    private static PostDto createPostDto(Post post, int likeCount, int dislikeCount, int commentCount) {
+        //FIXME убрать в класс PostDto
+        PostDto postDto = new PostDto();
+        postDto.setId(post.getId());
         try {
-            responsePost.setTimestamp(
+            postDto.setTimestamp(
                     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(
                             post.getTime().toString()
                     ).getTime() / 1000
@@ -120,60 +125,61 @@ public class ApiPostController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        responsePost.setUser(
-                new ResponseUser(
+        postDto.setUser(
+                new UserDto(
                         post.getUser().getId(),
                         post.getUser().getName()
                 ));
-        responsePost.setTitle(post.getTitle());
-        responsePost.setAnnounce(
+        postDto.setTitle(post.getTitle());
+        postDto.setAnnounce(
                 post.getText()
                         .substring(0, Math.min(post.getText().length(), 100))
                         .replaceAll("\\<[^>]*>", "") + "...");
-        //ASK как получать кол-во лайков, дизлайков и комментов???
-        responsePost.setLikeCount(0);
-        responsePost.setDislikeCount(0);
-        responsePost.setCommentCount(0);
-        responsePost.setViewCount(post.getViewCount());
-        return responsePost;
+        postDto.setLikeCount(likeCount);
+        postDto.setDislikeCount(dislikeCount);
+        postDto.setCommentCount(commentCount);
+        postDto.setViewCount(post.getViewCount());
+        return postDto;
     }
 
-    private static Sort convertToSort(String name) {
-        Sort sort = Sort.DEFAULT;
+    private static SortDescription getSort(String name) {
+        SortDescription sort;
         switch (name) {
             case "recent":
-                sort = Sort.RECENT;
+                sort = SortDescription.RECENT;
                 break;
             case "early":
-                sort = Sort.EARLY;
+                sort = SortDescription.EARLY;
                 break;
             case "popular":
-                sort = Sort.POPULAR;
+                sort = SortDescription.POPULAR;
                 break;
             case "best":
-                sort = Sort.BEST;
+                sort = SortDescription.BEST;
                 break;
+            default:
+                sort = SortDescription.DEFAULT;
         }
         return sort;
     }
 
 
-    private static class PostResponse {
-        private int count = 0;
-        private List<ResponsePost> posts = new ArrayList<>();
+    private static class PostListDto {
+        private int count;
+        private List<PostDto> posts = new ArrayList<>();
 
-        public PostResponse(String conditions, int offset, int limit) {
-            this(conditions, offset, limit, Sort.DEFAULT);
+        public PostListDto(String conditions, int offset, int limit) {
+            this(conditions, offset, limit, SortDescription.DEFAULT);
         }
 
-        public PostResponse(String conditions, int offset, int limit, Sort sort) {
+        public PostListDto(String conditions, int offset, int limit, SortDescription sort) {
 
-            String baseHql = "FROM Post WHERE " + basePostCondition;
+            String baseHql = "FROM Post WHERE " + baseCondition;
 
             String orderByTime = "";
-            if (sort == Sort.EARLY) {
+            if (sort == SortDescription.EARLY) {
                 orderByTime = " ORDER BY time";
-            } else if (sort == Sort.RECENT) {
+            } else if (sort == SortDescription.RECENT) {
                 orderByTime = " ORDER BY time DESC";
             }
 
@@ -193,38 +199,45 @@ public class ApiPostController {
                         .setMaxResults(limit)
                         .getResultList();
 
-//                String selectedPostIdString = "";
-//                for (Post post : postList) {
-//                    selectedPostIdString += (selectedPostIdString.isEmpty()) ? post.getId() : ", " + post.getId();
-//                }
-//
-//                //ASK от базы можно получить просто гтовую таблицу таблицу post_id+count, как получить это в в объект?
-//                hql = "FROM " + PostVote.class.getSimpleName()
-//                        + " WHERE post_id IN (:selectedPosts)";
-//                postVoteList = session.createQuery(hql)
-//                        .setParameter("selectedPosts", selectedPostIdString)
-//                        .getResultList();
-//
-//                //ASK аналогичный вопрос, только тут post_id+like+dislike
-//                hql = "FROM " + PostComment.class.getSimpleName()
-//                        + " WHERE post_id IN (:selectedPosts)";
-//                postCommentList = session.createQuery(hql)
-//                        .setParameter("selectedPosts", selectedPostIdString)
-//                        .getResultList();
+                for (Post post : postList) {
+
+                    //FIXME Исправить костыль!!!
+                    //ИМХО КОСТЫЛЬ вытаскивать лайки и комменты отдельными запросами
+                    int postId = post.getId();
+
+                    hql = "FROM " + PostVote.class.getSimpleName()
+                            + " WHERE post_id = :id";
+                    List<PostVote> postVoteList = session.createQuery(hql)
+                            .setParameter("id", postId)
+                            .getResultList();
+                    int likeCount = (int) postVoteList.stream()
+                            .filter(postVote -> postVote.getValue() == 1)
+                            .count();
+                    int dislikeCount = (int) postVoteList.stream()
+                            .filter(postVote -> postVote.getValue() == -1)
+                            .count();
+
+                    hql = "FROM " + PostComment.class.getSimpleName()
+                            + " WHERE post_id = :id";
+                    int commentCount = (int) session.createQuery(hql)
+                            .setParameter("id", postId)
+                            .getResultStream().count();
+
+                    //КОНЕЦ КОСТЫЛЯ
+
+                    posts.add(createPostDto(post, likeCount, dislikeCount, commentCount));
+                }
 
                 transaction.commit();
             }
 
-            for (Post post : postList) {
-                posts.add(createResponsePost(post));
-            }
 
-            if (sort == Sort.POPULAR) {
-                posts.sort(Comparator.comparing(ResponsePost::getCommentCount)
+            if (sort == SortDescription.POPULAR) {
+                posts.sort(Comparator.comparing(PostDto::getCommentCount)
                         .reversed());
             }
-            if (sort == Sort.BEST) {
-                posts.sort(Comparator.comparing(ResponsePost::getLikeCount)
+            if (sort == SortDescription.BEST) {
+                posts.sort(Comparator.comparing(PostDto::getLikeCount)
                         .thenComparing((o1, o2) -> {
                             if (o1.getDislikeCount() < o2.getDislikeCount()) {
                                 return 1;
@@ -247,19 +260,19 @@ public class ApiPostController {
             this.count = count;
         }
 
-        public List<ResponsePost> getPosts() {
+        public List<PostDto> getPosts() {
             return posts;
         }
 
-        public void setPosts(List<ResponsePost> posts) {
+        public void setPosts(List<PostDto> posts) {
             this.posts = posts;
         }
     }
 
-    private static class ResponsePost {
+    private static class PostDto {
         private int id;
         private long timestamp;
-        private ResponseUser user;
+        private UserDto user;
         private String title;
         private String announce;
         private int likeCount;
@@ -267,7 +280,7 @@ public class ApiPostController {
         private int commentCount;
         private int viewCount;
 
-        public ResponsePost() {
+        public PostDto() {
         }
 
         public int getId() {
@@ -286,11 +299,11 @@ public class ApiPostController {
             this.timestamp = timestamp;
         }
 
-        public ResponseUser getUser() {
+        public UserDto getUser() {
             return user;
         }
 
-        public void setUser(ResponseUser user) {
+        public void setUser(UserDto user) {
             this.user = user;
         }
 
@@ -343,11 +356,13 @@ public class ApiPostController {
         }
     }
 
-    private static class ResponseUser {
+    private static class UserDto {
         private int id;
         private String name;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        private String photo = "/img/avatars/avatar.jpg";
 
-        public ResponseUser(int id, String name) {
+        public UserDto(int id, String name) {
             this.id = id;
             this.name = name;
         }
@@ -367,13 +382,21 @@ public class ApiPostController {
         public void setName(String name) {
             this.name = name;
         }
+
+        public String getPhoto() {
+            return photo;
+        }
+
+        public void setPhoto(String photo) {
+            this.photo = photo;
+        }
     }
 
-    private static class CalendarResponse {
+    private static class CalendarDto {
         private List<String> years;
-        private List posts;
+        private Map<String, Long> posts;
 
-        public CalendarResponse(List<String> years, List posts) {
+        public CalendarDto(List<String> years, Map<String, Long> posts) {
             this.years = years;
             this.posts = posts;
         }
@@ -386,27 +409,27 @@ public class ApiPostController {
             this.years = years;
         }
 
-        public List getPosts() {
+        public Map<String, Long> getPosts() {
             return posts;
         }
 
-        public void setPosts(List posts) {
+        public void setPosts(Map<String, Long> posts) {
             this.posts = posts;
         }
-
     }
 
-    private static class PostIdResponse {
+    private static class PostByIdDto {
+        //FIXME исправить после удаления костыля
         private int id = 4;
         private long timestamp = 1592338706;
         private boolean active = true;
-        private ResponseUser user = new ResponseUser(1, "Света");
+        private UserDto user = new UserDto(1, "Света");
         private String title = "Коротко бла-бла-бла";
         private String text = "бла-бла-бла бла-бла-бла бла-бла-бла бла-бла-бла бла-бла-бла бла-бла-бла";
         private int likeCount = 10;
         private int dislikeCount = 7;
         private int viewCount = 28;
-        private List<ResponseComment> comments = Arrays.asList(new ResponseComment(), new ResponseComment());
+        private List<CommentDto> comments = Arrays.asList(new CommentDto(), new CommentDto());
         private List<String> tags = Arrays.asList("первый", "второй");
 
         public int getId() {
@@ -433,11 +456,11 @@ public class ApiPostController {
             this.active = active;
         }
 
-        public ResponseUser getUser() {
+        public UserDto getUser() {
             return user;
         }
 
-        public void setUser(ResponseUser user) {
+        public void setUser(UserDto user) {
             this.user = user;
         }
 
@@ -481,11 +504,11 @@ public class ApiPostController {
             this.viewCount = viewCount;
         }
 
-        public List<ResponseComment> getComments() {
+        public List<CommentDto> getComments() {
             return comments;
         }
 
-        public void setComments(List<ResponseComment> comments) {
+        public void setComments(List<CommentDto> comments) {
             this.comments = comments;
         }
 
@@ -498,11 +521,11 @@ public class ApiPostController {
         }
     }
 
-    private static class ResponseComment {
+    private static class CommentDto {
         private int id = (int) (Math.random() * 10);
         private long timestamp = 1592338706;
         private String text = "бла-бла два раза";
-        private ResponseUserWithAvatar user = new ResponseUserWithAvatar();
+        private UserDto user = new UserDto(1, "First");
 
         public int getId() {
             return id;
@@ -528,47 +551,17 @@ public class ApiPostController {
             this.text = text;
         }
 
-        public ResponseUserWithAvatar getUser() {
+        public UserDto getUser() {
             return user;
         }
 
-        public void setUser(ResponseUserWithAvatar user) {
+        public void setUser(UserDto user) {
             this.user = user;
         }
     }
 
-    private static class ResponseUserWithAvatar {
-        private int id = (int) (Math.random()*10);
-        private String name = "Человек " + id;
-        private String photo;
 
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getPhoto() {
-            return photo;
-        }
-
-        public void setPhoto(String photo) {
-            this.photo = photo;
-        }
-    }
-
-
-    private enum Sort {
+    private enum SortDescription {
         RECENT,
         POPULAR,
         BEST,
