@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tag2post")
-public class TagToPostRelation {
+public class TagToPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class TagToPostRelation {
     @OneToOne(optional = false)
     private Post post;
 
-    public TagToPostRelation() {
+    public TagToPost() {
     }
 
     public int getId() {

@@ -17,7 +17,7 @@
         <mapping class="diploma.model.PostVote" />
 
         <mapping class="diploma.model.Tag" />
-        <mapping class="diploma.model.TagToPostRelation" />
+        <mapping class="diploma.model.TagToPost" />
 
         <mapping class="diploma.model.CaptchaCode" />
         <mapping class="diploma.model.GlobalSetting" />
