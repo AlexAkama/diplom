@@ -16,3 +16,6 @@ persona:
   email: maslova.nutrition@gmail.com
   copyright: Екатерина Маслова
   copyrightFrom: 2018
+
+config:
+  captcha.timeout: 10

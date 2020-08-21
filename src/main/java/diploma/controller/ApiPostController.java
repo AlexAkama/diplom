@@ -3,9 +3,6 @@ package diploma.controller;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import diploma.main.Connection;
 import diploma.model.Post;
-import diploma.model.PostComment;
-import diploma.model.PostVote;
-import diploma.model.TagToPost;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.http.HttpStatus;
@@ -15,9 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static diploma.main.Service.*;
 
 
 @RestController
@@ -26,18 +23,18 @@ public class ApiPostController {
     private static final String baseCondition = "p.isActive=1 AND p.moderationStatus='ACCEPTED' AND p.time < NOW()";
 
     @GetMapping("/api/post")
-    public ResponseEntity getPostList(
+    public ResponseEntity<PostListDto> getPostList(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("mode") String mode
     ) {
-        return new ResponseEntity(
+        return new ResponseEntity<>(
                 new PostListDto("", offset, limit, getSort(mode)),
                 HttpStatus.OK);
     }
 
     @GetMapping("/api/post/{id}")
-    public ResponseEntity getPostById(@PathVariable int id) {
+    public ResponseEntity<PostDto> getPostById(@PathVariable int id) {
 
         String hql = "from Post p"
                 + " where " + baseCondition
@@ -53,16 +50,16 @@ public class ApiPostController {
         }
 
         if (post == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity(
+        return new ResponseEntity<>(
                 new PostDto(post),
                 HttpStatus.OK);
     }
 
     @GetMapping("/api/post/search")
-    public ResponseEntity getSearchList(
+    public ResponseEntity<PostListDto> getSearchList(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("query") String searchText
@@ -76,13 +73,13 @@ public class ApiPostController {
                 + " in (select t.id from Tag t where t.name like '%:text%'))";
         selectCondition = selectCondition.replaceAll(":text", searchText);
 
-        return new ResponseEntity(
+        return new ResponseEntity<>(
                 new PostListDto(selectCondition, offset, limit),
                 HttpStatus.OK);
     }
 
     @GetMapping("/api/post/byTag")
-    public ResponseEntity getByTag(
+    public ResponseEntity<PostListDto> getByTag(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("tag") String tag
@@ -91,26 +88,26 @@ public class ApiPostController {
         String byTagCondition = "id in (select ttp.post.id from TagToPost ttp where ttp.tag.id = " +
                 "(select t.id from Tag t where t.name = '" + tag + "'))";
 
-        return new ResponseEntity(
-                new PostListDto(byTagCondition, offset, limit),
+        return new ResponseEntity<>(
+                new PostListDto(byTagCondition, offset, limit, SortDescription.RECENT),
                 HttpStatus.OK);
     }
 
     @GetMapping("/api/post/byDate")
-    public ResponseEntity getByDate(
+    public ResponseEntity<PostListDto> getByDate(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("date") String date
     ) {
         String byDateCondition = "date_format(time, '%Y-%m-%d') = '" + date + "'";
 
-        return new ResponseEntity(
+        return new ResponseEntity<>(
                 new PostListDto(byDateCondition, offset, limit),
                 HttpStatus.OK);
     }
 
     @GetMapping("/api/calendar")
-    public ResponseEntity getCalendar(
+    public ResponseEntity<CalendarDto> getCalendar(
             @RequestParam("year") int year
     ) {
         String yearsHql = "select date_format(p.time, '%Y') as year from Post p group by year order by year desc";
@@ -136,7 +133,7 @@ public class ApiPostController {
             postsInDay.put((String) row[0], (Long) row[1]);
         }
 
-        return new ResponseEntity(
+        return new ResponseEntity<>(
                 new CalendarDto(years, postsInDay),
                 HttpStatus.OK);
     }
@@ -160,16 +157,6 @@ public class ApiPostController {
                 sort = SortDescription.DEFAULT;
         }
         return sort;
-    }
-
-    private static long dateToLong(Date date) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(
-                    date.toString()
-            ).getTime() / 1000;
-        } catch (ParseException e) {
-            return -1;
-        }
     }
 
 
@@ -221,15 +208,7 @@ public class ApiPostController {
             }
             if (sort == SortDescription.BEST) {
                 posts.sort(Comparator.comparing(PostDto::getLikeCount)
-                        .thenComparing((o1, o2) -> {
-                            if (o1.getDislikeCount() < o2.getDislikeCount()) {
-                                return 1;
-                            } else if (o1.getDislikeCount() == o2.getDislikeCount()) {
-                                return 0;
-                            } else {
-                                return -1;
-                            }
-                        })
+                        .thenComparing((o1, o2) -> Long.compare(o2.getDislikeCount(), o1.getDislikeCount()))
                         .reversed());
             }
 
@@ -261,7 +240,7 @@ public class ApiPostController {
         private String text;
         private long likeCount = 0;
         private long dislikeCount = 0;
-        private int commentCount = 0;
+        private int commentCount;
         private int viewCount;
         @JsonInclude(JsonInclude.Include.NON_NULL)
         private List<CommentDto> comments;
@@ -270,7 +249,7 @@ public class ApiPostController {
 
         public PostDto(Post post) {
             id = post.getId();
-            timestamp = dateToLong(post.getTime());
+            timestamp = dateToFront(post.getTime());
             user = new UserDto(
                     post.getUser().getId(),
                     post.getUser().getName());
@@ -518,7 +497,6 @@ public class ApiPostController {
         POPULAR,
         BEST,
         EARLY,
-        DEFAULT;
-
+        DEFAULT
     }
 }
