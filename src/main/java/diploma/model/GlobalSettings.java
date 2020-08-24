@@ -14,4 +14,5 @@ public enum GlobalSettings {
     public String description() {
         return description;
     }
+
 }

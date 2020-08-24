@@ -2,7 +2,6 @@ package diploma.controller;
 
 import diploma.main.Connection;
 import diploma.model.GlobalSetting;
-import diploma.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,12 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static diploma.main.Dto.*;
 import static diploma.model.GlobalSettingsValue.YES;
 
 @RestController
@@ -40,12 +36,9 @@ public class ApiGeneralController {
     @Value("${persona.copyrightFrom}")
     private String copyrightFrom;
 
-    public ApiGeneralController() {
-    }
-
     @GetMapping("/api/init")
-    public ResponseEntity<Map<String,String>> getPersonalInformation() {
-        HashMap<String, String> personalInformation = new HashMap<>();
+    public ResponseEntity<Map<String, String>> getPersonalInformation() {
+        Map<String, String> personalInformation = new LinkedHashMap<>();
         personalInformation.put("title", title);
         personalInformation.put("subtitle", subtitle);
         personalInformation.put("phone", phone);
@@ -56,26 +49,24 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/api/settings")
-    public ResponseEntity<Map<String, Boolean>> getSettings() {
-        List<GlobalSetting> globalSettingList;
+    public ResponseEntity<GlobalSettingsDto> getSettings() {
+        List<GlobalSetting> list;
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
-            String hql = "FROM " + GlobalSetting.class.getSimpleName();
-            globalSettingList = session.createQuery(hql).getResultList();
+            String hql = "FROM " + GlobalSetting.class.getSimpleName() + " order by code";
+            list = session.createQuery(hql).getResultList();
 
             transaction.commit();
         }
 
-        Map<String, Boolean> settingsMap = new HashMap<>();
-        for (GlobalSetting globalSetting : globalSettingList) {
-            settingsMap.put(
-                    globalSetting.getCode(),
-                    globalSetting.getValue() == YES
-            );
-        }
+        GlobalSettingsDto settings = new GlobalSettingsDto(
+                list.get(0).getValue() == YES,
+                list.get(1).getValue() == YES,
+                list.get(2).getValue() == YES
+        );
 
-        return new ResponseEntity<>(settingsMap, HttpStatus.OK);
+        return new ResponseEntity<>(settings, HttpStatus.OK);
     }
 
     @GetMapping("/api/tag")
@@ -85,6 +76,7 @@ public class ApiGeneralController {
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
+            //FIXME SQL запрос
             String sql = "select t.name, count(*) from tag2post tp"
                     + " inner join tags t on tp.tag_id = t.id"
                     + " where"
@@ -106,6 +98,7 @@ public class ApiGeneralController {
             }
             for (String key : tagsMap.keySet()) {
                 weight = Math.max(tagsMap.get(key) / maxWeight, MIN_WEIGHT);
+                weight = (double) (int) (weight * 100) / 100;
                 tags.add(new TagDto(key, weight));
             }
 
@@ -116,103 +109,36 @@ public class ApiGeneralController {
 
     }
 
-    @GetMapping("/api/statistics/all")
-    public ResponseEntity<Map<String, Long>> getAllStatistics() {
-        Map<String, Long> statistics = new HashMap<>();
-        String hql;
-        boolean global ;
+    @GetMapping("/api/calendar")
+    public ResponseEntity<CalendarDto> getCalendar(
+            @RequestParam("year") int year
+    ) {
+        String yearsHql = "select date_format(p.time, '%Y') as year from Post p group by year order by year desc";
+        String postsHql = "select date_format(p.time, '%Y-%m-%d') as date, count(*) as count from Post p"
+                + " where year(p.time) = " + year
+                + " and " + baseCondition
+                + " group by date"
+                + " order by date desc";
 
+        List<String> years;
+        List<Object[]> postsInDayList;
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
-            hql = "from GlobalSetting where code='STATISTICS_IS_PUBLIC'";
-            GlobalSetting setting = (GlobalSetting) session.createQuery(hql).uniqueResult();
-            global = setting.getValue() == YES;
+            years = session.createQuery(yearsHql).getResultList();
+            postsInDayList = session.createQuery(postsHql).getResultList();
 
             transaction.commit();
         }
 
-        User user = new User();
-        user.setModerator(true);
-
-        if (user.isModerator() && global) {
-
-            long postCount;
-            long likesCount;
-            long dislikesCount;
-            long viewsCount;
-            long firstPublication;
-
-            try (Session session = Connection.getSession()) {
-                Transaction transaction = session.beginTransaction();
-
-                hql = "select count(*), sum(viewCount), min(time) from Post";
-                Object[] row = (Object[]) session.createQuery(hql).uniqueResult();
-                postCount = (long) row[0];
-                viewsCount = (long) row[1];
-                firstPublication = ((Timestamp) row[2]).getTime()/1000;
-
-                hql = "select count(*) from PostVote group by value order by value";
-                List<Long> rows = session.createQuery(hql).getResultList();
-                dislikesCount = rows.get(0);
-                likesCount = rows.get(1);
-
-                transaction.commit();
-            }
-
-            statistics.put("postsCount", postCount);
-            statistics.put("likesCount", likesCount);
-            statistics.put("dislikesCount", dislikesCount);
-            statistics.put("viewsCount", viewsCount);
-            statistics.put("firstPublication", firstPublication);
-
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        Map<String, Long> postsInDay = new HashMap<>();
+        for (Object[] row : postsInDayList) {
+            postsInDay.put((String) row[0], (Long) row[1]);
         }
 
-        return new ResponseEntity<>(statistics, HttpStatus.OK);
+        return new ResponseEntity<>(
+                new CalendarDto(years, postsInDay),
+                HttpStatus.OK);
     }
 
-
-    private class TagDto {
-        private String name;
-        private double weight;
-
-        public TagDto(String name, double weight) {
-            this.name = name;
-            this.weight = weight;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public double getWeight() {
-            return weight;
-        }
-
-        public void setWeight(double weight) {
-            this.weight = weight;
-        }
-    }
-
-    private class TagListDto {
-        List<TagDto> tags;
-
-        public TagListDto(List<TagDto> tags) {
-            this.tags = tags;
-        }
-
-        public List<TagDto> getTags() {
-            return tags;
-        }
-
-        public void setTags(List<TagDto> tags) {
-            this.tags = tags;
-        }
-    }
 }

@@ -35,6 +35,16 @@ public class User {
     public User() {
     }
 
+    public User makeSimple(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        //FIXME Потом сделать шифрование с помощью Spring Security
+        this.password = password;
+        this.regTime = new Date();
+        isModerator = false;
+        return this;
+    }
+
     public int getId() {
         return id;
     }

@@ -2,19 +2,25 @@ package diploma.controller;
 
 import com.github.cage.GCage;
 import diploma.main.Connection;
+import diploma.model.CaptchaCode;
+import diploma.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import static diploma.main.Service.*;
+import static diploma.main.Dto.*;
 
 @RestController
 public class ApiAuthController {
@@ -23,84 +29,209 @@ public class ApiAuthController {
     private int captchaTimeout;
 
     @GetMapping("/api/auth/check")
-    public ResponseEntity<ResultDto> isAuthorized() {
-        return new ResponseEntity<>(new ResultDto(false), HttpStatus.OK);
+    public ResponseEntity<LoginDto> isAuthorized() {
+        //FIXME --- ИМИТАЦИЯ АВТОРИЗАЦИИ ---
+        boolean auth = false;
+
+        LoginDto response = new LoginDto();
+        if (auth) {
+
+            User user = new User();
+            user.setId(123);
+            user.setName("Лелик");
+            user.setPhoto("/img/avatars/jake.jpg");
+            user.setEmail("gremcox@bk.ru");
+            user.setModerator(false);
+
+            response.setResult(true);
+            response.setUser(new AuthUserDto(user));
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/api/auth/captcha")
-    public ResponseEntity<CaptchaDto> getCaptcha() {
-        final String header = "data: image/png; base64, ";
-        String secret = randomString(25);
+    public ResponseEntity<CaptchaDto> getCaptcha() throws IOException {
 
         GCage gCage = new GCage();
-        String token = gCage.getTokenGenerator().next();
-        String encoding = header +
-                Arrays.toString(Base64.getEncoder()
-                        .encode(gCage.draw(token)));
+        String token = randomString(5);
+        String image = "data:image/" + gCage.getFormat() + ";base64,";
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(
+                resizeForCaptcha(gCage.drawImage(token)),
+                gCage.getFormat(),
+                outputStream);
+        image += Base64.getEncoder().encodeToString(outputStream.toByteArray());
+
+        String secret = randomString(25);
+        CaptchaCode captchaCode = new CaptchaCode(new Date(), token, secret);
 
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
-            String sql;
+            Timestamp limit = new Timestamp(System.currentTimeMillis() - captchaTimeout * 60 * 1000);
+            String hql = "delete from CaptchaCode where time < :limit" ;
+            session.createQuery(hql).setParameter("limit", limit).executeUpdate();
 
-            sql = "delete from captcha_codes"
-                    + " where time < (NOW() - INTERVAL " + captchaTimeout + " MINUTE)";
-            session.createSQLQuery(sql).executeUpdate();
-
-            sql = String.format("insert into captcha_codes (time, code, secret_code)"
-                            + " values('%s', '%s', '%s')",
-                    dateToSqlDate(new Date()),
-                    token,
-                    secret);
-            session.createSQLQuery(sql).executeUpdate();
+            session.save(captchaCode);
 
             transaction.commit();
         }
 
-        return new ResponseEntity<>(new CaptchaDto(secret, encoding), HttpStatus.OK);
+        return new ResponseEntity<>(new CaptchaDto(secret, image), HttpStatus.OK);
     }
 
-    @GetMapping("api/auth/login")
-    public ResponseEntity<HttpStatus> login() {
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PostMapping("/api/auth/register")
+    public ResponseEntity<RegisterDto> registration(
+            @RequestBody RegistrationRequest request
+    ) {
+        boolean registration;
+        Map<String, String> errors = new HashMap<>();
+
+        //ASK Нужно ли как-то проверять email?
+        String email = request.getEmail();
+        String password = request.getPassword();
+        String name = request.getName();
+        String code = request.getCode();
+        String secret = request.getSecret();
+
+        String hql;
+        Object result;
+        boolean emailCorrect;
+        boolean captchaConfirm;
+        try (Session session = Connection.getSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            hql = "select 1 from User where email='" + email + "'";
+            result = session.createQuery(hql).uniqueResult();
+            emailCorrect = result == null;
+
+            hql = "select c.code from CaptchaCode c where c.secretCode='" + secret + "'";
+            result = session.createQuery(hql).uniqueResult();
+            captchaConfirm = result != null && (((String) result).equals(code));
+
+            transaction.commit();
+        }
+
+        boolean nameCorrect = name.length() == name.replaceAll("[^A-Za-zА-Яа-яЁё\\s]+", "").length();
+        boolean passwordCorrect = password.length() > 5;
+
+        if (!emailCorrect) {
+            errors.put("email", "Этот e-mail уже зарегистрирован");
+        }
+        if (!nameCorrect) {
+            errors.put("name", "Имя указано не верно");
+        }
+        if (!passwordCorrect) {
+            errors.put("password", "Пароль короче 6-ти символов");
+        }
+        if (!captchaConfirm) {
+            errors.put("captcha", "Код с картинки введен не верно");
+        }
+
+        registration = emailCorrect && nameCorrect && passwordCorrect && captchaConfirm;
+
+        if (registration) {
+
+            User newUser = new User().makeSimple(name, email, password);
+
+            try (Session session = Connection.getSession()) {
+                Transaction transaction = session.beginTransaction();
+
+                session.save(newUser);
+
+                transaction.commit();
+            }
+        }
+
+        return new ResponseEntity<>(
+                new RegisterDto(registration, errors),
+                HttpStatus.OK
+        );
     }
 
+    @PostMapping("/api/auth/login")
+    public ResponseEntity<LoginDto> login(
+            @RequestBody LoginRequest request
+    ) {
 
-    private class ResultDto {
-        private final boolean result;
+        String email = request.getEmail();
+        String password = request.getPassword();
 
-        public ResultDto(boolean result) {
-            this.result = result;
+        LoginDto response = new LoginDto();
+
+        //FIXME --- ИМИТАЦИЯ АВТОРИЗАЦИИ ---
+        if (email.equals("gremcox@bk.ru") && password.equals("livada")) {
+
+            User user = new User();
+            user.setId(123);
+            user.setName("Лелик");
+            user.setPhoto("/img/avatars/jake.jpg");
+            user.setEmail("gremcox@bk.ru");
+            user.setModerator(false);
+
+            response.setResult(true);
+            response.setUser(new AuthUserDto(user));
+
         }
 
-        public boolean isResult() {
-            return result;
-        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    private class CaptchaDto {
-        private String secret;
-        private String image;
+    @GetMapping("/api/statistics/my")
+    public ResponseEntity<Map<String, Long>> getMyStatistics() {
+        //Текущий пользователь
+        User user = new User();
+        user.setId(10);
 
-        public CaptchaDto(String secret, String image) {
-            this.secret = secret;
-            this.image = image;
-        }
+        Map<String, Long> statistics = new HashMap<>();
+        int id = user.getId();
 
-        public String getSecret() {
-            return secret;
-        }
+        StatDto statDto = new StatDto().getUserResult(id);
+        LikesDto likesDto = new LikesDto().getUserResult(id);
 
-        public void setSecret(String secret) {
-            this.secret = secret;
-        }
+        statistics.put("postsCount", statDto.getPostsCount());
+        statistics.put("likesCount", likesDto.getLikeCount());
+        statistics.put("dislikesCount", likesDto.getDislikeCount());
+        statistics.put("viewsCount", statDto.getViewsCount());
+        statistics.put("firstPublication", statDto.getFirstPublication());
 
-        public String getImage() {
-            return image;
-        }
-
-        public void setImage(String image) {
-            this.image = image;
-        }
+        return new ResponseEntity<>(statistics, HttpStatus.OK);
     }
+
+    @GetMapping("/api/post/my")
+    public ResponseEntity<PostListDto> getMy(
+            @RequestParam("offset") int offset,
+            @RequestParam("limit") int limit,
+            @RequestParam("status") String status
+    ) {
+
+        //FIXME --- ИМИТАЦИЯ АВТОРИЗАЦИИ ---
+        int id = 10;
+        String byId = "p.user.id= " + id + " and ";
+
+        String condition = "";
+        //ASK Надо ли тут обрабаатывать возможную ошибку? вдруг фронт пришлет какуюто хрень в status?
+        // http://127.0.0.1:8080/api/post/my?offset=0&limit=10&status=inactive
+        PostState postState = PostState.valueOf(status.toUpperCase());
+        switch (postState) {
+            case PENDING:
+                condition = "p.isActive=1 and p.moderationStatus='NEW'";
+                break;
+            case DECLINED:
+                condition = "p.isActive=1 and p.moderationStatus='DECLINED'";
+                break;
+            case PUBLISHED:
+                condition = "p.isActive=1 and p.moderationStatus='ACCEPTED'";
+                break;
+            case INACTIVE:
+                condition = " p.isActive=0";
+                break;
+        }
+
+        return new ResponseEntity<>(
+                new PostListDto().makeAnnounces(byId + condition, offset, limit),
+                HttpStatus.OK);
+    }
+
 }
