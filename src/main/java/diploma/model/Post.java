@@ -1,5 +1,6 @@
 package diploma.model;
 
+import diploma.model.emun.ModerationStatus;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

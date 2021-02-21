@@ -1,7 +1,10 @@
 package diploma.controller;
 
-import diploma.main.Connection;
+import diploma.config.Connection;
+import diploma.dto.PostDto;
+import diploma.dto.PostListDto;
 import diploma.model.Post;
+import diploma.model.emun.PostViewMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.http.HttpStatus;
@@ -11,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static diploma.main.Dto.*;
+import static diploma.dto.Dto.*;
 
 @RestController
 public class ApiPostController {

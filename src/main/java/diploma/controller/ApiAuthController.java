@@ -1,9 +1,11 @@
 package diploma.controller;
 
 import com.github.cage.GCage;
-import diploma.main.Connection;
+import diploma.config.Connection;
+import diploma.dto.*;
 import diploma.model.CaptchaCode;
 import diploma.model.User;
+import diploma.model.emun.PostState;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static diploma.main.Dto.*;
+import static diploma.dto.Dto.*;
 
 @RestController
 public class ApiAuthController {

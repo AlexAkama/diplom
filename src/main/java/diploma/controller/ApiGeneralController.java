@@ -1,6 +1,10 @@
 package diploma.controller;
 
-import diploma.main.Connection;
+import diploma.config.Connection;
+import diploma.dto.CalendarDto;
+import diploma.dto.GlobalSettingsDto;
+import diploma.dto.TagDto;
+import diploma.dto.TagListDto;
 import diploma.model.GlobalSetting;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -14,8 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigInteger;
 import java.util.*;
 
-import static diploma.main.Dto.*;
-import static diploma.model.GlobalSettingsValue.YES;
+import static diploma.model.emun.GlobalSettingsValue.YES;
 
 @RestController
 public class ApiGeneralController {

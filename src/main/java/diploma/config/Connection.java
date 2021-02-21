@@ -1,4 +1,4 @@
-package diploma.main;
+package diploma.config;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

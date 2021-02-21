@@ -1,5 +1,7 @@
 package diploma.model;
 
+import diploma.model.emun.GlobalSettingsValue;
+
 import javax.persistence.*;
 
 @Entity
