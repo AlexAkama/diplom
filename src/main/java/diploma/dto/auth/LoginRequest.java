@@ -1,18 +1,30 @@
-package diploma.dto;
+package diploma.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ *  Данные запроса на вход: почта и пароль
+ */
 public class LoginRequest {
 
+    /**
+     * Поле почты
+     */
     @JsonProperty("e_mail")
     private String email;
+
+    /**
+     * Поле пароля
+     */
     private String password;
 
+    // CONSTRUCTORS
     public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
+    // GETTERS & SETTERS
     public String getEmail() {
         return email;
     }

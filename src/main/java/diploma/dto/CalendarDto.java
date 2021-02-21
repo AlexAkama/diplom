@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 public class CalendarDto {
+
     private List<String> years;
     private Map<String, Long> posts;
+
 
     public CalendarDto(List<String> years, Map<String, Long> posts) {
         this.years = years;
         this.posts = posts;
     }
+
 
     public List<String> getYears() {
         return years;

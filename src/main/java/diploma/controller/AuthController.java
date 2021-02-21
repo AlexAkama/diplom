@@ -3,14 +3,20 @@ package diploma.controller;
 import com.github.cage.GCage;
 import diploma.config.Connection;
 import diploma.dto.*;
+import diploma.dto.auth.LoginRequest;
+import diploma.dto.auth.RegistrationRequest;
+import diploma.dto.auth.RegistrationResponse;
+import diploma.dto.auth.UserResponse;
 import diploma.model.CaptchaCode;
 import diploma.model.User;
 import diploma.model.emun.PostState;
+import diploma.service.AuthService;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
@@ -24,35 +30,44 @@ import java.util.Map;
 
 import static diploma.dto.Dto.*;
 
-@RestController
-public class ApiAuthController {
+/** Контроллер авторизации */
+@Controller
+@RequestMapping("/api/auth")
+public class AuthController {
 
+    /** Срок действия кода капчи в минутах */
     @Value("${config.captcha.timeout}")
     private int captchaTimeout;
 
-    @GetMapping("/api/auth/check")
-    public ResponseEntity<LoginDto> isAuthorized() {
-        //FIXME --- ИМИТАЦИЯ АВТОРИЗАЦИИ ---
-        boolean auth = false;
+    /**
+     * Сервис авторизации
+     */
+    private final AuthService authService;
 
-        LoginDto response = new LoginDto();
-        if (auth) {
 
-            User user = new User();
-            user.setId(123);
-            user.setName("Лелик");
-            user.setPhoto("/img/avatars/jake.jpg");
-            user.setEmail("gremcox@bk.ru");
-            user.setModerator(false);
-
-            response.setResult(true);
-            response.setUser(new AuthUserDto(user));
-        }
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    // CONSTRUCTORS
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
-    @GetMapping("/api/auth/captcha")
+
+    // MAPPING
+    /**
+     * Метод возвращает давнные о пользователе, если он авторизован
+     *
+     * @return {@link UserResponse}
+     */
+    @GetMapping("/check")
+    public ResponseEntity<UserResponse> checkUserAuthorization() {
+        return authService.checkUserAuthorization();
+    }
+
+    /**
+     * КАПЧА
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/captcha")
     public ResponseEntity<CaptchaDto> getCaptcha() throws IOException {
 
         GCage gCage = new GCage();
@@ -71,8 +86,8 @@ public class ApiAuthController {
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
-            Timestamp limit = new Timestamp(System.currentTimeMillis() - captchaTimeout * 60 * 1000);
-            String hql = "delete from CaptchaCode where time < :limit" ;
+            Timestamp limit = new Timestamp(System.currentTimeMillis() - (long) captchaTimeout * 60 * 1000);
+            String hql = "delete from CaptchaCode where time < :limit";
             session.createQuery(hql).setParameter("limit", limit).executeUpdate();
 
             session.save(captchaCode);
@@ -83,14 +98,20 @@ public class ApiAuthController {
         return new ResponseEntity<>(new CaptchaDto(secret, image), HttpStatus.OK);
     }
 
-    @PostMapping("/api/auth/register")
-    public ResponseEntity<RegisterDto> registration(
+    /**
+     * Запрос на регистрацию пользователя
+     * <br> если данные не прошли, проверку возврашется список ошибок
+     * @param request {@link RegistrationRequest}
+     * @return {@link RegistrationResponse}
+     */
+    @PostMapping("/register")
+    public ResponseEntity<RegistrationResponse> registration(
             @RequestBody RegistrationRequest request
     ) {
+
         boolean registration;
         Map<String, String> errors = new HashMap<>();
 
-        //ASK Нужно ли как-то проверять email?
         String email = request.getEmail();
         String password = request.getPassword();
         String name = request.getName();
@@ -147,38 +168,25 @@ public class ApiAuthController {
         }
 
         return new ResponseEntity<>(
-                new RegisterDto(registration, errors),
+                new RegistrationResponse(errors),
                 HttpStatus.OK
         );
     }
 
-    @PostMapping("/api/auth/login")
-    public ResponseEntity<LoginDto> login(
+    /**
+     * Метод возвращает данные полязователя если данные для входа верны
+     * @param request {@link LoginRequest}
+     * @return {@link UserResponse}
+     */
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> login(
             @RequestBody LoginRequest request
     ) {
-
-        String email = request.getEmail();
-        String password = request.getPassword();
-
-        LoginDto response = new LoginDto();
-
-        //FIXME --- ИМИТАЦИЯ АВТОРИЗАЦИИ ---
-        if (email.equals("gremcox@bk.ru") && password.equals("livada")) {
-
-            User user = new User();
-            user.setId(123);
-            user.setName("Лелик");
-            user.setPhoto("/img/avatars/jake.jpg");
-            user.setEmail("gremcox@bk.ru");
-            user.setModerator(false);
-
-            response.setResult(true);
-            response.setUser(new AuthUserDto(user));
-
-        }
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return authService.login(request);
     }
+
+
+
 
     @GetMapping("/api/statistics/my")
     public ResponseEntity<Map<String, Long>> getMyStatistics() {
