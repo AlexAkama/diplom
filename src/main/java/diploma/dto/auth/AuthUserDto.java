@@ -1,4 +1,4 @@
-package diploma.dto;
+package diploma.dto.auth;
 
 import diploma.config.Connection;
 import diploma.model.User;
@@ -22,6 +22,7 @@ public class AuthUserDto {
         if (user.isModerator()) {
             moderation = true;
             settings = true;
+            // FIXME вынести в DAO
             try (Session session = Connection.getSession()) {
                 Transaction transaction = session.beginTransaction();
 

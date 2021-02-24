@@ -1,6 +1,7 @@
 package diploma.controller;
 
 import diploma.config.Connection;
+import diploma.dto.GlobalSettingsDto;
 import diploma.dto.LikesDto;
 import diploma.dto.StatDto;
 import diploma.model.GlobalSetting;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
-import diploma.dto.GlobalSettingsDto;
 import static diploma.dto.Dto.saveGlobalParameter;
 import static diploma.model.emun.GlobalSettings.*;
 import static diploma.model.emun.GlobalSettingsValue.YES;
@@ -40,7 +40,7 @@ public class ApiModerationController {
             transaction.commit();
         }
 
-        //Текущий пользователь
+        //FIXME Тут нужен текущий пользователь
         User user = new User();
         user.setModerator(true);
 

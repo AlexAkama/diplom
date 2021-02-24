@@ -1,9 +1,7 @@
 package diploma.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder()
 public class GlobalSettingsDto {
     @JsonProperty("MULTIUSER_MODE")
     private boolean multiUser;

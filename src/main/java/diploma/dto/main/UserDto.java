@@ -1,4 +1,4 @@
-package diploma.dto;
+package diploma.dto.main;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

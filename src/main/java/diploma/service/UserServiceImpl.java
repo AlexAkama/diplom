@@ -1,10 +1,19 @@
 package diploma.service;
 
+import diploma.dao.DaoUserService;
 import diploma.model.User;
+import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
+@Service
 public class UserServiceImpl implements UserService {
+
+    private final DaoUserService daoUserService;
+
+    public UserServiceImpl(DaoUserService daoUserService) {
+        this.daoUserService = daoUserService;
+    }
 
     @Override
     public User getTestUser(String name) {
@@ -22,6 +31,13 @@ public class UserServiceImpl implements UserService {
         User moderator = getTestUser(name);
         moderator.setModerator(true);
         return moderator;
+    }
+
+    @Override
+    public User createNewUser(String name, String email, String password) {
+        User user = new User(name, email, password);
+        daoUserService.saveUser(user);
+        return user;
     }
 
 }

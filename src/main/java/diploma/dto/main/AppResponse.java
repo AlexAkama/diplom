@@ -6,7 +6,7 @@ package diploma.dto.main;
 public abstract class AppResponse {
 
     /**
-     * Статус результата ответ
+     * Отвтет запрос удачен/нет
      */
     private boolean result;
 

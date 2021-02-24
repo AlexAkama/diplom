@@ -40,6 +40,6 @@ public class RegistrationResponse extends AppResponse {
 
     public void setErrors(Map<String, String> errors) {
         this.errors = errors;
-        this.setResult(errors == null);
+        this.setResult(errors == null || errors.isEmpty());
     }
 }

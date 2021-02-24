@@ -2,6 +2,7 @@ package diploma.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import diploma.dto.main.UserDto;
 import diploma.model.Post;
 
 import java.util.List;

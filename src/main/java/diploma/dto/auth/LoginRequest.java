@@ -18,11 +18,13 @@ public class LoginRequest {
      */
     private String password;
 
+
     // CONSTRUCTORS
     public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }
+
 
     // GETTERS & SETTERS
     public String getEmail() {

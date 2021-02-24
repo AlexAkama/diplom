@@ -1,6 +1,7 @@
 package diploma.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import diploma.dto.main.UserDto;
 import diploma.model.PostComment;
 
 @JsonPropertyOrder({"id", "timestamp", "text", "user"})

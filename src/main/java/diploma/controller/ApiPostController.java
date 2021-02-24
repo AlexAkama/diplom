@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,13 +21,12 @@ import static diploma.dto.Dto.*;
 public class ApiPostController {
 
     @GetMapping("/api/post")
+    @PreAuthorize("hasAnyAuthority()")
     public ResponseEntity<PostListDto> getPostList(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("mode") String mode
     ) {
-        //ASK возможна ошибка если в mode будет передана фигня
-        // http://127.0.0.1:8080/api/post?offset=0&limit=10&mode=recent
         PostViewMode postMode = PostViewMode.valueOf(mode.toUpperCase());
 
         return new ResponseEntity<>(

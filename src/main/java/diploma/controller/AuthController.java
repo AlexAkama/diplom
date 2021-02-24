@@ -2,7 +2,10 @@ package diploma.controller;
 
 import com.github.cage.GCage;
 import diploma.config.Connection;
-import diploma.dto.*;
+import diploma.dto.CaptchaDto;
+import diploma.dto.LikesDto;
+import diploma.dto.PostListDto;
+import diploma.dto.StatDto;
 import diploma.dto.auth.LoginRequest;
 import diploma.dto.auth.RegistrationRequest;
 import diploma.dto.auth.RegistrationResponse;
@@ -28,7 +31,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static diploma.dto.Dto.*;
+import static diploma.dto.Dto.randomString;
+import static diploma.dto.Dto.resizeForCaptcha;
 
 /** Контроллер авторизации */
 @Controller
@@ -108,69 +112,7 @@ public class AuthController {
     public ResponseEntity<RegistrationResponse> registration(
             @RequestBody RegistrationRequest request
     ) {
-
-        boolean registration;
-        Map<String, String> errors = new HashMap<>();
-
-        String email = request.getEmail();
-        String password = request.getPassword();
-        String name = request.getName();
-        String code = request.getCode();
-        String secret = request.getSecret();
-
-        String hql;
-        Object result;
-        boolean emailCorrect;
-        boolean captchaConfirm;
-        try (Session session = Connection.getSession()) {
-            Transaction transaction = session.beginTransaction();
-
-            hql = "select 1 from User where email='" + email + "'";
-            result = session.createQuery(hql).uniqueResult();
-            emailCorrect = result == null;
-
-            hql = "select c.code from CaptchaCode c where c.secretCode='" + secret + "'";
-            result = session.createQuery(hql).uniqueResult();
-            captchaConfirm = result != null && (((String) result).equals(code));
-
-            transaction.commit();
-        }
-
-        boolean nameCorrect = name.length() == name.replaceAll("[^A-Za-zА-Яа-яЁё\\s]+", "").length();
-        boolean passwordCorrect = password.length() > 5;
-
-        if (!emailCorrect) {
-            errors.put("email", "Этот e-mail уже зарегистрирован");
-        }
-        if (!nameCorrect) {
-            errors.put("name", "Имя указано не верно");
-        }
-        if (!passwordCorrect) {
-            errors.put("password", "Пароль короче 6-ти символов");
-        }
-        if (!captchaConfirm) {
-            errors.put("captcha", "Код с картинки введен не верно");
-        }
-
-        registration = emailCorrect && nameCorrect && passwordCorrect && captchaConfirm;
-
-        if (registration) {
-
-            User newUser = new User().makeSimple(name, email, password);
-
-            try (Session session = Connection.getSession()) {
-                Transaction transaction = session.beginTransaction();
-
-                session.save(newUser);
-
-                transaction.commit();
-            }
-        }
-
-        return new ResponseEntity<>(
-                new RegistrationResponse(errors),
-                HttpStatus.OK
-        );
+        return authService.registration(request);
     }
 
     /**
@@ -186,7 +128,7 @@ public class AuthController {
     }
 
 
-
+    //FIXME перенести в соответствующие контроллеры
 
     @GetMapping("/api/statistics/my")
     public ResponseEntity<Map<String, Long>> getMyStatistics() {
