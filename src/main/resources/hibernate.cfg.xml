@@ -10,17 +10,17 @@
         <property name="show_sql">true</property>
         <property name="hbm2ddl.auto">validate</property>
 
-        <mapping class="diploma.model.User" />
+        <mapping class="project.model.User" />
 
-        <mapping class="diploma.model.Post" />
-        <mapping class="diploma.model.PostComment" />
-        <mapping class="diploma.model.PostVote" />
+        <mapping class="project.model.Post" />
+        <mapping class="project.model.PostComment" />
+        <mapping class="project.model.PostVote" />
 
-        <mapping class="diploma.model.Tag" />
-        <mapping class="diploma.model.TagToPost" />
+        <mapping class="project.model.Tag" />
+        <mapping class="project.model.TagToPost" />
 
-        <mapping class="diploma.model.CaptchaCode" />
-        <mapping class="diploma.model.GlobalSetting" />
+        <mapping class="project.model.CaptchaCode" />
+        <mapping class="project.model.GlobalSetting" />
 
     </session-factory>
 </hibernate-configuration>
