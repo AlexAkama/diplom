@@ -10,7 +10,7 @@ public interface GlobalService {
 
     ResponseEntity<PersonalInfoDto> getPersonalInfo();
 
-    ResponseEntity<GlobalSettingsDto> getSettings();
+    ResponseEntity<GlobalSettingsDto> getGlobalSettings();
 
     ResponseEntity<TagListDto> getTagList();
 

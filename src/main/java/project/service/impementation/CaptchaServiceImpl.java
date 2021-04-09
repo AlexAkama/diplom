@@ -1,8 +1,9 @@
-package project.service;
+package project.service.impementation;
 
 import org.springframework.stereotype.Service;
 import project.model.CaptchaCode;
 import project.repository.CaptchaRepository;
+import project.service.CaptchaService;
 
 import java.util.Optional;
 

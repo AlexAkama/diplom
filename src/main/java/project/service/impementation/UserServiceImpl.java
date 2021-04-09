@@ -1,9 +1,10 @@
-package project.service;
+package project.service.impementation;
 
 import org.springframework.stereotype.Service;
 import project.exception.UserNotFoundException;
 import project.model.User;
 import project.repository.UserRepository;
+import project.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {

@@ -12,6 +12,6 @@ INSERT INTO `config`(name, value) VALUES ('subtitle','Детский нутри�
 INSERT INTO `config`(name, value) VALUES ('phone','+7 912 268 2724');
 INSERT INTO `config`(name, value) VALUES ('email','maslova.nutrition@gmail.com');
 INSERT INTO `config`(name, value) VALUES ('copyright','Екатерина Маслова');
-INSERT INTO `config`(name, value) VALUES ('copyrightDate','2018');
+INSERT INTO `config`(name, value) VALUES ('copyrightYear','2018');
 
 INSERT INTO `config`(name, value) VALUES ('timeout', '10');

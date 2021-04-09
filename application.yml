@@ -9,13 +9,5 @@ flyway.schemas: diplom
 flyway.url: jdbc:mysql://localhost:3306
 flyway.locations: filesystem:db/migration
 
-persona:
-  title: NUTRI MAM
-  subtitle: Детский нутрициолог
-  phone: +7 912 268 2724
-  email: maslova.nutrition@gmail.com
-  copyright: Екатерина Маслова
-  copyrightFrom: 2018
-
 config:
   captcha.timeout: 10

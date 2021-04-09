@@ -1,92 +1,40 @@
 package project.controller;
 
-import project.config.Connection;
-import project.dto.global.*;
-import project.dto.TagDto;
-import project.dto.TagListDto;
-import project.model.GlobalSetting;
-import project.service.GlobalService;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import project.config.Connection;
+import project.dto.TagDto;
+import project.dto.TagListDto;
+import project.dto.global.*;
+import project.service.GlobalService;
 
 import java.math.BigInteger;
 import java.util.*;
 
-import static project.model.emun.GlobalSettingsValue.YES;
-
 
 @RestController
-public class GlobalControllerImpl implements GlobalService {
+public class GlobalController {
 
     private static final String baseCondition = "is_active=1 AND moderation_status='ACCEPTED' AND time < NOW()";
     private static final double MIN_WEIGHT = 0.25;
 
-    @Value("${persona.title}")
-    private String title;
-    @Value("${persona.subtitle}")
-    private String subtitle;
-    @Value("${persona.phone}")
-    private String phone;
-    @Value("${persona.email}")
-    private String email;
-    @Value("${persona.copyright}")
-    private String copyright;
-    @Value("${persona.copyrightFrom}")
-    private String copyrightFrom;
+    private final GlobalService globalService;
 
-    @GetMapping("/api/init")
-    public ResponseEntity<Map<String, String>> getPersonalInformation() {
-        Map<String, String> personalInformation = new LinkedHashMap<>();
-        personalInformation.put("title", title);
-        personalInformation.put("subtitle", subtitle);
-        personalInformation.put("phone", phone);
-        personalInformation.put("email", email);
-        personalInformation.put("copyright", copyright);
-        personalInformation.put("copyrightFrom", copyrightFrom);
-        return new ResponseEntity<>(personalInformation, HttpStatus.OK);
+    public GlobalController(GlobalService globalService) {
+        this.globalService = globalService;
     }
 
-    @Override
-    public ResponseEntity<PersonalInfoDto> getPersonalInfo() {
-        return null;
+    @GetMapping("/api/init")
+    public ResponseEntity<PersonalInfoDto> getPersonalInformation() {
+        return globalService.getPersonalInfo();
     }
 
     @GetMapping("/api/settings")
     public ResponseEntity<GlobalSettingsDto> getSettings() {
-        List<GlobalSetting> list;
-        try (Session session = Connection.getSession()) {
-            Transaction transaction = session.beginTransaction();
-
-            String hql = "FROM " + GlobalSetting.class.getSimpleName() + " as gs order by gs.code";
-            list = session.createQuery(hql).getResultList();
-
-            transaction.commit();
-        }
-
-        GlobalSettingsDto settings = new GlobalSettingsDto(
-                list.get(0).getValue() == YES,
-                list.get(1).getValue() == YES,
-                list.get(2).getValue() == YES
-        );
-
-        return new ResponseEntity<>(settings, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<TagListDto> getTagList() {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<CalendarDto> getCalendar() {
-        return null;
+        return globalService.getGlobalSettings();
     }
 
     @GetMapping("/api/tag")
@@ -130,7 +78,6 @@ public class GlobalControllerImpl implements GlobalService {
     }
 
     @GetMapping("/api/calendar")
-    @PreAuthorize("hasAnyAuthority('user:reader')")
     public ResponseEntity<CalendarDto> getCalendar(
             @RequestParam("year") int year
     ) {
