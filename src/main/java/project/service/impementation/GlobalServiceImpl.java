@@ -2,29 +2,34 @@ package project.service.impementation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import project.dto.global.TagListDto;
 import project.dto.global.*;
 import project.model.ConfigParameter;
 import project.model.GlobalSetting;
-import project.repository.ConfigParameterRepository;
-import project.repository.GlobalSettingRepository;
+import project.repository.*;
 import project.service.GlobalService;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static project.model.emun.GlobalSettings.*;
-import static project.model.emun.GlobalSettingsValue.*;
+import static project.model.emun.GlobalSettings.MULTIUSER_MODE;
+import static project.model.emun.GlobalSettings.POST_PREMODERATION;
+import static project.model.emun.GlobalSettingsValue.YES;
 
 @Service
 public class GlobalServiceImpl implements GlobalService {
 
+    private static final double MIN_WEIGHT = 0.25;
+
     private final ConfigParameterRepository configParameterRepository;
     private final GlobalSettingRepository globalSettingRepository;
+    private final TagToPostRepository tagToPostRepository;
 
     public GlobalServiceImpl(ConfigParameterRepository configParameterRepository,
-                             GlobalSettingRepository globalSettingRepository) {
+                             GlobalSettingRepository globalSettingRepository,
+                             TagToPostRepository tagToPostRepository) {
         this.configParameterRepository = configParameterRepository;
         this.globalSettingRepository = globalSettingRepository;
+        this.tagToPostRepository = tagToPostRepository;
     }
 
     @Override
@@ -70,7 +75,18 @@ public class GlobalServiceImpl implements GlobalService {
 
     @Override
     public ResponseEntity<TagListDto> getTagList() {
-        return null;
+        List<TagCounter> list = tagToPostRepository.getTagCounterList();
+        list.forEach(el -> System.out.println(el.getName() + el.getCounter()));
+        Optional<TagCounter> optionalTagCounter = list.stream().max(Comparator.comparingLong(TagCounter::getCounter));
+        double maxCounter = optionalTagCounter.isPresent() ? optionalTagCounter.get().getCounter() : 1;
+        List<TagDto> tagListWithWeight = list.stream()
+                .map(tagCounter -> {
+                    double weight = Math.max(tagCounter.getCounter() / maxCounter, MIN_WEIGHT);
+                    weight = (double) (int) (weight * 100) / 100;
+                    return new TagDto(tagCounter.getName(), weight);
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(new TagListDto(tagListWithWeight));
     }
 
     @Override
