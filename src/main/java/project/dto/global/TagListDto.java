@@ -1,9 +1,12 @@
 package project.dto.global;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class TagListDto {
 
+    @JsonProperty("tags")
     List<TagDto> tagList;
 
     public TagListDto(List<TagDto> tagList) {
