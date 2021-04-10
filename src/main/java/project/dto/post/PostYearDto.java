@@ -1,6 +1,6 @@
 package project.dto.post;
 
-public interface PostYear {
+public interface PostYearDto {
 
     String getYear();
 

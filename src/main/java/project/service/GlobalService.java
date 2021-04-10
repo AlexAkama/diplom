@@ -14,5 +14,5 @@ public interface GlobalService {
 
     ResponseEntity<TagListDto> getTagList();
 
-    ResponseEntity<CalendarDto> getCalendar();
+    ResponseEntity<CalendarDto> getCalendar(int year);
 }

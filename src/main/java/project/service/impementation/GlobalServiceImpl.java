@@ -3,6 +3,7 @@ package project.service.impementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.dto.global.*;
+import project.dto.post.PostYearDto;
 import project.model.ConfigParameter;
 import project.model.GlobalSetting;
 import project.repository.*;
@@ -23,13 +24,16 @@ public class GlobalServiceImpl implements GlobalService {
     private final ConfigParameterRepository configParameterRepository;
     private final GlobalSettingRepository globalSettingRepository;
     private final TagToPostRepository tagToPostRepository;
+    private final PostRepository postRepository;
 
     public GlobalServiceImpl(ConfigParameterRepository configParameterRepository,
                              GlobalSettingRepository globalSettingRepository,
-                             TagToPostRepository tagToPostRepository) {
+                             TagToPostRepository tagToPostRepository,
+                             PostRepository postRepository) {
         this.configParameterRepository = configParameterRepository;
         this.globalSettingRepository = globalSettingRepository;
         this.tagToPostRepository = tagToPostRepository;
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -75,22 +79,29 @@ public class GlobalServiceImpl implements GlobalService {
 
     @Override
     public ResponseEntity<TagListDto> getTagList() {
-        List<TagCounter> list = tagToPostRepository.getTagCounterList();
-        Optional<TagCounter> optionalTagCounter = list.stream().max(Comparator.comparingLong(TagCounter::getCounter));
-        double maxCounter = optionalTagCounter.isPresent() ? optionalTagCounter.get().getCounter() : 1;
+        List<KeyAndLongValueDto> list = tagToPostRepository.getTagCounterList();
+        Optional<KeyAndLongValueDto> optionalTagCounter = list.stream().max(Comparator.comparingLong(KeyAndLongValueDto::getValue));
+        double maxCounter = optionalTagCounter.isPresent() ? optionalTagCounter.get().getValue() : 1;
         List<TagDto> tagListWithWeight = list.stream()
-                .map(tagCounter -> {
-                    double weight = Math.max(tagCounter.getCounter() / maxCounter, MIN_WEIGHT);
+                .map(keyAndLongValueDto -> {
+                    double weight = Math.max(keyAndLongValueDto.getValue() / maxCounter, MIN_WEIGHT);
                     weight = (double) (int) (weight * 100) / 100;
-                    return new TagDto(tagCounter.getName(), weight);
+                    return new TagDto(keyAndLongValueDto.getKey(), weight);
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(new TagListDto(tagListWithWeight));
     }
 
     @Override
-    public ResponseEntity<CalendarDto> getCalendar() {
-        return null;
+    public ResponseEntity<CalendarDto> getCalendar(int year) {
+        List<PostYearDto> list = postRepository.getYearList();
+        List<String> yearList = list.stream().map(PostYearDto::getYear).collect(Collectors.toList());
+
+        List<KeyAndLongValueDto> postCounterList = postRepository.getPostCounterList(year);
+        Map<String, Long> postCounterMap = postCounterList.stream()
+                .collect(Collectors.toMap(KeyAndLongValueDto::getKey, KeyAndLongValueDto::getValue));
+
+        return ResponseEntity.ok(new CalendarDto(yearList, postCounterMap));
     }
 
 }
