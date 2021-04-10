@@ -3,10 +3,13 @@ package project.dto.global;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GlobalSettingsDto {
+
     @JsonProperty("MULTIUSER_MODE")
     private final boolean multiUser;
+
     @JsonProperty("POST_PREMODERATION")
     private final boolean preModeration;
+
     @JsonProperty("STATISTICS_IS_PUBLIC")
     private final boolean publicStatistic;
 

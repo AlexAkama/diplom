@@ -1,6 +1,7 @@
-package project.dto;
+package project.dto.global;
 
 public class TagDto {
+
     private String name;
     private double weight;
 
@@ -24,4 +25,5 @@ public class TagDto {
     public void setWeight(double weight) {
         this.weight = weight;
     }
+
 }

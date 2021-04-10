@@ -2,7 +2,7 @@ package project.service.impementation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import project.dto.TagListDto;
+import project.dto.global.TagListDto;
 import project.dto.global.*;
 import project.model.ConfigParameter;
 import project.model.GlobalSetting;

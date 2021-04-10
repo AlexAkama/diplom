@@ -6,9 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.config.Connection;
-import project.dto.TagDto;
-import project.dto.TagListDto;
 import project.dto.global.*;
+import project.repository.TagToPostRepository;
 import project.service.GlobalService;
 
 import java.math.BigInteger;
@@ -22,9 +21,12 @@ public class GlobalController {
     private static final double MIN_WEIGHT = 0.25;
 
     private final GlobalService globalService;
+    private final TagToPostRepository tagToPostRepository;
 
-    public GlobalController(GlobalService globalService) {
+    public GlobalController(GlobalService globalService,
+                            TagToPostRepository tagToPostRepository) {
         this.globalService = globalService;
+        this.tagToPostRepository = tagToPostRepository;
     }
 
     @GetMapping("/api/init")
@@ -40,7 +42,7 @@ public class GlobalController {
     @GetMapping("/api/tag")
     public ResponseEntity<TagListDto> getTags(@RequestParam(value = "query", required = false) String query) {
 
-        List<TagDto> tags = new ArrayList<>();
+        List<TagDto> tagListWithWeight = new ArrayList<>();
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -67,13 +69,24 @@ public class GlobalController {
             for (String key : tagsMap.keySet()) {
                 weight = Math.max(tagsMap.get(key) / maxWeight, MIN_WEIGHT);
                 weight = (double) (int) (weight * 100) / 100;
-                tags.add(new TagDto(key, weight));
+                tagListWithWeight.add(new TagDto(key, weight));
             }
 
             transaction.commit();
         }
 
-        return new ResponseEntity<>(new TagListDto(tags), HttpStatus.OK);
+//        List<TagCounter> list = tagToPostRepository.getTagCounterList();
+//        list.forEach(el -> System.out.println(el.getName() + el.getCounter()));
+//        double maxCounter = list.stream().max(Comparator.comparingLong(TagCounter::getCounter)).get().getCounter();
+//        List<TagDto> tagListWithWeight = list.stream()
+//                .map(tagCounter -> {
+//                    double weight = Math.max(tagCounter.getCounter() / maxCounter, MIN_WEIGHT);
+//                    weight = (double) (int) (weight * 100) / 100;
+//                    return new TagDto(tagCounter.getName(), weight);
+//                })
+//                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(new TagListDto(tagListWithWeight));
 
     }
 
