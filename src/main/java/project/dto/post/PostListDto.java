@@ -1,6 +1,7 @@
-package project.dto;
+package project.dto.post;
 
 import project.config.Connection;
+import project.dto.Dto;
 import project.model.Post;
 import project.model.emun.PostViewMode;
 import org.hibernate.Session;

@@ -76,7 +76,6 @@ public class GlobalServiceImpl implements GlobalService {
     @Override
     public ResponseEntity<TagListDto> getTagList() {
         List<TagCounter> list = tagToPostRepository.getTagCounterList();
-        list.forEach(el -> System.out.println(el.getName() + el.getCounter()));
         Optional<TagCounter> optionalTagCounter = list.stream().max(Comparator.comparingLong(TagCounter::getCounter));
         double maxCounter = optionalTagCounter.isPresent() ? optionalTagCounter.get().getCounter() : 1;
         List<TagDto> tagListWithWeight = list.stream()

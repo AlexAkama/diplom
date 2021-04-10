@@ -7,9 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.config.Connection;
 import project.dto.global.*;
+import project.dto.post.PostYear;
+import project.repository.PostRepository;
 import project.service.GlobalService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -18,9 +21,11 @@ public class GlobalController {
     private static final String baseCondition = "is_active=1 AND moderation_status='ACCEPTED' AND time < NOW()";
 
     private final GlobalService globalService;
+    private final PostRepository postRepository;
 
-    public GlobalController(GlobalService globalService) {
+    public GlobalController(GlobalService globalService, PostRepository postRepository) {
         this.globalService = globalService;
+        this.postRepository = postRepository;
     }
 
     @GetMapping("/api/init")
@@ -65,8 +70,11 @@ public class GlobalController {
             postsInDay.put((String) row[0], (Long) row[1]);
         }
 
+        List<PostYear> list = postRepository.getYearList();
+        List<String> yearList = list.stream().map(PostYear::getYear).collect(Collectors.toList());
+
         return new ResponseEntity<>(
-                new CalendarDto(years, postsInDay),
+                new CalendarDto(yearList, postsInDay),
                 HttpStatus.OK);
     }
 

@@ -1,7 +1,8 @@
-package project.dto;
+package project.dto.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import project.dto.*;
 import project.dto.main.UserDto;
 import project.model.Post;
 

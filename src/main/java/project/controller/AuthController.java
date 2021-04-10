@@ -4,7 +4,7 @@ import com.github.cage.GCage;
 import project.config.Connection;
 import project.dto.CaptchaDto;
 import project.dto.LikesDto;
-import project.dto.PostListDto;
+import project.dto.post.PostListDto;
 import project.dto.StatDto;
 import project.dto.auth.LoginRequest;
 import project.dto.auth.RegistrationRequest;
