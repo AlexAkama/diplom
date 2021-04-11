@@ -1,6 +1,6 @@
 package project.dto.global;
 
-public interface KeyAndLongValueDto {
+public interface MapDto {
 
     String getKey();
     Long getValue();

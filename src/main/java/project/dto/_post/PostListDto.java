@@ -1,4 +1,4 @@
-package project.dto.post;
+package project.dto._post;
 
 import project.config.Connection;
 import project.dto.Dto;

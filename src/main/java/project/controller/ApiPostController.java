@@ -1,8 +1,8 @@
 package project.controller;
 
 import project.config.Connection;
-import project.dto.post.PostDto;
-import project.dto.post.PostListDto;
+import project.dto._post.PostDto;
+import project.dto._post.PostListDto;
 import project.model.Post;
 import project.model.emun.PostViewMode;
 import org.hibernate.Session;

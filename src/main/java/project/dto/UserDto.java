@@ -1,4 +1,4 @@
-package project.dto.main;
+package project.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

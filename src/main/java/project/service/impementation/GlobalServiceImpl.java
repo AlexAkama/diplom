@@ -2,8 +2,8 @@ package project.service.impementation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import project.dto._post.PostYearDto;
 import project.dto.global.*;
-import project.dto.post.PostYearDto;
 import project.model.ConfigParameter;
 import project.model.GlobalSetting;
 import project.repository.*;
@@ -16,6 +16,9 @@ import static project.model.emun.GlobalSettings.MULTIUSER_MODE;
 import static project.model.emun.GlobalSettings.POST_PREMODERATION;
 import static project.model.emun.GlobalSettingsValue.YES;
 
+/**
+ * <h2>Реализация сервиса обработки глобальных запросов блога</h2>
+ */
 @Service
 public class GlobalServiceImpl implements GlobalService {
 
@@ -79,14 +82,14 @@ public class GlobalServiceImpl implements GlobalService {
 
     @Override
     public ResponseEntity<TagListDto> getTagList() {
-        List<KeyAndLongValueDto> list = tagToPostRepository.getTagCounterList();
-        Optional<KeyAndLongValueDto> optionalTagCounter = list.stream().max(Comparator.comparingLong(KeyAndLongValueDto::getValue));
+        List<MapDto> list = tagToPostRepository.getTagCounterList();
+        Optional<MapDto> optionalTagCounter = list.stream().max(Comparator.comparingLong(MapDto::getValue));
         double maxCounter = optionalTagCounter.isPresent() ? optionalTagCounter.get().getValue() : 1;
         List<TagDto> tagListWithWeight = list.stream()
-                .map(keyAndLongValueDto -> {
-                    double weight = Math.max(keyAndLongValueDto.getValue() / maxCounter, MIN_WEIGHT);
+                .map(mapDto -> {
+                    double weight = Math.max(mapDto.getValue() / maxCounter, MIN_WEIGHT);
                     weight = (double) (int) (weight * 100) / 100;
-                    return new TagDto(keyAndLongValueDto.getKey(), weight);
+                    return new TagDto(mapDto.getKey(), weight);
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(new TagListDto(tagListWithWeight));
@@ -97,9 +100,9 @@ public class GlobalServiceImpl implements GlobalService {
         List<PostYearDto> list = postRepository.getYearList();
         List<String> yearList = list.stream().map(PostYearDto::getYear).collect(Collectors.toList());
 
-        List<KeyAndLongValueDto> postCounterList = postRepository.getPostCounterList(year);
+        List<MapDto> postCounterList = postRepository.getPostCounterList(year);
         Map<String, Long> postCounterMap = postCounterList.stream()
-                .collect(Collectors.toMap(KeyAndLongValueDto::getKey, KeyAndLongValueDto::getValue));
+                .collect(Collectors.toMap(MapDto::getKey, MapDto::getValue));
 
         return ResponseEntity.ok(new CalendarDto(yearList, postCounterMap));
     }

@@ -13,7 +13,7 @@ public abstract class AppResponse {
     /**
      * Конструктор базового ответа,<br>результат по умолчанию null
      */
-    public AppResponse() {
+    protected AppResponse() {
         result = false;
     }
 

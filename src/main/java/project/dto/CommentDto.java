@@ -1,7 +1,6 @@
 package project.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import project.dto.main.UserDto;
 import project.model.PostComment;
 
 @JsonPropertyOrder({"id", "timestamp", "text", "user"})

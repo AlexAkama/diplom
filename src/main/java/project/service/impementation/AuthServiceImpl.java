@@ -1,6 +1,6 @@
 package project.service.impementation;
 
-import project.dto.auth.*;
+import project.dto.z_auth.*;
 import project.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

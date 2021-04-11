@@ -4,12 +4,12 @@ import com.github.cage.GCage;
 import project.config.Connection;
 import project.dto.CaptchaDto;
 import project.dto.LikesDto;
-import project.dto.post.PostListDto;
+import project.dto._post.PostListDto;
 import project.dto.StatDto;
-import project.dto.auth.LoginRequest;
-import project.dto.auth.RegistrationRequest;
-import project.dto.auth.RegistrationResponse;
-import project.dto.auth.UserResponse;
+import project.dto.z_auth.LoginRequest;
+import project.dto.z_auth.RegistrationRequest;
+import project.dto.z_auth.RegistrationResponse;
+import project.dto.z_auth.UserResponse;
 import project.model.CaptchaCode;
 import project.model.User;
 import project.model.emun.PostState;
@@ -37,7 +37,7 @@ import static project.dto.Dto.resizeForCaptcha;
 /** Контроллер авторизации */
 @Controller
 @RequestMapping("/api/auth")
-public class AuthController {
+public class APIAuthController {
 
     /** Срок действия кода капчи в минутах */
     @Value("${config.captcha.timeout}")
@@ -50,7 +50,7 @@ public class AuthController {
 
 
     // CONSTRUCTORS
-    public AuthController(AuthService authService) {
+    public APIAuthController(AuthService authService) {
         this.authService = authService;
     }
 

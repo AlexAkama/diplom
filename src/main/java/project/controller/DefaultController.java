@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class DefaultController {
 
+
     @GetMapping(value = {"/"})
     public String index() {
         return "index";
