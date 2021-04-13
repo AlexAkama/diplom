@@ -1,8 +1,8 @@
 package project.exception;
 
-public class AppException extends RuntimeException {
+abstract class AppException extends RuntimeException {
 
-    private final String description;
+    protected final String description;
 
     public AppException(String description) {
         this.description = description;

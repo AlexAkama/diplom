@@ -1,6 +1,6 @@
 package project.service;
 
-public interface CaptchaService {
+public interface _CaptchaService {
 
     boolean isCodeCorrect(String code, String secret);
 }

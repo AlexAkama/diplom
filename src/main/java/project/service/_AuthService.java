@@ -1,12 +1,12 @@
 package project.service;
 
-import project.dto.z_auth.LoginRequest;
-import project.dto.z_auth.RegistrationRequest;
-import project.dto.z_auth.RegistrationResponse;
-import project.dto.z_auth.UserResponse;
+import project.dto._auth.LoginRequest;
+import project.dto._auth.RegistrationRequest;
+import project.dto._auth.RegistrationResponse;
+import project.dto._auth.UserResponse;
 import org.springframework.http.ResponseEntity;
 
-public interface AuthService {
+public interface _AuthService {
 
     ResponseEntity<UserResponse> checkUserAuthorization();
 

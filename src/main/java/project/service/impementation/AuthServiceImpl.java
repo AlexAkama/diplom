@@ -1,6 +1,6 @@
 package project.service.impementation;
 
-import project.dto.z_auth.*;
+import project.dto._auth.*;
 import project.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 import project.service.*;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl implements _AuthService {
 
-    private final UserService userService;
-    private final CaptchaService captchaService;
+    private final _UserService userService;
+    private final _CaptchaService captchaService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthServiceImpl(UserService userService,
-                           CaptchaService captchaService,
+    public AuthServiceImpl(_UserService userService,
+                           _CaptchaService captchaService,
                            AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.captchaService = captchaService;

@@ -23,7 +23,7 @@ import static project.model.emun.GlobalSettings.*;
 import static project.model.emun.GlobalSettingsValue.YES;
 
 @RestController
-public class ApiModerationController {
+public class _ModerationController {
 
     @GetMapping("/api/statistics/all")
     public ResponseEntity<Map<String, Long>> getAllStatistics() {

@@ -10,7 +10,7 @@ import project.model.Post;
 import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface _PostRepository extends JpaRepository<Post, Long> {
 
     String year = "function('DATE_FORMAT', p.time, '%Y')";
     String date = "function('DATE_FORMAT', p.time, '%Y-%m-%d')";
@@ -19,8 +19,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<PostYearDto> getYearList();
 
     @Query("SELECT " + date + " AS key, COUNT(p) AS value FROM Post p"
-            + " WHERE function('YEAR', p.time) = ?1 AND p.isActive=true AND p.moderationStatus='ACCEPTED'"
-            + " AND p.time < function('NOW')"
+            + " WHERE function('YEAR', p.time) = ?1"
+            + " AND p.isActive=true AND p.moderationStatus='ACCEPTED' AND p.time < function('NOW')"
             + " GROUP BY key ORDER BY " + date + " DESC")
     List<MapDto> getPostCounterList(int year);
 

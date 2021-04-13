@@ -2,17 +2,17 @@ package project.service.impementation;
 
 import org.springframework.stereotype.Service;
 import project.model.CaptchaCode;
-import project.repository.CaptchaRepository;
-import project.service.CaptchaService;
+import project.repository._CaptchaRepository;
+import project.service._CaptchaService;
 
 import java.util.Optional;
 
 @Service
-public class CaptchaServiceImpl implements CaptchaService {
+public class CaptchaServiceImpl implements _CaptchaService {
 
-    private final CaptchaRepository captchaRepository;
+    private final _CaptchaRepository captchaRepository;
 
-    public CaptchaServiceImpl(CaptchaRepository captchaRepository) {
+    public CaptchaServiceImpl(_CaptchaRepository captchaRepository) {
         this.captchaRepository = captchaRepository;
     }
 

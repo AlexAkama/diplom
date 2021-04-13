@@ -2,7 +2,7 @@ package project.service;
 
 import project.model.User;
 
-public interface UserService {
+public interface _UserService {
 
     User createUser(String name, String email, String password);
 

@@ -2,15 +2,13 @@ package project.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import project.model.User;
+import project.model.CaptchaCode;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface _CaptchaRepository extends JpaRepository<CaptchaCode, Long> {
 
-    Optional<User> findByEmail (String email);
-
-    boolean existsByEmail (String email);
+    Optional<CaptchaCode> findCaptchaCodeBySecretCode(String secret);
 
 }

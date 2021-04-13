@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static project.dto.Dto.baseCondition;
 
 @RestController
-public class ApiPostController {
+public class PostController {
 
     @GetMapping("/api/post")
     public ResponseEntity<PostListDto> getPostList(

@@ -3,14 +3,14 @@ package project.security;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 import project.model.User;
-import project.repository.UserRepository;
+import project.repository._UserRepository;
 
 @Service("userDetailsServiceImpl")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final _UserRepository userRepository;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
+    public UserDetailsServiceImpl(_UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

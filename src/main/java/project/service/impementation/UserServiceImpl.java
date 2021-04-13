@@ -3,15 +3,15 @@ package project.service.impementation;
 import org.springframework.stereotype.Service;
 import project.exception.UserNotFoundException;
 import project.model.User;
-import project.repository.UserRepository;
-import project.service.UserService;
+import project.repository._UserRepository;
+import project.service._UserService;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements _UserService {
 
- private final UserRepository userRepository;
+ private final _UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(_UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

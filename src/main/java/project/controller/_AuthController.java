@@ -6,14 +6,14 @@ import project.dto.CaptchaDto;
 import project.dto.LikesDto;
 import project.dto._post.PostListDto;
 import project.dto.StatDto;
-import project.dto.z_auth.LoginRequest;
-import project.dto.z_auth.RegistrationRequest;
-import project.dto.z_auth.RegistrationResponse;
-import project.dto.z_auth.UserResponse;
+import project.dto._auth.LoginRequest;
+import project.dto._auth.RegistrationRequest;
+import project.dto._auth.RegistrationResponse;
+import project.dto._auth.UserResponse;
 import project.model.CaptchaCode;
 import project.model.User;
 import project.model.emun.PostState;
-import project.service.AuthService;
+import project.service._AuthService;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +37,7 @@ import static project.dto.Dto.resizeForCaptcha;
 /** Контроллер авторизации */
 @Controller
 @RequestMapping("/api/auth")
-public class APIAuthController {
+public class _AuthController {
 
     /** Срок действия кода капчи в минутах */
     @Value("${config.captcha.timeout}")
@@ -46,11 +46,11 @@ public class APIAuthController {
     /**
      * Сервис авторизации
      */
-    private final AuthService authService;
+    private final _AuthService authService;
 
 
     // CONSTRUCTORS
-    public APIAuthController(AuthService authService) {
+    public _AuthController(_AuthService authService) {
         this.authService = authService;
     }
 
