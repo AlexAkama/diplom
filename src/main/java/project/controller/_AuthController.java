@@ -1,19 +1,6 @@
 package project.controller;
 
 import com.github.cage.GCage;
-import project.config.Connection;
-import project.dto.CaptchaDto;
-import project.dto.LikesDto;
-import project.dto._post.PostListDto;
-import project.dto.StatDto;
-import project.dto._auth.LoginRequest;
-import project.dto._auth.RegistrationRequest;
-import project.dto._auth.RegistrationResponse;
-import project.dto._auth.UserResponse;
-import project.model.CaptchaCode;
-import project.model.User;
-import project.model.emun.PostState;
-import project.service._AuthService;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,15 +8,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import project.config.Connection;
+import project.dto.*;
+import project.dto._auth.*;
+import project.dto._post.PostListDto;
+import project.model.CaptchaCode;
+import project.model.User;
+import project.model.emun.PostState;
+import project.repository.VoteRepository;
+import project.service._AuthService;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static project.dto.Dto.randomString;
 import static project.dto.Dto.resizeForCaptcha;
@@ -38,6 +31,9 @@ import static project.dto.Dto.resizeForCaptcha;
 @Controller
 @RequestMapping("/api/auth")
 public class _AuthController {
+
+    private final VoteRepository voteRepository;
+
 
     /** Срок действия кода капчи в минутах */
     @Value("${config.captcha.timeout}")
@@ -50,7 +46,8 @@ public class _AuthController {
 
 
     // CONSTRUCTORS
-    public _AuthController(_AuthService authService) {
+    public _AuthController(VoteRepository voteRepository, _AuthService authService) {
+        this.voteRepository = voteRepository;
         this.authService = authService;
     }
 
@@ -144,11 +141,11 @@ public class _AuthController {
         int id = user.getId();
 
         StatDto statDto = new StatDto().getUserResult(id);
-        LikesDto likesDto = new LikesDto().getUserResult(id);
+        VoteCounterDto voteCounterDto = voteRepository.getUserResult(id);
 
         statistics.put("postsCount", statDto.getPostsCount());
-        statistics.put("likesCount", likesDto.getLikeCount());
-        statistics.put("dislikesCount", likesDto.getDislikeCount());
+        statistics.put("likesCount", voteCounterDto.getLikeCounter());
+        statistics.put("dislikesCount", voteCounterDto.getDislikeCounter());
         statistics.put("viewsCount", statDto.getViewsCount());
         statistics.put("firstPublication", statDto.getFirstPublication());
 

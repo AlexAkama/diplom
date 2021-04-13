@@ -55,9 +55,9 @@ public class PostDto {
         }
         viewCount = post.getViewCount();
 
-        LikesDto likesDto = new LikesDto().getPostResult(id);
-        likeCount = likesDto.getLikeCount();
-        dislikeCount = likesDto.getDislikeCount();
+        VoteCounterDto voteCounterDto = new VoteCounterDto().getPostResult(id);
+        likeCount = voteCounterDto.getLikeCounter();
+        dislikeCount = voteCounterDto.getDislikeCounter();
 
         return this;
     }

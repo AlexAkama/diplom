@@ -2,7 +2,7 @@ package project.controller;
 
 import project.config.Connection;
 import project.dto.global.GlobalSettingsDto;
-import project.dto.LikesDto;
+import project.dto.VoteCounterDto;
 import project.dto.StatDto;
 import project.model.GlobalSetting;
 import project.model.User;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import project.repository.VoteRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,12 @@ import static project.model.emun.GlobalSettingsValue.YES;
 
 @RestController
 public class _ModerationController {
+
+    private final VoteRepository voteRepository;
+
+    public _ModerationController(VoteRepository voteRepository) {
+        this.voteRepository = voteRepository;
+    }
 
     @GetMapping("/api/statistics/all")
     public ResponseEntity<Map<String, Long>> getAllStatistics() {
@@ -47,11 +54,11 @@ public class _ModerationController {
         if (user.isModerator() || global) {
 
             StatDto statDto = new StatDto().getBlogResult();
-            LikesDto likesDto = new LikesDto().getBlogResult();
+            VoteCounterDto voteCounterDto = voteRepository.getBlogResult();
 
             statistics.put("postsCount", statDto.getPostsCount());
-            statistics.put("likesCount", likesDto.getLikeCount());
-            statistics.put("dislikesCount", likesDto.getDislikeCount());
+            statistics.put("likesCount", voteCounterDto.getLikeCounter());
+            statistics.put("dislikesCount", voteCounterDto.getDislikeCounter());
             statistics.put("viewsCount", statDto.getViewsCount());
             statistics.put("firstPublication", statDto.getFirstPublication());
 
