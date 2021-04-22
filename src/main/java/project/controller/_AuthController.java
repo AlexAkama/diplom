@@ -14,6 +14,7 @@ import project.dto._auth.*;
 import project.model.CaptchaCode;
 import project.model.User;
 import project.repository.VoteRepository;
+import project.service.AppService;
 import project.service._AuthService;
 
 import javax.imageio.ImageIO;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static project.dto.Dto.randomString;
 import static project.dto.Dto.resizeForCaptcha;
 
 /** Контроллер авторизации */
@@ -30,25 +30,22 @@ import static project.dto.Dto.resizeForCaptcha;
 @RequestMapping("/api/auth")
 public class _AuthController {
 
-    private final VoteRepository voteRepository;
-
-
     /** Срок действия кода капчи в минутах */
     @Value("${config.captcha.timeout}")
     private int captchaTimeout;
 
-    /**
-     * Сервис авторизации
-     */
+    private final VoteRepository voteRepository;
     private final _AuthService authService;
-
+    private final AppService appService;
 
     // CONSTRUCTORS
-    public _AuthController(VoteRepository voteRepository, _AuthService authService) {
+    public _AuthController(VoteRepository voteRepository,
+                           _AuthService authService,
+                           AppService appService) {
         this.voteRepository = voteRepository;
         this.authService = authService;
+        this.appService = appService;
     }
-
 
     // MAPPING
 
@@ -72,7 +69,7 @@ public class _AuthController {
     public ResponseEntity<CaptchaDto> getCaptcha() throws IOException {
 
         GCage gCage = new GCage();
-        String token = randomString(5);
+        String token = appService.randomString(5);
         String image = "data:image/" + gCage.getFormat() + ";base64,";
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(
@@ -81,13 +78,13 @@ public class _AuthController {
                 outputStream);
         image += Base64.getEncoder().encodeToString(outputStream.toByteArray());
 
-        String secret = randomString(25);
+        String secret = appService.randomString(25);
         CaptchaCode captchaCode = new CaptchaCode(new Date(), token, secret);
 
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
-            Timestamp limit = new Timestamp(System.currentTimeMillis() - (long) captchaTimeout * 60 * 1000);
+            Timestamp limit = new Timestamp(System.currentTimeMillis() - appService.minuteToMillis(captchaTimeout));
             String hql = "delete from CaptchaCode where time < :limit";
             session.createQuery(hql).setParameter("limit", limit).executeUpdate();
 
