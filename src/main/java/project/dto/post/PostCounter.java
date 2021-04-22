@@ -1,4 +1,4 @@
-package project.dto._post;
+package project.dto.post;
 
 public interface PostCounter {
 

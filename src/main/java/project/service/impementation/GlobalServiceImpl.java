@@ -2,7 +2,7 @@ package project.service.impementation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import project.dto._post.PostYearDto;
+import project.dto.post.PostYearDto;
 import project.dto.global.*;
 import project.model.ConfigParameter;
 import project.model.GlobalSetting;
@@ -27,12 +27,12 @@ public class GlobalServiceImpl implements GlobalService {
     private final ConfigParameterRepository configParameterRepository;
     private final GlobalSettingRepository globalSettingRepository;
     private final _TagToPostRepository tagToPostRepository;
-    private final _PostRepository postRepository;
+    private final PostRepository postRepository;
 
     public GlobalServiceImpl(ConfigParameterRepository configParameterRepository,
                              GlobalSettingRepository globalSettingRepository,
                              _TagToPostRepository tagToPostRepository,
-                             _PostRepository postRepository) {
+                             PostRepository postRepository) {
         this.configParameterRepository = configParameterRepository;
         this.globalSettingRepository = globalSettingRepository;
         this.tagToPostRepository = tagToPostRepository;
