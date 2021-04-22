@@ -20,9 +20,6 @@ public class Dto {
         return new java.sql.Timestamp(date.getTime()).toString();
     }
 
-    public static long dateToTimestamp(Date date) {
-        return date.getTime() / 1000;
-    }
 
     public static String randomString(int length) {
         char[] chars = "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx1234567890".toCharArray();
