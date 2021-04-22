@@ -3,166 +3,116 @@ package project.dto._post;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import project.dto.*;
-import project.dto.UserDto;
 import project.model.Post;
+import project.model.emun.PostDtoStatus;
 
 import java.util.List;
+
+import static project.model.emun.PostDtoStatus.*;
 
 @JsonPropertyOrder({"id", "timestamp", "active", "user", "title", "announce", "text",
         "likeCount", "dislikeCount", "commentCount", "viewCount", "comments", "tags"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostDto {
-    private int id;
-    private long timestamp;
-    private boolean active;
-    private UserDto user;
-    private String title;
-    private String announce;
-    private String text;
-    private long likeCount;
-    private long dislikeCount;
-    private int commentCount;
-    private int viewCount;
-    private List<CommentDto> comments;
-    private List<String> tags;
 
-    public PostDto make(Post post) {
-        return makeDto(post, false);
-    }
+    private final long id;
+    private final long timestamp;
+    private final Boolean active;
+    private final UserDto user;
+    private final String title;
+    private final String announce;
+    private final String text;
+    private final long likeCounter;
+    private final long dislikeCounter;
+    private final Integer commentCounter;
+    private final int viewCounter;
+    private final List<CommentDto> commentList;
+    private final List<String> tagList;
 
-    public PostDto makeAnnounce(Post post) {
-        return makeDto(post, true);
-    }
 
-    private PostDto makeDto(Post post, boolean isAnnounce) {
+
+    private PostDto(Post post, VoteCounterDto voteCounterDto, PostDtoStatus status) {
         id = post.getId();
         timestamp = Dto.dateToTimestamp(post.getTime());
         user = new UserDto(
                 post.getUser().getId(),
                 post.getUser().getName());
         title = post.getTitle();
-        if (isAnnounce) {
+        if (status == ANNOUNCE) {
+            active = null;
             announce = post.getText()
                     .substring(0, Math.min(post.getText().length(), 100))
                     .replaceAll("<[^>]*>", "") + "...";
+            text = null;
+            tagList = null;
+            commentList = null;
+            commentCounter = null;
         } else {
             active = post.isActive();
-            System.out.println(">>>" + active);
+            announce = null;
             text = post.getText();
-            tags = Dto.getTagsList(id);
-            comments = Dto.getCommentsList(id);
-            commentCount = comments.size();
+            tagList = Dto.getTagsList(id);
+            commentList = Dto.getCommentsList(id);
+            commentCounter = commentList.size();
         }
-        viewCount = post.getViewCount();
+        viewCounter = post.getViewCount();
 
-        VoteCounterDto voteCounterDto = new VoteCounterDto().getPostResult(id);
-        likeCount = voteCounterDto.getLikeCounter();
-        dislikeCount = voteCounterDto.getDislikeCounter();
+//        VoteCounterDto voteCounterDto = new VoteCounterDto().getPostResult(id);
+        likeCounter = voteCounterDto.getLikeCounter();
+        dislikeCounter = voteCounterDto.getDislikeCounter();
 
-        return this;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
     public boolean isActive() {
         return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public UserDto getUser() {
         return user;
     }
 
-    public void setUser(UserDto user) {
-        this.user = user;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getAnnounce() {
         return announce;
     }
 
-    public void setAnnounce(String announce) {
-        this.announce = announce;
-    }
-
     public String getText() {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public long getLikeCounter() {
+        return likeCounter;
     }
 
-    public long getLikeCount() {
-        return likeCount;
+    public long getDislikeCounter() {
+        return dislikeCounter;
     }
 
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+    public int getCommentCounter() {
+        return commentCounter;
     }
 
-    public long getDislikeCount() {
-        return dislikeCount;
+    public int getViewCounter() {
+        return viewCounter;
     }
 
-    public void setDislikeCount(int dislikeCount) {
-        this.dislikeCount = dislikeCount;
+    public List<CommentDto> getCommentList() {
+        return commentList;
     }
 
-    public int getCommentCount() {
-        return commentCount;
+    public List<String> getTagList() {
+        return tagList;
     }
 
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
-    }
-
-    public int getViewCount() {
-        return viewCount;
-    }
-
-    public void setViewCount(int viewCount) {
-        this.viewCount = viewCount;
-    }
-
-    public List<CommentDto> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<CommentDto> comments) {
-        this.comments = comments;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
 }

@@ -34,7 +34,7 @@ public class Dto {
         return stringBuilder.toString();
     }
 
-    public static List<String> getTagsList(int postId) {
+    public static List<String> getTagsList(long postId) {
         List<String> tags;
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
@@ -49,7 +49,7 @@ public class Dto {
         return tags;
     }
 
-    public static List<CommentDto> getCommentsList(int postId) {
+    public static List<CommentDto> getCommentsList(long postId) {
         List<CommentDto> comments = new ArrayList<>();
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();

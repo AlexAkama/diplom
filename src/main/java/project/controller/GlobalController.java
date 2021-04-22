@@ -9,6 +9,7 @@ import project.service.GlobalService;
  * <h2>Контроллер обработки информационных запросов блога</h2>
  */
 @RestController
+@RequestMapping("/api")
 public class GlobalController {
 
     private final GlobalService globalService;
@@ -22,7 +23,7 @@ public class GlobalController {
      *
      * @return объект с {@link PersonalInfoDto персональными данными}
      */
-    @GetMapping("/api/init")
+    @GetMapping("/init")
     public ResponseEntity<PersonalInfoDto> getPersonalInformation() {
         return globalService.getPersonalInfo();
     }
@@ -32,7 +33,7 @@ public class GlobalController {
      *
      * @return объект с {@link GlobalSettingsDto глобальными настройками}
      */
-    @GetMapping("/api/settings")
+    @GetMapping("/settings")
     public ResponseEntity<GlobalSettingsDto> getSettings() {
         return globalService.getGlobalSettings();
     }
@@ -42,7 +43,7 @@ public class GlobalController {
      * @param query значение для поска тега
      * @return объекта со {@link TagListDto списком тегов}
      */
-    @GetMapping("/api/tag")
+    @GetMapping("/tag")
     public ResponseEntity<TagListDto> getTags(@RequestParam(value = "query", required = false) String query) {
         return globalService.getTagList();
     }
@@ -52,7 +53,7 @@ public class GlobalController {
      * @param year год поиска публикация
      * @return объект с {@link CalendarDto данными кол-ва публикаций за год}
      */
-    @GetMapping("/api/calendar")
+    @GetMapping("/calendar")
     public ResponseEntity<CalendarDto> getCalendar(@RequestParam(value = "year", defaultValue = "2021") int year) {
         return globalService.getCalendar(year);
     }
