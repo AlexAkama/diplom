@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import project.config.Connection;
 import project.dto.*;
 import project.dto._auth.*;
-import project.dto._post.PostListDto;
 import project.model.CaptchaCode;
 import project.model.User;
-import project.model.emun.PostState;
 import project.repository.VoteRepository;
 import project.service._AuthService;
 
@@ -152,39 +150,6 @@ public class _AuthController {
         return new ResponseEntity<>(statistics, HttpStatus.OK);
     }
 
-    @GetMapping("/api/post/my")
-    public ResponseEntity<PostListDto> getMy(
-            @RequestParam("offset") int offset,
-            @RequestParam("limit") int limit,
-            @RequestParam("status") String status
-    ) {
 
-        //FIXME --- ИМИТАЦИЯ АВТОРИЗАЦИИ ---
-        int id = 10;
-        String byId = "p.user.id= " + id + " and ";
-
-        String condition = "";
-        //ASK Надо ли тут обрабаатывать возможную ошибку? вдруг фронт пришлет какуюто хрень в status?
-        // http://127.0.0.1:8080/api/post/my?offset=0&limit=10&status=inactive
-        PostState postState = PostState.valueOf(status.toUpperCase());
-        switch (postState) {
-            case PENDING:
-                condition = "p.isActive=1 and p.moderationStatus='NEW'";
-                break;
-            case DECLINED:
-                condition = "p.isActive=1 and p.moderationStatus='DECLINED'";
-                break;
-            case PUBLISHED:
-                condition = "p.isActive=1 and p.moderationStatus='ACCEPTED'";
-                break;
-            case INACTIVE:
-                condition = " p.isActive=0";
-                break;
-        }
-
-        return new ResponseEntity<>(
-                new PostListDto().makeAnnounces(byId + condition, offset, limit),
-                HttpStatus.OK);
-    }
 
 }
