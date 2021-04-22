@@ -12,11 +12,11 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(name = "is_active", nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private boolean isActive;
+    private boolean active;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "moderation_status", length = 8, columnDefinition = "varchar(8) default 'NEW'", nullable = false)
@@ -43,7 +43,7 @@ public class Post {
     public Post() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -52,11 +52,11 @@ public class Post {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public ModerationStatus getModerationStatus() {
