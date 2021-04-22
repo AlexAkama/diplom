@@ -1,7 +1,5 @@
 package project.config;
 
-import java.util.Date;
-
 public class AppConstant {
 
     /**
@@ -11,17 +9,13 @@ public class AppConstant {
      * <tr><td><b>p.time < NOW()</b></td><td>- пост должен иметь времея публикации до текущего момента</td></tr>
      */
     public static final
-    String HQL_BASIC_SEARCH_CONDITION = "p.active=true AND p.moderationStatus='ACCEPTED' AND p.time<function('NOW')";
+    String HQL_BASIC_SEARCH_CONDITION = "p.active = true AND p.moderationStatus = 'ACCEPTED' AND p.time < function('NOW')";
 
     /**
      * <h3>Константы приложения</h3>
      * {@link AppConstant#HQL_BASIC_SEARCH_CONDITION Базовое условие поиска}
      */
     private AppConstant() {
-    }
-
-    public static long dateToTimestamp(Date date) {
-        return date.getTime() / 1000;
     }
 
 }

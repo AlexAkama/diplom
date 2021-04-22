@@ -1,7 +1,6 @@
 package project.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import project.config.AppConstant;
 import project.model.PostComment;
 
 @JsonPropertyOrder({"id", "timestamp", "text", "user"})
@@ -13,7 +12,7 @@ public class CommentDto {
 
     public CommentDto createFrom(PostComment comment) {
         id = comment.getId();
-        timestamp = AppConstant.dateToTimestamp(comment.getTime());
+//        timestamp = AppConstant.dateToTimestamp(comment.getTime());
         text = comment.getText();
         user = new UserDto(
                 comment.getUser().getId(),
