@@ -26,7 +26,9 @@ public class PostDto {
     private long commentCounter;
     @JsonProperty("viewCount")
     private long viewCounter;
+    @JsonProperty("comments")
     private List<CommentDto> commentList;
+    @JsonProperty("tags")
     private List<String> tagList;
 
 

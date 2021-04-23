@@ -11,8 +11,7 @@ import project.dto.post.PostListDto;
 import project.exception.DocumentNotFoundException;
 import project.model.Post;
 import project.model.emun.*;
-import project.repository.PostCommentRepository;
-import project.repository.PostRepository;
+import project.repository.*;
 import project.service.PostService;
 
 import java.util.*;
@@ -25,11 +24,14 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final PostCommentRepository postCommentRepository;
+    private final TagToPostRepository tagToPostRepository;
 
     public PostServiceImpl(PostRepository postRepository,
-                           PostCommentRepository postCommentRepository) {
+                           PostCommentRepository postCommentRepository,
+                           TagToPostRepository tagToPostRepository) {
         this.postRepository = postRepository;
         this.postCommentRepository = postCommentRepository;
+        this.tagToPostRepository = tagToPostRepository;
     }
 
     @Override
@@ -99,7 +101,7 @@ public class PostServiceImpl implements PostService {
         } else {
             postDto.setActive(post.isActive());
             postDto.setText(post.getText());
-            postDto.setTagList(getTagsList(post.getId()));
+            postDto.setTagList(tagToPostRepository.getTagList(post.getId()));
             List<CommentDto> comments = postCommentRepository.findAllByPost(post)
                     .stream()
                     .map(CommentDto::new)
@@ -112,22 +114,6 @@ public class PostServiceImpl implements PostService {
         postDto.setDislikeCounter(post.getDislikeCounter());
 
         return postDto;
-    }
-
-    //TODO переделать на репозиторий
-    private List<String> getTagsList(long postId) {
-        List<String> tags = new ArrayList<>();
-//        try (Session session = Connection.getSession()) {
-//            Transaction transaction = session.beginTransaction();
-//
-//            String hql = "select t.name from TagToPost tp"
-//                    + " join Tag t on tp.tag.id = t.id"
-//                    + " where tp.post.id=:id";
-//            tags = session.createQuery(hql).setParameter("id", postId).getResultList();
-//
-//            transaction.commit();
-//        }
-        return tags;
     }
 
 }

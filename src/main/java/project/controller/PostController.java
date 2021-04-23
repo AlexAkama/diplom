@@ -28,27 +28,6 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable int id) {
         return postService.getPost(id);
-//        //FIXME переделать HQL
-//        String hql = "from Post p"
-//                + " where " + baseCondition
-//                + " and p.id = " + id;
-//
-//        Post post;
-//        try (Session session = Connection.getSession()) {
-//            Transaction transaction = session.beginTransaction();
-//
-//            post = (Post) session.createQuery(hql).uniqueResult();
-//
-//            transaction.commit();
-//        }
-//
-//        if (post == null) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//
-//        return new ResponseEntity<>(
-//                new PostDto().make(post),
-//                HttpStatus.OK);
     }
 
 //    @GetMapping("/search")

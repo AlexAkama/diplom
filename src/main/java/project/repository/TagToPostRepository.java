@@ -17,6 +17,7 @@ public interface TagToPostRepository extends JpaRepository<TagToPost, Long> {
             + " group by tp.tag_id")
     List<MapDto> getTagCounterList();
 
-
+    @Query("SELECT t.name FROM TagToPost tp JOIN Tag t ON tp.tag.id = t.id WHERE tp.post.id = ?1")
+    List<String> getTagList(long postId);
 
 }
