@@ -26,12 +26,12 @@ public class GlobalServiceImpl implements GlobalService {
 
     private final ConfigParameterRepository configParameterRepository;
     private final GlobalSettingRepository globalSettingRepository;
-    private final _TagToPostRepository tagToPostRepository;
+    private final TagToPostRepository tagToPostRepository;
     private final PostRepository postRepository;
 
     public GlobalServiceImpl(ConfigParameterRepository configParameterRepository,
                              GlobalSettingRepository globalSettingRepository,
-                             _TagToPostRepository tagToPostRepository,
+                             TagToPostRepository tagToPostRepository,
                              PostRepository postRepository) {
         this.configParameterRepository = configParameterRepository;
         this.globalSettingRepository = globalSettingRepository;

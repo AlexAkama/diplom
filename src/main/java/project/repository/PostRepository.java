@@ -25,7 +25,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT " + date + " AS key, COUNT(p) AS value FROM Post p"
             + " WHERE function('YEAR', p.time) = ?1"
-//            + " AND p.isActive =true AND p.moderationStatus='ACCEPTED' AND p.time < function('NOW')"
             + " AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION
             + " GROUP BY key ORDER BY " + date + " DESC")
     List<MapDto> getPostCounterList(int year);
