@@ -25,7 +25,7 @@ public class PostDto {
     @JsonProperty("commentCount")
     private Integer commentCounter;
     @JsonProperty("viewCount")
-    private int viewCounter;
+    private long viewCounter;
     private List<CommentDto> commentList;
     private List<String> tagList;
 
@@ -110,11 +110,11 @@ public class PostDto {
         this.commentCounter = commentCounter;
     }
 
-    public int getViewCounter() {
+    public long getViewCounter() {
         return viewCounter;
     }
 
-    public void setViewCounter(int viewCounter) {
+    public void setViewCounter(long viewCounter) {
         this.viewCounter = viewCounter;
     }
 

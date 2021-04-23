@@ -9,7 +9,7 @@ public class PostComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @OneToOne
     private PostComment parent;
@@ -29,7 +29,7 @@ public class PostComment {
     public PostComment() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
