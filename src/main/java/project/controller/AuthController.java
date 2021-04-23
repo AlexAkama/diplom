@@ -3,8 +3,11 @@ package project.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import project.dto.CaptchaDto;
-import project.dto.auth.*;
+import project.dto.auth.login.LoginRequest;
+import project.dto.auth.registration.CaptchaDto;
+import project.dto.auth.registration.RegistrationRequest;
+import project.dto.auth.registration.RegistrationResponse;
+import project.dto.auth.user.AuthUserResponse;
 import project.service.CaptchaService;
 import project.service._AuthService;
 
@@ -27,10 +30,10 @@ public class AuthController {
     /**
      * Метод возвращает давнные о пользователе, если он авторизован
      *
-     * @return {@link UserResponse}
+     * @return {@link AuthUserResponse}
      */
     @GetMapping("/check")
-    public ResponseEntity<UserResponse> checkUserAuthorization() {
+    public ResponseEntity<AuthUserResponse> checkUserAuthorization() {
         return authService.checkUserAuthorization();
     }
 
@@ -43,32 +46,6 @@ public class AuthController {
     @GetMapping("/captcha")
     public ResponseEntity<CaptchaDto> getCaptcha() throws IOException {
         return captchaService.getCaptcha();
-//        GCage gCage = new GCage();
-//        String token = appService.randomString(5);
-//        String image = "data:image/" + gCage.getFormat() + ";base64,";
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        ImageIO.write(
-//                resizeForCaptcha(gCage.drawImage(token)),
-//                gCage.getFormat(),
-//                outputStream);
-//        image += Base64.getEncoder().encodeToString(outputStream.toByteArray());
-//
-//        String secret = appService.randomString(25);
-//        CaptchaCode captchaCode = new CaptchaCode(new Date(), token, secret);
-//
-//        try (Session session = Connection.getSession()) {
-//            Transaction transaction = session.beginTransaction();
-//
-//            Timestamp limit = new Timestamp(System.currentTimeMillis() - AppConstant.minuteToMillis(captchaTimeout));
-//            String hql = "delete from CaptchaCode where time < :limit";
-//            session.createQuery(hql).setParameter("limit", limit).executeUpdate();
-//
-//            session.save(captchaCode);
-//
-//            transaction.commit();
-//        }
-//
-//        return new ResponseEntity<>(new CaptchaDto(secret, image), HttpStatus.OK);
     }
 
     /**
@@ -89,10 +66,10 @@ public class AuthController {
      * Метод возвращает данные полязователя если данные для входа верны
      *
      * @param request {@link LoginRequest}
-     * @return {@link UserResponse}
+     * @return {@link AuthUserResponse}
      */
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(
+    public ResponseEntity<AuthUserResponse> login(
             @RequestBody LoginRequest request
     ) {
         return authService.login(request);

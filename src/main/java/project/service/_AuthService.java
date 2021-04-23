@@ -1,16 +1,16 @@
 package project.service;
 
-import project.dto.auth.LoginRequest;
-import project.dto.auth.RegistrationRequest;
-import project.dto.auth.RegistrationResponse;
-import project.dto.auth.UserResponse;
+import project.dto.auth.login.LoginRequest;
+import project.dto.auth.registration.RegistrationRequest;
+import project.dto.auth.registration.RegistrationResponse;
+import project.dto.auth.user.AuthUserResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface _AuthService {
 
-    ResponseEntity<UserResponse> checkUserAuthorization();
+    ResponseEntity<AuthUserResponse> checkUserAuthorization();
 
-    ResponseEntity<UserResponse> login(LoginRequest request);
+    ResponseEntity<AuthUserResponse> login(LoginRequest request);
 
     ResponseEntity<RegistrationResponse> registration(RegistrationRequest request);
 }

@@ -1,6 +1,8 @@
 package project.service.impementation;
 
-import project.dto.auth.*;
+import project.dto.auth.login.LoginRequest;
+import project.dto.auth.registration.*;
+import project.dto.auth.user.AuthUserResponse;
 import project.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,13 +28,13 @@ public class AuthServiceImpl implements _AuthService {
     }
 
     @Override
-    public ResponseEntity<UserResponse> checkUserAuthorization() {
-        UserResponse response = new UserResponse();
+    public ResponseEntity<AuthUserResponse> checkUserAuthorization() {
+        AuthUserResponse response = new AuthUserResponse();
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<UserResponse> login(LoginRequest request) {
+    public ResponseEntity<AuthUserResponse> login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -40,7 +42,7 @@ public class AuthServiceImpl implements _AuthService {
                 ));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = userService.findByEmail(request.getEmail());
-        return ResponseEntity.ok(new UserResponse(user));
+        return ResponseEntity.ok(new AuthUserResponse(user));
     }
 
     @Override

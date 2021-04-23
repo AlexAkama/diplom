@@ -1,4 +1,4 @@
-package project.dto;
+package project.dto.auth.registration;
 
 public class CaptchaDto {
     private String secret;

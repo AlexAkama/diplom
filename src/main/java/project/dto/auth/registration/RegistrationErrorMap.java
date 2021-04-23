@@ -1,4 +1,4 @@
-package project.dto.auth;
+package project.dto.auth.registration;
 
 import java.util.HashMap;
 import java.util.Map;

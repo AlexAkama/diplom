@@ -1,4 +1,4 @@
-package project.dto.auth;
+package project.dto.auth.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -19,14 +19,12 @@ public class LoginRequest {
     private String password;
 
 
-    // CONSTRUCTORS
     public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
 
-    // GETTERS & SETTERS
     public String getEmail() {
         return email;
     }

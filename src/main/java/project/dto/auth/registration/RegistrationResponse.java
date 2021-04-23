@@ -1,4 +1,4 @@
-package project.dto.auth;
+package project.dto.auth.registration;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import project.dto.main.AppResponse;
@@ -22,7 +22,6 @@ public class RegistrationResponse extends AppResponse {
     private Map<String, String> errors;
 
 
-    // CONSTRUCTORS
     public RegistrationResponse() {
         this.setResult(true);
     }
@@ -31,8 +30,6 @@ public class RegistrationResponse extends AppResponse {
         this.setErrors(errors);
     }
 
-
-    // GETTERS & SETTERS
 
     public Map<String, String> getErrors() {
         return errors;

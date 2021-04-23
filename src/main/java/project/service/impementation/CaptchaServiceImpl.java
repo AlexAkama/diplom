@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.config.AppConstant;
-import project.dto.CaptchaDto;
+import project.dto.auth.registration.CaptchaDto;
 import project.model.CaptchaCode;
 import project.repository.CaptchaRepository;
 import project.service.CaptchaService;

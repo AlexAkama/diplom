@@ -1,7 +1,7 @@
 package project.service;
 
 import org.springframework.http.ResponseEntity;
-import project.dto.CaptchaDto;
+import project.dto.auth.registration.CaptchaDto;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
