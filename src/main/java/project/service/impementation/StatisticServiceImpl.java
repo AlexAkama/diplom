@@ -29,8 +29,13 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public ResponseEntity<StatisticDto> getAllStatistic() {
+        Optional<GlobalSetting> optionalPublicStatistic =
+                globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
+        boolean statisticIsPublic =
+                optionalPublicStatistic.isPresent() && optionalPublicStatistic.get().getValue() == YES;
+
         StatisticDto response;
-        if (checkUser()) {
+        if (statisticIsPublic || checkModerator()) {
             response = postService.getAllStatistic();
         } else throw new UnauthorizedException("Требуется авторизация");
         return ResponseEntity.ok(response);
@@ -39,25 +44,23 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public ResponseEntity<StatisticDto> getUserStatistic() {
         StatisticDto response;
-        if (checkUser()) {
+        User user = checkUser();
+        if (user != null) {
             //FIXME Тут нужен видимо id текущего пользователя
-            long userId = 10;
-            response = postService.getUserStatistic(userId);
+            response = postService.getUserStatistic(user.getId());
         } else throw new UnauthorizedException("Требуется авторизация");
         return ResponseEntity.ok(response);
     }
 
-    private boolean checkUser() {
-        Optional<GlobalSetting> optionalPublicStatistic =
-                globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
-        boolean statisticIsPublic =
-                optionalPublicStatistic.isPresent() && optionalPublicStatistic.get().getValue() == YES;
-
+    private User checkUser() {
         //FIXME Тут нужен текущий пользователь, причем модератор
         User user = new User();
         user.setModerator(true);
+        return user;
+    }
 
-        return statisticIsPublic || user.isModerator();
+    private boolean checkModerator() {
+        return checkUser().isModerator();
     }
 
 }
