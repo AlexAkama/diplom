@@ -1,7 +1,7 @@
 package project.model;
 
-import project.model.emun.ModerationStatus;
 import org.hibernate.annotations.Type;
+import project.model.emun.ModerationStatus;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -38,7 +38,17 @@ public class Post {
     private String text;
 
     @Column(name = "view_count", nullable = false)
-    private int viewCount;
+    private long viewCounter;
+
+    @Column(name = "like")
+    private long likeCounter;
+
+    @Column(name = "dislike")
+    private long dislikeCounter;
+
+    @Column(name = "comment")
+    private long commentCounter;
+
 
     public Post() {
     }
@@ -47,7 +57,7 @@ public class Post {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -107,11 +117,36 @@ public class Post {
         this.text = text;
     }
 
-    public int getViewCount() {
-        return viewCount;
+    public long getViewCounter() {
+        return viewCounter;
     }
 
-    public void setViewCount(int viewCount) {
-        this.viewCount = viewCount;
+    public void setViewCounter(long viewCount) {
+        this.viewCounter = viewCount;
     }
+
+    public long getLikeCounter() {
+        return likeCounter;
+    }
+
+    public void setLikeCounter(long likeCounter) {
+        this.likeCounter = likeCounter;
+    }
+
+    public long getDislikeCounter() {
+        return dislikeCounter;
+    }
+
+    public void setDislikeCounter(long dislikeCounter) {
+        this.dislikeCounter = dislikeCounter;
+    }
+
+    public long getCommentCounter() {
+        return commentCounter;
+    }
+
+    public void setCommentCounter(long commentCounter) {
+        this.commentCounter = commentCounter;
+    }
+
 }

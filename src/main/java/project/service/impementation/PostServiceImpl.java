@@ -5,16 +5,15 @@ import org.hibernate.Transaction;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import project.config.AppConstant;
 import project.config.Connection;
-import project.dto.*;
+import project.dto.CommentDto;
+import project.dto.UserDto;
 import project.dto.post.PostDto;
 import project.dto.post.PostListDto;
 import project.model.Post;
-import project.model.PostComment;
 import project.model.emun.*;
-import project.repository.PostRepository;
-import project.repository.VoteRepository;
-import project.service.AppService;
+import project.repository.*;
 import project.service.PostService;
 
 import java.util.*;
@@ -27,14 +26,14 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final VoteRepository voteRepository;
-    private final AppService appService;
+    private final PostCommentRepository postCommentRepository;
 
     public PostServiceImpl(PostRepository postRepository,
                            VoteRepository voteRepository,
-                           AppService appService) {
+                           PostCommentRepository postCommentRepository) {
         this.postRepository = postRepository;
         this.voteRepository = voteRepository;
-        this.appService = appService;
+        this.postCommentRepository = postCommentRepository;
     }
 
 //    public PostDto make(Post post) {
@@ -119,14 +118,30 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode) {
         PostViewMode postMode = PostViewMode.valueOf(mode.toUpperCase());
-        int page = offset / limit;
-        Pageable pageable = PageRequest.of(page, limit, Sort.Direction.DESC, "time");
-        Page<Post> postPage = findAllWithBaseConditional(pageable);
-        List<Post> postList = postPage.getContent();
-        List<PostDto> postDtoList = postList.stream()
+        int pageNumber = offset / limit;
+        Sort sort;
+        if (postMode == PostViewMode.EARLY) {
+            sort = Sort.by(Sort.Direction.ASC, "comments.size()");
+        } else {
+            sort = Sort.by(Sort.Direction.DESC, "time");
+        }
+        Pageable pageable = PageRequest.of(pageNumber, limit, sort);
+        Page<Post> page = findAllWithBaseConditional(pageable);
+        List<PostDto> list = page.getContent().stream()
                 .map(this::createAnnounce)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(new PostListDto(postPage.getTotalElements(), postDtoList));
+        switch (postMode) {
+            case POPULAR:
+                list.sort(Comparator.comparing(PostDto::getCommentCounter));
+                break;
+            case BEST:
+                list.sort(Comparator.comparing(PostDto::getLikeCounter)
+                        .thenComparing((o1, o2) -> Long.compare(o2.getDislikeCounter(), o1.getDislikeCounter()))
+                        .reversed());
+                break;
+
+        }
+        return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
     }
 
     private Page<Post> findAllWithBaseConditional(Pageable pageable) {
@@ -143,11 +158,9 @@ public class PostServiceImpl implements PostService {
     }
 
     private PostDto createPostDto(Post post, PostDtoStatus status) {
-        VoteCounterDto voteCounterDto = voteRepository.getPostResult(post.getId());
-
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
-        postDto.setTimestamp(appService.dateToTimestamp(post.getTime()));
+        postDto.setTimestamp(AppConstant.dateToTimestamp(post.getTime()));
         postDto.setUser(new UserDto(
                 post.getUser().getId(),
                 post.getUser().getName()));
@@ -156,21 +169,26 @@ public class PostServiceImpl implements PostService {
             postDto.setAnnounce(post.getText()
                     .substring(0, Math.min(post.getText().length(), 100))
                     .replaceAll("<[^>]*>", "") + "...");
+            postDto.setCommentCounter(postDto.getCommentCounter());
         } else {
             postDto.setActive(post.isActive());
             postDto.setText(post.getText());
             postDto.setTagList(getTagsList(post.getId()));
-            postDto.setCommentList(getCommentsList(post.getId()));
-            postDto.setCommentCounter(postDto.getCommentList().size());
+            List<CommentDto> comments = postCommentRepository.findAllByPost(post)
+                    .stream()
+                    .map(CommentDto::new)
+                    .collect(Collectors.toList());
+            postDto.setCommentList(comments);
+            postDto.setCommentCounter(comments.size());
         }
-        postDto.setViewCounter(post.getViewCount());
-        postDto.setLikeCounter(voteCounterDto.getLikeCounter());
-        postDto.setDislikeCounter(voteCounterDto.getDislikeCounter());
+        postDto.setViewCounter(post.getViewCounter());
+        postDto.setLikeCounter(post.getLikeCounter());
+        postDto.setDislikeCounter(post.getDislikeCounter());
 
         return postDto;
     }
 
-    private static List<String> getTagsList(long postId) {
+    private List<String> getTagsList(long postId) {
         List<String> tags = new ArrayList<>();
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
@@ -185,23 +203,22 @@ public class PostServiceImpl implements PostService {
         return tags;
     }
 
-    private static List<CommentDto> getCommentsList(long postId) {
-        List<CommentDto> comments = new ArrayList<>();
-        try (Session session = Connection.getSession()) {
-            Transaction transaction = session.beginTransaction();
-
-            String hql = "from PostComment where post.id=:id";
-            List<PostComment> resultList = session.createQuery(hql).setParameter("id", postId).getResultList();
-
-            for (PostComment comment : resultList) {
-                comments.add(new CommentDto().createFrom(comment));
-            }
-
-            transaction.commit();
-        }
-        return comments;
-    }
-
+//    private  List<CommentDto> getCommentList(long postId) {
+//        List<CommentDto> comments = new ArrayList<>();
+//        try (Session session = Connection.getSession()) {
+//            Transaction transaction = session.beginTransaction();
+//
+//            String hql = "from PostComment where post.id=:id";
+//            List<PostComment> resultList = session.createQuery(hql).setParameter("id", postId).getResultList();
+//
+//            for (PostComment comment : resultList) {
+//                comments.add(new CommentDto().createFrom(comment));
+//            }
+//
+//            transaction.commit();
+//        }
+//        return comments;
+//    }
 
 
 }
