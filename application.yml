@@ -14,5 +14,5 @@ config:
   captcha:
     timeout: 10
     image:
-      width: 135
+      width: 110
       height: 35

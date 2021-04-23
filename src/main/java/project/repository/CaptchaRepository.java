@@ -4,11 +4,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import project.model.CaptchaCode;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Repository
-public interface _CaptchaRepository extends JpaRepository<CaptchaCode, Long> {
+public interface CaptchaRepository extends JpaRepository<CaptchaCode, Long> {
 
     Optional<CaptchaCode> findCaptchaCodeBySecretCode(String secret);
+
+    void deleteAllByTimeBefore(Date limit);
 
 }

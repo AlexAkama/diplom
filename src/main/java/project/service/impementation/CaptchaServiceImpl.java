@@ -1,16 +1,13 @@
 package project.service.impementation;
 
 import com.github.cage.GCage;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.config.AppConstant;
-import project.config.Connection;
 import project.dto.CaptchaDto;
 import project.model.CaptchaCode;
-import project.repository._CaptchaRepository;
+import project.repository.CaptchaRepository;
 import project.service.CaptchaService;
 
 import javax.imageio.ImageIO;
@@ -18,17 +15,16 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.*;
 
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
 
-    private final _CaptchaRepository captchaRepository;
+    private final CaptchaRepository captchaRepository;
 
     /**
      * Срок действия кода капчи в минутах
-     * */
+     */
     @Value("${config.captcha.timeout}")
     private int captchaTimeout;
 
@@ -44,7 +40,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Value("${config.captcha.image.height}")
     private int height;
 
-    public CaptchaServiceImpl(_CaptchaRepository captchaRepository) {
+    public CaptchaServiceImpl(CaptchaRepository captchaRepository) {
         this.captchaRepository = captchaRepository;
     }
 
@@ -63,18 +59,7 @@ public class CaptchaServiceImpl implements CaptchaService {
 
         String secret = randomString(25);
         CaptchaCode captchaCode = new CaptchaCode(new Date(), token, secret);
-
-        try (Session session = Connection.getSession()) {
-            Transaction transaction = session.beginTransaction();
-
-            Timestamp limit = new Timestamp(System.currentTimeMillis() - AppConstant.minuteToMillis(captchaTimeout));
-            String hql = "delete from CaptchaCode where time < :limit";
-            session.createQuery(hql).setParameter("limit", limit).executeUpdate();
-
-            session.save(captchaCode);
-
-            transaction.commit();
-        }
+        captchaRepository.save(captchaCode);
 
         return ResponseEntity.ok(new CaptchaDto(secret, image));
     }
@@ -91,6 +76,8 @@ public class CaptchaServiceImpl implements CaptchaService {
 
     @Override
     public boolean isCodeCorrect(String code, String secret) {
+        Date limit = new Date(System.currentTimeMillis() - AppConstant.minuteToMillis(captchaTimeout));
+        captchaRepository.deleteAllByTimeBefore(limit);
         Optional<CaptchaCode> result = captchaRepository.findCaptchaCodeBySecretCode(secret);
         return result.isPresent() && result.get().getCode().equals(code);
     }
@@ -98,6 +85,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     /**
      * Генерация строки из случайныйх символов заданной длины
      * <br></br> Символы выбираются из указанного массива
+     *
      * @param length длина результирующей строки
      * @return строка случайных символов заданной длинны
      */
