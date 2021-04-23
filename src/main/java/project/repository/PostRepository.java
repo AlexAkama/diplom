@@ -9,9 +9,9 @@ import project.config.AppConstant;
 import project.dto.global.MapDto;
 import project.dto.post.PostYearDto;
 import project.model.Post;
-import project.model.emun.ModerationStatus;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -30,7 +30,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findAll(Pageable pageable);
 
-    Page<Post> findAllByActiveAndModerationStatusAndTimeBefore(boolean active, ModerationStatus status, Date date, Pageable pageable);
+    @Query("FROM Post p WHERE " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    Page<Post> findAllWithBaseCondition(Pageable pageable);
 
-    Optional<Post> findPostByIdAndActiveAndModerationStatusAndTimeBefore(long id, boolean active, ModerationStatus moderationStatus, Date time);
+    @Query("FROM Post p WHERE p.id = ?1 AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    Optional<Post> findPostWithBaseCondition(long id);
 }

@@ -30,26 +30,6 @@ public class PostController {
         return postService.getPost(id);
     }
 
-//    @GetMapping("/search")
-//    public ResponseEntity<PostListDto> getSearchList(
-//            @RequestParam("offset") int offset,
-//            @RequestParam("limit") int limit,
-//            @RequestParam("query") String search
-//    ) {
-//
-//        String selectCondition = "text like '%:text%'"
-//                + " OR title like '%:text%'"
-//                + " OR id IN (select pc.post.id from PostComment pc where pc.text like '%:text%')"
-//                + " OR user_id IN (select u.id from User u where u.name like '%:text%')"
-//                + " OR id IN (select ttp.post.id from TagToPost ttp where ttp.tag.id"
-//                + " in (select t.id from Tag t where t.name like '%:text%'))";
-//        selectCondition = selectCondition.replaceAll(":text", search);
-//
-//        return new ResponseEntity<>(
-//                new PostListDto().makeAnnounces(selectCondition, offset, limit),
-//                HttpStatus.OK);
-//    }
-
 //    @GetMapping("/byTag")
 //    public ResponseEntity<PostListDto> getByTag(
 //            @RequestParam("offset") int offset,
@@ -75,6 +55,27 @@ public class PostController {
 //
 //        return new ResponseEntity<>(
 //                new PostListDto().makeAnnounces(byDateCondition, offset, limit),
+//                HttpStatus.OK);
+//    }
+
+
+//    @GetMapping("/search")
+//    public ResponseEntity<PostListDto> getSearchList(
+//            @RequestParam("offset") int offset,
+//            @RequestParam("limit") int limit,
+//            @RequestParam("query") String search
+//    ) {
+//
+//        String selectCondition = "text like '%:text%'"
+//                + " OR title like '%:text%'"
+//                + " OR id IN (select pc.post.id from PostComment pc where pc.text like '%:text%')"
+//                + " OR user_id IN (select u.id from User u where u.name like '%:text%')"
+//                + " OR id IN (select ttp.post.id from TagToPost ttp where ttp.tag.id"
+//                + " in (select t.id from Tag t where t.name like '%:text%'))";
+//        selectCondition = selectCondition.replaceAll(":text", search);
+//
+//        return new ResponseEntity<>(
+//                new PostListDto().makeAnnounces(selectCondition, offset, limit),
 //                HttpStatus.OK);
 //    }
 

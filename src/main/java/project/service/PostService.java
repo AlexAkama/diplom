@@ -6,8 +6,10 @@ import project.dto.post.PostListDto;
 
 public interface PostService {
 
+  ResponseEntity<PostDto> getPost(long postId);
+
   ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode);
 
-  ResponseEntity<PostDto> getPost(long postId);
+  ResponseEntity<PostListDto> getAnnounceListByTag(int offset, int limit, String tag);
 
 }

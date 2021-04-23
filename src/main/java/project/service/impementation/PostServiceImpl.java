@@ -35,6 +35,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public ResponseEntity<PostDto> getPost(long postId) {
+        Post post = findPostWithBaseCondition(postId);
+        return ResponseEntity.ok(createPostDto(post));
+    }
+
+    @Override
     public ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode) {
         PostViewMode postMode = PostViewMode.valueOf(mode.toUpperCase());
         int pageNumber = offset / limit;
@@ -53,7 +59,7 @@ public class PostServiceImpl implements PostService {
                 sort = Sort.by(Sort.Direction.DESC, "time");
         }
         Pageable pageable = PageRequest.of(pageNumber, limit, sort);
-        Page<Post> page = findAllWithBaseConditional(pageable);
+        Page<Post> page = findAllWithBaseCondition(pageable);
         List<PostDto> list = page.getContent().stream()
                 .map(this::createAnnounce)
                 .collect(Collectors.toList());
@@ -61,20 +67,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<PostDto> getPost(long postId) {
-        Post post = findPostWithBaseConditional(postId);
-        return ResponseEntity.ok(createPostDto(post));
+    public ResponseEntity<PostListDto> getAnnounceListByTag(int offset, int limit, String tag) {
+        return null;
     }
 
-    private Post findPostWithBaseConditional(long postId) {
-        return postRepository.findPostByIdAndActiveAndModerationStatusAndTimeBefore(
-                postId, true, ModerationStatus.ACCEPTED, new Date())
+    private Post findPostWithBaseCondition(long postId) {
+        return postRepository.findPostWithBaseCondition(postId)
                 .orElseThrow(() -> new DocumentNotFoundException(String.format("Пост id:%d не найден", postId)));
     }
 
-    private Page<Post> findAllWithBaseConditional(Pageable pageable) {
-        return postRepository.findAllByActiveAndModerationStatusAndTimeBefore(
-                true, ModerationStatus.ACCEPTED, new Date(), pageable);
+    private Page<Post> findAllWithBaseCondition(Pageable pageable) {
+        return postRepository.findAllWithBaseCondition(pageable);
     }
 
     private PostDto createAnnounce(Post post) {
