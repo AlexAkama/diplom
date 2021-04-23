@@ -14,11 +14,11 @@ import project.service.*;
 public class AuthServiceImpl implements _AuthService {
 
     private final _UserService userService;
-    private final _CaptchaService captchaService;
+    private final CaptchaService captchaService;
     private final AuthenticationManager authenticationManager;
 
     public AuthServiceImpl(_UserService userService,
-                           _CaptchaService captchaService,
+                           CaptchaService captchaService,
                            AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.captchaService = captchaService;

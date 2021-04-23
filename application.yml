@@ -11,4 +11,8 @@ flyway.password: testskill
 flyway.locations: filesystem:db/migration
 
 config:
-  captcha.timeout: 10
+  captcha:
+    timeout: 10
+    image:
+      width: 135
+      height: 35
