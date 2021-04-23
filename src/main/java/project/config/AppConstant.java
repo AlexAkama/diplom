@@ -1,5 +1,7 @@
 package project.config;
 
+import java.util.Date;
+
 public class AppConstant {
 
     /**
@@ -16,6 +18,24 @@ public class AppConstant {
      * {@link AppConstant#HQL_BASIC_SEARCH_CONDITION Базовое условие поиска}
      */
     private AppConstant() {
+    }
+
+    /**
+     * Перевод даты в кол-во секунд (timestamp)
+     * @param date дата для вычисления
+     * @return кол-во секунд
+     */
+    public static long dateToTimestamp(Date date) {
+        return date.getTime() / 1000;
+    }
+
+    /**
+     * Перевод минут в милисекунды
+     * @param minutes кол-во минут
+     * @return кол-во миллисекунд
+     */
+    public static long minuteToMillis(long minutes) {
+        return minutes * 60 * 1000;
     }
 
 }

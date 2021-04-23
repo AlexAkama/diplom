@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import project.config.AppConstant;
 import project.config.Connection;
 import project.dto.*;
 import project.dto._auth.*;
@@ -84,7 +85,7 @@ public class _AuthController {
         try (Session session = Connection.getSession()) {
             Transaction transaction = session.beginTransaction();
 
-            Timestamp limit = new Timestamp(System.currentTimeMillis() - appService.minuteToMillis(captchaTimeout));
+            Timestamp limit = new Timestamp(System.currentTimeMillis() - AppConstant.minuteToMillis(captchaTimeout));
             String hql = "delete from CaptchaCode where time < :limit";
             session.createQuery(hql).setParameter("limit", limit).executeUpdate();
 

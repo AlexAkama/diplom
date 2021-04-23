@@ -3,21 +3,10 @@ package project.service.impementation;
 import org.springframework.stereotype.Service;
 import project.service.AppService;
 
-import java.util.Date;
 import java.util.Random;
 
 @Service
 public class AppServiceImpl implements AppService {
-
-    @Override
-    public long dateToTimestamp(Date date) {
-        return date.getTime() / 1000;
-    }
-
-    @Override
-    public long minuteToMillis(long minutes) {
-        return minutes * 60 * 1000;
-    }
 
     @Override
     public String randomString(int length) {
