@@ -37,9 +37,11 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public ResponseEntity<StatisticDto> getUserStatistic(long userId) {
+    public ResponseEntity<StatisticDto> getUserStatistic() {
         StatisticDto response;
         if (checkUser()) {
+            //FIXME Тут нужен видимо id текущего пользователя
+            long userId = 10;
             response = postService.getUserStatistic(userId);
         } else throw new UnauthorizedException("Требуется авторизация");
         return ResponseEntity.ok(response);

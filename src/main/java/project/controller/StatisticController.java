@@ -20,25 +20,9 @@ public class StatisticController {
         return statisticService.getAllStatistic();
     }
 
-//    @GetMapping("/my")
-//    public ResponseEntity<Map<String, Long>> getMyStatistics() {
-//        //Текущий пользователь
-//        User user = new User();
-//        user.setId(10);
-//
-//        Map<String, Long> statistics = new HashMap<>();
-//        int id = user.getId();
-//
-//        StatDto statDto = new StatDto().getUserResult(id);
-//        VoteCounterView voteCounterDto = voteRepository.getUserResult(id);
-//
-//        statistics.put("postsCount", statDto.getPostsCount());
-//        statistics.put("likesCount", voteCounterDto.getLikeCounter());
-//        statistics.put("dislikesCount", voteCounterDto.getDislikeCounter());
-//        statistics.put("viewsCount", statDto.getViewsCount());
-//        statistics.put("firstPublication", statDto.getFirstPublication());
-//
-//        return new ResponseEntity<>(statistics, HttpStatus.OK);
-//    }
+    @GetMapping("/my")
+    public ResponseEntity<StatisticDto> getMyStatistics() {
+        return statisticService.getUserStatistic();
+    }
 
 }

@@ -7,6 +7,6 @@ public interface StatisticService {
 
     ResponseEntity<StatisticDto> getAllStatistic();
 
-    ResponseEntity<StatisticDto> getUserStatistic(long userId);
+    ResponseEntity<StatisticDto> getUserStatistic();
 
 }
