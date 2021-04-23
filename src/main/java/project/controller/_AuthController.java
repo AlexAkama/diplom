@@ -10,10 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project.config.AppConstant;
 import project.config.Connection;
-import project.dto.*;
+import project.dto.CaptchaDto;
 import project.dto._auth.*;
 import project.model.CaptchaCode;
-import project.model.User;
 import project.repository.VoteRepository;
 import project.service.AppService;
 import project.service._AuthService;
@@ -22,7 +21,8 @@ import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Base64;
+import java.util.Date;
 
 import static project.dto.Dto.resizeForCaptcha;
 
@@ -123,31 +123,5 @@ public class _AuthController {
     ) {
         return authService.login(request);
     }
-
-
-    //FIXME перенести в соответствующие контроллеры
-
-    @GetMapping("/api/statistics/my")
-    public ResponseEntity<Map<String, Long>> getMyStatistics() {
-        //Текущий пользователь
-        User user = new User();
-        user.setId(10);
-
-        Map<String, Long> statistics = new HashMap<>();
-        int id = user.getId();
-
-        StatDto statDto = new StatDto().getUserResult(id);
-        VoteCounterDto voteCounterDto = voteRepository.getUserResult(id);
-
-        statistics.put("postsCount", statDto.getPostsCount());
-        statistics.put("likesCount", voteCounterDto.getLikeCounter());
-        statistics.put("dislikesCount", voteCounterDto.getDislikeCounter());
-        statistics.put("viewsCount", statDto.getViewsCount());
-        statistics.put("firstPublication", statDto.getFirstPublication());
-
-        return new ResponseEntity<>(statistics, HttpStatus.OK);
-    }
-
-
 
 }

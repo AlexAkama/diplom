@@ -59,7 +59,7 @@ public class PostController {
     }
 
 //    @GetMapping("/my")
-//    public ResponseEntity<PostListDto> getMy(
+//    public ResponseEntity<PostListDto> getUserPostStatistic(
 //            @RequestParam("offset") int offset,
 //            @RequestParam("limit") int limit,
 //            @RequestParam("status") String status

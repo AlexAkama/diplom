@@ -4,10 +4,10 @@ import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.config.AppConstant;
-import project.dto.CommentDto;
-import project.dto.UserDto;
-import project.dto.post.PostDto;
-import project.dto.post.PostListDto;
+import project.dto.*;
+import project.dto.post.*;
+import project.dto.statistic.PostStatisticView;
+import project.dto.statistic.StatisticDto;
 import project.exception.DocumentNotFoundException;
 import project.model.Post;
 import project.model.emun.PostDtoStatus;
@@ -26,13 +26,16 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostCommentRepository postCommentRepository;
     private final TagToPostRepository tagToPostRepository;
+    private final VoteRepository voteRepository;
 
     public PostServiceImpl(PostRepository postRepository,
                            PostCommentRepository postCommentRepository,
-                           TagToPostRepository tagToPostRepository) {
+                           TagToPostRepository tagToPostRepository,
+                           VoteRepository voteRepository) {
         this.postRepository = postRepository;
         this.postCommentRepository = postCommentRepository;
         this.tagToPostRepository = tagToPostRepository;
+        this.voteRepository = voteRepository;
     }
 
     @Override
@@ -91,6 +94,52 @@ public class PostServiceImpl implements PostService {
         Page<Post> page = postRepository.findPostBySearchWithBaseCondition("%" + search + "%", pageable);
         List<PostDto> list = createPostListFromPage(page);
         return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
+    }
+
+    @Override
+    public PostStatisticView getAllPostStatistic() {
+        return postRepository.getAllStatistic();
+    }
+
+    @Override
+    public PostStatisticView getUserPostStatistic(long userId) {
+        return postRepository.getUserStatistic(userId);
+    }
+
+    @Override
+    public VoteCounterView getAllVote() {
+        return voteRepository.getBlogResult();
+    }
+
+    @Override
+    public VoteCounterView getUserVote(long userId) {
+        return voteRepository.getUserResult(userId);
+    }
+
+    @Override
+    public StatisticDto getAllStatistic() {
+        PostStatisticView postData = getAllPostStatistic();
+        VoteCounterView voteData = getAllVote();
+        return new StatisticDto(
+                postData.getPostCounter(),
+                voteData.getLikeCounter(),
+                voteData.getDislikeCounter(),
+                postData.getViewCounter(),
+                AppConstant.dateToTimestamp(postData.getFirstPublication())
+        );
+    }
+
+    @Override
+    public StatisticDto getUserStatistic(long userId) {
+        PostStatisticView postData = getUserPostStatistic(userId);
+        VoteCounterView voteData = getUserVote(userId);
+        return new StatisticDto(
+                postData.getPostCounter(),
+                voteData.getLikeCounter(),
+                voteData.getDislikeCounter(),
+                postData.getViewCounter(),
+                AppConstant.dateToTimestamp(postData.getFirstPublication())
+        );
     }
 
 

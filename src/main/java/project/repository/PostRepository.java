@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import project.config.AppConstant;
 import project.dto.global.MapDto;
 import project.dto.post.PostYearDto;
+import project.dto.statistic.PostStatisticView;
 import project.model.Post;
 
 import java.util.List;
@@ -28,6 +29,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             + " OR user_id IN (SELECT u.id FROM User u WHERE u.name LIKE ?1)"
             + " OR id IN (SELECT ttp.post.id FROM TagToPost ttp WHERE ttp.tag.id"
             + " IN (SELECT t.id FROM Tag t WHERE t.name LIKE ?1))";
+
+    String statisticSelect = "SELECT " +
+            "COUNT(p) AS postCounter, " +
+            "SUM(p.viewCounter) AS viewCounter, " +
+            "MIN(p.time) AS firstPublication " +
+            "FROM Post p";
 
     @Query("SELECT " + year + " AS year FROM Post p GROUP BY year ORDER BY " + year + " DESC")
     List<PostYearDto> getYearList();
@@ -54,5 +61,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("FROM Post p WHERE ("  + bySearchCondition + ") AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
     Page<Post> findPostBySearchWithBaseCondition(String search, Pageable pageable);
+
+    @Query(statisticSelect)
+    PostStatisticView getAllStatistic();
+
+    @Query(statisticSelect +" WHERE p.user.id = ?1")
+    PostStatisticView getUserStatistic(long userId);
 
 }

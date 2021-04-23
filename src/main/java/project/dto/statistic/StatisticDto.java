@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class StatisticDto {
 
-    @JsonProperty("postCount")
+    @JsonProperty("postsCount")
     private final long postCounter;
-    @JsonProperty("likeCount")
+    @JsonProperty("likesCount")
     private final long likeCounter;
-    @JsonProperty("dislikeCount")
+    @JsonProperty("dislikesCount")
     private final long dislikeCounter;
     @JsonProperty("viewsCount")
     private final long viewCounter;
