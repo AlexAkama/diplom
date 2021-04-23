@@ -11,8 +11,7 @@ import project.dto.post.PostYearDto;
 import project.model.Post;
 import project.model.emun.ModerationStatus;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -33,4 +32,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findAllByActiveAndModerationStatusAndTimeBefore(boolean active, ModerationStatus status, Date date, Pageable pageable);
 
+    Optional<Post> findPostByIdAndActiveAndModerationStatusAndTimeBefore(long id, boolean active, ModerationStatus moderationStatus, Date time);
 }

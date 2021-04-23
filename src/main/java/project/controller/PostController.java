@@ -2,6 +2,7 @@ package project.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.dto.post.PostDto;
 import project.dto.post.PostListDto;
 import project.service.PostService;
 
@@ -24,9 +25,9 @@ public class PostController {
         return postService.getAnnounceList(offset, limit, mode);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<PostDto> getPostById(@PathVariable int id) {
-//
+    @GetMapping("/{id}")
+    public ResponseEntity<PostDto> getPostById(@PathVariable int id) {
+        return postService.getPost(id);
 //        //FIXME переделать HQL
 //        String hql = "from Post p"
 //                + " where " + baseCondition
@@ -48,7 +49,7 @@ public class PostController {
 //        return new ResponseEntity<>(
 //                new PostDto().make(post),
 //                HttpStatus.OK);
-//    }
+    }
 
 //    @GetMapping("/search")
 //    public ResponseEntity<PostListDto> getSearchList(
