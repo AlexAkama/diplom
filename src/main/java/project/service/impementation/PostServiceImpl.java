@@ -10,11 +10,12 @@ import project.dto.post.PostDto;
 import project.dto.post.PostListDto;
 import project.exception.DocumentNotFoundException;
 import project.model.Post;
-import project.model.emun.*;
+import project.model.emun.PostDtoStatus;
+import project.model.emun.PostViewMode;
 import project.repository.*;
 import project.service.PostService;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static project.model.emun.PostDtoStatus.ANNOUNCE;
@@ -36,7 +37,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseEntity<PostDto> getPost(long postId) {
-        Post post = findPostWithBaseCondition(postId);
+        Post post = postRepository.findPostWithBaseCondition(postId)
+                .orElseThrow(() -> new DocumentNotFoundException(String.format("Пост id:%d не найден", postId)));
         return ResponseEntity.ok(createPostDto(post));
     }
 
@@ -59,26 +61,29 @@ public class PostServiceImpl implements PostService {
                 sort = Sort.by(Sort.Direction.DESC, "time");
         }
         Pageable pageable = PageRequest.of(pageNumber, limit, sort);
-        Page<Post> page = findAllWithBaseCondition(pageable);
-        List<PostDto> list = page.getContent().stream()
-                .map(this::createAnnounce)
-                .collect(Collectors.toList());
+        Page<Post> page = postRepository.findAllWithBaseCondition(pageable);
+        List<PostDto> list = createPostListFromPage(page);
         return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
     }
 
     @Override
     public ResponseEntity<PostListDto> getAnnounceListByTag(int offset, int limit, String tag) {
-        return null;
+        int pageNumber = offset / limit;
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Page<Post> page = postRepository.findPostByTagWithBaseCondition(tag, pageable);
+        List<PostDto> list = createPostListFromPage(page);
+        return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
     }
 
-    private Post findPostWithBaseCondition(long postId) {
-        return postRepository.findPostWithBaseCondition(postId)
-                .orElseThrow(() -> new DocumentNotFoundException(String.format("Пост id:%d не найден", postId)));
+    @Override
+    public ResponseEntity<PostListDto> getAnnounceListByDate(int offset, int limit, String date) {
+        int pageNumber = offset / limit;
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Page<Post> page = postRepository.findPostByDateWithBaseCondition(date, pageable);
+        List<PostDto> list = createPostListFromPage(page);
+        return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
     }
 
-    private Page<Post> findAllWithBaseCondition(Pageable pageable) {
-        return postRepository.findAllWithBaseCondition(pageable);
-    }
 
     private PostDto createAnnounce(Post post) {
         return createPostDto(post, ANNOUNCE);
@@ -117,6 +122,12 @@ public class PostServiceImpl implements PostService {
         postDto.setDislikeCounter(post.getDislikeCounter());
 
         return postDto;
+    }
+
+    private List<PostDto> createPostListFromPage(Page<Post> page) {
+        return page.getContent().stream()
+                .map(this::createAnnounce)
+                .collect(Collectors.toList());
     }
 
 }

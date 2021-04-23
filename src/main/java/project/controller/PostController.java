@@ -30,33 +30,23 @@ public class PostController {
         return postService.getPost(id);
     }
 
-//    @GetMapping("/byTag")
-//    public ResponseEntity<PostListDto> getByTag(
-//            @RequestParam("offset") int offset,
-//            @RequestParam("limit") int limit,
-//            @RequestParam("tag") String tag
-//    ) {
-//
-//        String byTagCondition = "id in (select ttp.post.id from TagToPost ttp where ttp.tag.id = " +
-//                "(select t.id from Tag t where t.name = '" + tag + "'))";
-//
-//        return new ResponseEntity<>(
-//                new PostListDto().makeAnnounces(byTagCondition, offset, limit, PostViewMode.RECENT),
-//                HttpStatus.OK);
-//    }
+    @GetMapping("/byTag")
+    public ResponseEntity<PostListDto> getByTag(
+            @RequestParam("offset") int offset,
+            @RequestParam("limit") int limit,
+            @RequestParam("tag") String tag
+    ) {
+        return postService.getAnnounceListByTag(offset, limit, tag);
+    }
 
-//    @GetMapping("/byDate")
-//    public ResponseEntity<PostListDto> getByDate(
-//            @RequestParam("offset") int offset,
-//            @RequestParam("limit") int limit,
-//            @RequestParam("date") String date
-//    ) {
-//        String byDateCondition = "date_format(time, '%Y-%m-%d') = '" + date + "'";
-//
-//        return new ResponseEntity<>(
-//                new PostListDto().makeAnnounces(byDateCondition, offset, limit),
-//                HttpStatus.OK);
-//    }
+    @GetMapping("/byDate")
+    public ResponseEntity<PostListDto> getByDate(
+            @RequestParam("offset") int offset,
+            @RequestParam("limit") int limit,
+            @RequestParam("date") String date
+    ) {
+        return postService.getAnnounceListByDate(offset, limit, date);
+    }
 
 
 //    @GetMapping("/search")

@@ -19,6 +19,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     String year = "function('DATE_FORMAT', p.time, '%Y')";
     String date = "function('DATE_FORMAT', p.time, '%Y-%m-%d')";
 
+    String byTagCondition = "p.id IN (SELECT ttp.post.id FROM TagToPost ttp WHERE ttp.tag.id = " +
+            "(SELECT t.id FROM Tag t WHERE t.name = ?1))";
+    String byDateCondition = date + " = ?1";
+
     @Query("SELECT " + year + " AS year FROM Post p GROUP BY year ORDER BY " + year + " DESC")
     List<PostYearDto> getYearList();
 
@@ -35,4 +39,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("FROM Post p WHERE p.id = ?1 AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
     Optional<Post> findPostWithBaseCondition(long id);
+
+    @Query("FROM Post p WHERE " + byTagCondition + " AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    Page<Post> findPostByTagWithBaseCondition(String tag, Pageable pageable);
+
+    @Query("FROM Post p WHERE " + byDateCondition + " AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    Page<Post> findPostByDateWithBaseCondition(String date, Pageable pageable);
+
 }
