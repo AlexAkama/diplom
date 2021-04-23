@@ -1,4 +1,4 @@
-package project.dto._auth;
+package project.dto.auth;
 
 import project.config.Connection;
 import project.model.User;

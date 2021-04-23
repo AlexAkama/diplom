@@ -1,4 +1,4 @@
-package project.dto._auth;
+package project.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

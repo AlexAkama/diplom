@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project.dto.CaptchaDto;
-import project.dto._auth.*;
+import project.dto.auth.*;
 import project.service.CaptchaService;
 import project.service._AuthService;
 
