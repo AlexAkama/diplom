@@ -120,27 +120,24 @@ public class PostServiceImpl implements PostService {
         PostViewMode postMode = PostViewMode.valueOf(mode.toUpperCase());
         int pageNumber = offset / limit;
         Sort sort;
-        if (postMode == PostViewMode.EARLY) {
-            sort = Sort.by(Sort.Direction.ASC, "comments.size()");
-        } else {
-            sort = Sort.by(Sort.Direction.DESC, "time");
+        switch (postMode) {
+            case POPULAR:
+                sort = Sort.by(Sort.Order.desc("commentCounter"), Sort.Order.desc("time"));
+                break;
+            case BEST:
+                sort = Sort.by(Sort.Order.desc("likeCounter"), Sort.Order.asc("dislikeCounter"), Sort.Order.desc("time"));
+                break;
+            case EARLY:
+                sort = Sort.by(Sort.Direction.ASC, "time");
+                break;
+            default:
+                sort = Sort.by(Sort.Direction.DESC, "time");
         }
         Pageable pageable = PageRequest.of(pageNumber, limit, sort);
         Page<Post> page = findAllWithBaseConditional(pageable);
         List<PostDto> list = page.getContent().stream()
                 .map(this::createAnnounce)
                 .collect(Collectors.toList());
-        switch (postMode) {
-            case POPULAR:
-                list.sort(Comparator.comparing(PostDto::getCommentCounter));
-                break;
-            case BEST:
-                list.sort(Comparator.comparing(PostDto::getLikeCounter)
-                        .thenComparing((o1, o2) -> Long.compare(o2.getDislikeCounter(), o1.getDislikeCounter()))
-                        .reversed());
-                break;
-
-        }
         return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
     }
 
@@ -169,7 +166,7 @@ public class PostServiceImpl implements PostService {
             postDto.setAnnounce(post.getText()
                     .substring(0, Math.min(post.getText().length(), 100))
                     .replaceAll("<[^>]*>", "") + "...");
-            postDto.setCommentCounter(postDto.getCommentCounter());
+            postDto.setCommentCounter(post.getCommentCounter());
         } else {
             postDto.setActive(post.isActive());
             postDto.setText(post.getText());

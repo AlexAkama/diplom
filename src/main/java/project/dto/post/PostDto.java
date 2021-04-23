@@ -13,7 +13,7 @@ public class PostDto {
 
     private long id;
     private long timestamp;
-    private Boolean active ;
+    private boolean active ;
     private UserDto user;
     private String title;
     private String announce;
@@ -23,7 +23,7 @@ public class PostDto {
     @JsonProperty("dislikeCount")
     private long dislikeCounter;
     @JsonProperty("commentCount")
-    private Integer commentCounter;
+    private long commentCounter;
     @JsonProperty("viewCount")
     private long viewCounter;
     private List<CommentDto> commentList;
@@ -46,11 +46,11 @@ public class PostDto {
         this.timestamp = timestamp;
     }
 
-    public Boolean getActive() {
+    public boolean getActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
@@ -102,11 +102,11 @@ public class PostDto {
         this.dislikeCounter = dislikeCounter;
     }
 
-    public Integer getCommentCounter() {
+    public long getCommentCounter() {
         return commentCounter;
     }
 
-    public void setCommentCounter(Integer commentCounter) {
+    public void setCommentCounter(long commentCounter) {
         this.commentCounter = commentCounter;
     }
 
