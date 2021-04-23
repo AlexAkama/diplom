@@ -22,6 +22,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     String byTagCondition = "p.id IN (SELECT ttp.post.id FROM TagToPost ttp WHERE ttp.tag.id = " +
             "(SELECT t.id FROM Tag t WHERE t.name = ?1))";
     String byDateCondition = date + " = ?1";
+    String bySearchCondition = "p.text LIKE ?1"
+            + " OR p.title LIKE ?1"
+            + " OR p.id IN (SELECT pc.post.id FROM PostComment pc WHERE pc.text LIKE ?1)"
+            + " OR user_id IN (SELECT u.id FROM User u WHERE u.name LIKE ?1)"
+            + " OR id IN (SELECT ttp.post.id FROM TagToPost ttp WHERE ttp.tag.id"
+            + " IN (SELECT t.id FROM Tag t WHERE t.name LIKE ?1))";
 
     @Query("SELECT " + year + " AS year FROM Post p GROUP BY year ORDER BY " + year + " DESC")
     List<PostYearDto> getYearList();
@@ -45,5 +51,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("FROM Post p WHERE " + byDateCondition + " AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
     Page<Post> findPostByDateWithBaseCondition(String date, Pageable pageable);
+
+    @Query("FROM Post p WHERE ("  + bySearchCondition + ") AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    Page<Post> findPostBySearchWithBaseCondition(String search, Pageable pageable);
 
 }

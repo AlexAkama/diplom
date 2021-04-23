@@ -14,4 +14,6 @@ public interface PostService {
 
   ResponseEntity<PostListDto> getAnnounceListByDate(int offset, int limit, String date);
 
+  ResponseEntity<PostListDto> getAnnounceListBySearch(int offset, int limit, String search);
+
 }

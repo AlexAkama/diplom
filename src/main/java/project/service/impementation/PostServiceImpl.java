@@ -84,6 +84,15 @@ public class PostServiceImpl implements PostService {
         return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
     }
 
+    @Override
+    public ResponseEntity<PostListDto> getAnnounceListBySearch(int offset, int limit, String search) {
+        int pageNumber = offset / limit;
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Page<Post> page = postRepository.findPostBySearchWithBaseCondition("%" + search + "%", pageable);
+        List<PostDto> list = createPostListFromPage(page);
+        return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
+    }
+
 
     private PostDto createAnnounce(Post post) {
         return createPostDto(post, ANNOUNCE);
