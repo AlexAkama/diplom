@@ -2,8 +2,8 @@ package project.service.impementation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import project.dto.post.PostYearDto;
 import project.dto.global.*;
+import project.dto.post.PostYearDto;
 import project.model.ConfigParameter;
 import project.model.GlobalSetting;
 import project.repository.*;
@@ -12,8 +12,7 @@ import project.service.GlobalService;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static project.model.emun.GlobalSettings.MULTIUSER_MODE;
-import static project.model.emun.GlobalSettings.POST_PREMODERATION;
+import static project.model.emun.GlobalSettings.*;
 import static project.model.emun.GlobalSettingsValue.YES;
 
 /**
@@ -74,7 +73,7 @@ public class GlobalServiceImpl implements GlobalService {
         Optional<GlobalSetting> optionalPreModeration = globalSettingRepository.findByCode(POST_PREMODERATION.name());
         boolean preModeration = optionalPreModeration.isPresent() && optionalPreModeration.get().getValue() == YES;
 
-        Optional<GlobalSetting> optionalPublicStatistic = globalSettingRepository.findByCode(MULTIUSER_MODE.name());
+        Optional<GlobalSetting> optionalPublicStatistic = globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
         boolean publicStatistic = optionalPublicStatistic.isPresent() && optionalPublicStatistic.get().getValue() == YES;
 
         return ResponseEntity.ok(new GlobalSettingsDto(multiUser, preModeration, publicStatistic));
