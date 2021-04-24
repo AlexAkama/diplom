@@ -39,7 +39,18 @@ public class GlobalController {
     }
 
     /**
+     * Запрос на сохранение глобальных настроек
+     *
+     * @param settings объект с {@link GlobalSettingsDto глобальными настройками}
+     */
+    @PostMapping("/settings")
+    public void setGlobalSettings(@RequestBody GlobalSettingsDto settings) {
+        globalService.saveGlobalSettings(settings);
+    }
+
+    /**
      * Запрос списка тегов
+     *
      * @param query значение для поска тега
      * @return объекта со {@link TagListDto списком тегов}
      */
@@ -50,6 +61,7 @@ public class GlobalController {
 
     /**
      * Запрос списка кол-ва публикаций в день
+     *
      * @param year год поиска публикация
      * @return объект с {@link CalendarDto данными кол-ва публикаций за год}
      */

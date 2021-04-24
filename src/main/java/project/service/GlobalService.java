@@ -27,6 +27,12 @@ public interface GlobalService {
     ResponseEntity<GlobalSettingsDto> getGlobalSettings();
 
     /**
+     * Сохранение глобальных настроек блока
+     * @param settings объект с {@link GlobalSettingsDto глобальными настройками}
+     */
+    void saveGlobalSettings(GlobalSettingsDto settings);
+
+    /**
      * Получение списка тегов
      *
      * @return объект со {@link TagListDto списком тегов}

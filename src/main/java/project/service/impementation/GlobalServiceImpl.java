@@ -6,6 +6,7 @@ import project.dto.global.*;
 import project.dto.post.PostYearDto;
 import project.model.ConfigParameter;
 import project.model.GlobalSetting;
+import project.model.emun.GlobalSettingsValue;
 import project.repository.*;
 import project.service.GlobalService;
 
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static project.model.emun.GlobalSettings.*;
+import static project.model.emun.GlobalSettingsValue.NO;
 import static project.model.emun.GlobalSettingsValue.YES;
 
 /**
@@ -80,6 +82,36 @@ public class GlobalServiceImpl implements GlobalService {
     }
 
     @Override
+    public void saveGlobalSettings(GlobalSettingsDto settings) {
+
+        Optional<GlobalSetting> optionalMultiUser = globalSettingRepository.findByCode(MULTIUSER_MODE.name());
+        if (optionalMultiUser.isPresent()) {
+            GlobalSetting multiUser = optionalMultiUser.get();
+            if (!Objects.equals(settings.isMultiUser(), multiUser.getValue() == YES)) {
+                multiUser.setValue(getGlobalSettingsValue(settings.isMultiUser()));
+                globalSettingRepository.save(multiUser);
+            }
+        }
+
+        Optional<GlobalSetting> optionalPreModeration = globalSettingRepository.findByCode(POST_PREMODERATION.name());
+        if (optionalPreModeration.isPresent()) {
+            GlobalSetting preModeration = optionalPreModeration.get();
+            if(!Objects.equals(settings.isPreModeration(), preModeration.getValue() == YES)) {
+                preModeration.setValue(getGlobalSettingsValue(settings.isPreModeration()));
+                globalSettingRepository.save(preModeration);
+            }
+        }
+
+        Optional<GlobalSetting> optionalPublicStatistic = globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
+        if(optionalPublicStatistic.isPresent()) {
+            GlobalSetting publicStatistic = optionalPublicStatistic.get();
+            if(!Objects.equals(settings.isPublicStatistic(), publicStatistic.getValue() == YES)) {
+                publicStatistic.setValue(getGlobalSettingsValue(settings.isPublicStatistic()));
+            }
+        }
+    }
+
+    @Override
     public ResponseEntity<TagListDto> getTagList() {
         List<MapDto> list = tagToPostRepository.getTagCounterList();
         Optional<MapDto> optionalTagCounter = list.stream().max(Comparator.comparingLong(MapDto::getValue));
@@ -104,6 +136,10 @@ public class GlobalServiceImpl implements GlobalService {
                 .collect(Collectors.toMap(MapDto::getKey, MapDto::getValue));
 
         return ResponseEntity.ok(new CalendarDto(yearList, postCounterMap));
+    }
+
+    private GlobalSettingsValue getGlobalSettingsValue(boolean b){
+        return b ? YES : NO ;
     }
 
 }

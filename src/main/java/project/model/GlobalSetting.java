@@ -15,8 +15,8 @@ public class GlobalSetting {
     @Column(nullable = false)
     private String code;
 
-    @Column(nullable = false)
-    private String name;
+//    @Column(nullable = false)
+//    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 3, columnDefinition = "varchar(3) default 'NO'")
@@ -25,11 +25,11 @@ public class GlobalSetting {
     public GlobalSetting() {
     }
 
-    public GlobalSetting(String code, String name) {
-        this.code = code;
-        this.name = name;
-        this.value = GlobalSettingsValue.NO;
-    }
+//    public GlobalSetting(String code, String name) {
+//        this.code = code;
+//        this.name = name;
+//        this.value = GlobalSettingsValue.NO;
+//    }
 
     public String getCode() {
         return code;
