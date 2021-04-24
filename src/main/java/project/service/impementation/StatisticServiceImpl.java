@@ -7,6 +7,7 @@ import project.exception.UnauthorizedException;
 import project.model.GlobalSetting;
 import project.model.User;
 import project.repository.GlobalSettingRepository;
+import project.repository._UserRepository;
 import project.service.PostService;
 import project.service.StatisticService;
 
@@ -20,11 +21,14 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final GlobalSettingRepository globalSettingRepository;
     private final PostService postService;
+    private final _UserRepository userRepository;
 
     public StatisticServiceImpl(GlobalSettingRepository globalSettingRepository,
-                                PostService postService) {
+                                PostService postService,
+                                _UserRepository userRepository) {
         this.globalSettingRepository = globalSettingRepository;
         this.postService = postService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -54,9 +58,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     private User checkUser() {
         //FIXME Тут нужен текущий пользователь, причем модератор
-        User user = new User();
-        user.setModerator(true);
-        return user;
+        return userRepository.findByEmail("vasya@gmail.com").orElseThrow();
     }
 
     private boolean checkModerator() {

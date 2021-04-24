@@ -68,4 +68,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(statisticSelect +" WHERE p.user.id = ?1")
     PostStatisticView getUserStatistic(long userId);
 
+    @Query("SELECT COUNT(p) FROM Post p WHERE p.moderationStatus = 'NEW'")
+    long getPostToModerationCounter();
+
 }
