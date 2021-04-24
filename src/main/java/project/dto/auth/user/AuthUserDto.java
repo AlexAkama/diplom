@@ -1,12 +1,9 @@
 package project.dto.auth.user;
 
-import project.config.Connection;
 import project.model.User;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class AuthUserDto {
-    private int id;
+    private long id;
     private String name;
     private String photo;
     private String email;
@@ -23,22 +20,22 @@ public class AuthUserDto {
             moderation = true;
             settings = true;
             // FIXME вынести в DAO
-            try (Session session = Connection.getSession()) {
-                Transaction transaction = session.beginTransaction();
-
-                String hql = "select count(*) from Post p where p.moderationStatus = 'NEW'";
-                moderationCount = (long) session.createQuery(hql).uniqueResult();
-
-                transaction.commit();
-            }
+//            try (Session session = Connection.getSession()) {
+//                Transaction transaction = session.beginTransaction();
+//
+//                String hql = "select count(*) from Post p where p.moderationStatus = 'NEW'";
+//                moderationCount = (long) session.createQuery(hql).uniqueResult();
+//
+//                transaction.commit();
+//            }
         }
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

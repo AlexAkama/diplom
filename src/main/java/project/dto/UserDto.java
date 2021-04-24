@@ -3,27 +3,27 @@ package project.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class UserDto {
-    private int id;
+    private long id;
     private String name;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String photo;
 
-    public UserDto(int id, String name) {
+    public UserDto(long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public UserDto(int id, String name, String photo) {
+    public UserDto(long id, String name, String photo) {
         this.id = id;
         this.name = name;
         this.photo = photo;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
