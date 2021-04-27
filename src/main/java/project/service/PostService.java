@@ -6,10 +6,11 @@ import project.dto.post.PostDto;
 import project.dto.post.PostListDto;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
+import project.exception.DocumentNotFoundException;
 
 public interface PostService {
 
-  ResponseEntity<PostDto> getPost(long postId);
+  ResponseEntity<PostDto> getPost(long postId) throws DocumentNotFoundException;
 
   ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode);
 

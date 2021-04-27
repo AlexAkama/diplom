@@ -1,8 +1,11 @@
 package project.service.impementation;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import project.dto.auth.user.AuthUserDto;
+import project.exception.UnauthorizedException;
 import project.exception.UserNotFoundException;
 import project.model.User;
 import project.repository.UserRepository;
@@ -12,9 +15,9 @@ import project.service._UserService;
 @Service
 public class UserServiceImpl implements _UserService {
 
- private final UserRepository userRepository;
- private final PostService postService;
- private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
+    private final UserRepository userRepository;
+    private final PostService postService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     public UserServiceImpl(UserRepository userRepository,
                            PostService postService) {
@@ -30,7 +33,7 @@ public class UserServiceImpl implements _UserService {
     }
 
     @Override
-    public User findByEmail(String email) {
+    public User findByEmail(String email) throws UserNotFoundException {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
     }
@@ -70,8 +73,18 @@ public class UserServiceImpl implements _UserService {
     }
 
     @Override
-    public AuthUserDto createAuthUserDtoByEmail(String email) {
+    public AuthUserDto createAuthUserDtoByEmail(String email) throws UserNotFoundException {
         return createAuthUserDto(findByEmail(email));
+    }
+
+    public User checkUser() throws UnauthorizedException, UserNotFoundException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails != null) {
+            String email = userDetails.getUsername();
+            return findByEmail(email);
+        } else {
+            throw new UnauthorizedException("Требуется авторизация");
+        }
     }
 
 }

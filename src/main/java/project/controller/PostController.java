@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.dto.post.PostDto;
 import project.dto.post.PostListDto;
+import project.exception.DocumentNotFoundException;
 import project.service.PostService;
 
 @RestController
@@ -26,7 +27,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable int id) {
+    public ResponseEntity<PostDto> getPostById(@PathVariable int id) throws DocumentNotFoundException {
         return postService.getPost(id);
     }
 

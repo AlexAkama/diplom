@@ -9,6 +9,7 @@ import project.dto.auth.registration.RegistrationRequest;
 import project.dto.auth.registration.RegistrationResponse;
 import project.dto.auth.user.AuthResponse;
 import project.dto.main.OkResponse;
+import project.exception.UserNotFoundException;
 import project.service.CaptchaService;
 import project.service._AuthService;
 
@@ -37,7 +38,7 @@ public class AuthController {
      * @return {@link AuthResponse}
      */
     @GetMapping("/check")
-    public ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) {
+    public ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) throws UserNotFoundException {
         return authService.checkUserAuthorization(principal);
     }
 
@@ -75,7 +76,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequest request
-    ) {
+    ) throws UserNotFoundException {
         return authService.login(request);
     }
 

@@ -3,6 +3,8 @@ package project.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.dto.statistic.StatisticDto;
+import project.exception.UnauthorizedException;
+import project.exception.UserNotFoundException;
 import project.service.StatisticService;
 
 @RestController
@@ -16,12 +18,12 @@ public class StatisticController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<StatisticDto> getAllStatistics() {
+    public ResponseEntity<StatisticDto> getAllStatistics() throws UserNotFoundException, UnauthorizedException {
         return statisticService.getAllStatistic();
     }
 
     @GetMapping("/my")
-    public ResponseEntity<StatisticDto> getMyStatistics() {
+    public ResponseEntity<StatisticDto> getMyStatistics() throws UserNotFoundException, UnauthorizedException {
         return statisticService.getUserStatistic();
     }
 

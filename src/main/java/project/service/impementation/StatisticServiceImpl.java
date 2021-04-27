@@ -4,12 +4,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.dto.statistic.StatisticDto;
 import project.exception.UnauthorizedException;
+import project.exception.UserNotFoundException;
 import project.model.GlobalSetting;
 import project.model.User;
 import project.repository.GlobalSettingRepository;
-import project.repository.UserRepository;
-import project.service.PostService;
-import project.service.StatisticService;
+import project.service.*;
 
 import java.util.Optional;
 
@@ -21,48 +20,36 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final GlobalSettingRepository globalSettingRepository;
     private final PostService postService;
-    private final UserRepository userRepository;
+    private final _UserService userService;
 
     public StatisticServiceImpl(GlobalSettingRepository globalSettingRepository,
                                 PostService postService,
-                                UserRepository userRepository) {
+                                _UserService userService) {
         this.globalSettingRepository = globalSettingRepository;
         this.postService = postService;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
-    public ResponseEntity<StatisticDto> getAllStatistic() {
+    public ResponseEntity<StatisticDto> getAllStatistic() throws UserNotFoundException, UnauthorizedException {
         Optional<GlobalSetting> optionalPublicStatistic =
                 globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
         boolean statisticIsPublic =
                 optionalPublicStatistic.isPresent() && optionalPublicStatistic.get().getValue() == YES;
 
+        User user = userService.checkUser();
         StatisticDto response;
-        if (statisticIsPublic || checkModerator()) {
+        if (statisticIsPublic || user.isModerator()) {
             response = postService.getAllStatistic();
         } else throw new UnauthorizedException("Требуется авторизация");
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<StatisticDto> getUserStatistic() {
-        StatisticDto response;
-        User user = checkUser();
-        if (user != null) {
-            //FIXME Тут нужен видимо id текущего пользователя
-            response = postService.getUserStatistic(user.getId());
-        } else throw new UnauthorizedException("Требуется авторизация");
+    public ResponseEntity<StatisticDto> getUserStatistic() throws UserNotFoundException, UnauthorizedException {
+        User user = userService.checkUser();
+        StatisticDto response = postService.getUserStatistic(user.getId());
         return ResponseEntity.ok(response);
-    }
-
-    private User checkUser() {
-        //FIXME Тут нужен текущий пользователь, причем модератор
-        return userRepository.findByEmail("vasya@gmail.com").orElseThrow();
-    }
-
-    private boolean checkModerator() {
-        return checkUser().isModerator();
     }
 
 }

@@ -1,6 +1,6 @@
 package project.exception;
 
-abstract class AppException extends RuntimeException {
+abstract class AppException extends Exception {
 
     protected final String description;
 

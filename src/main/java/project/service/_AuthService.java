@@ -6,6 +6,7 @@ import project.dto.auth.registration.RegistrationResponse;
 import project.dto.auth.user.AuthResponse;
 import org.springframework.http.ResponseEntity;
 import project.dto.main.OkResponse;
+import project.exception.UserNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,9 +14,9 @@ import java.security.Principal;
 
 public interface _AuthService {
 
-    ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal);
+    ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) throws UserNotFoundException;
 
-    ResponseEntity<AuthResponse> login(LoginRequest request);
+    ResponseEntity<AuthResponse> login(LoginRequest request) throws UserNotFoundException;
 
     ResponseEntity<RegistrationResponse> registration(RegistrationRequest request);
 

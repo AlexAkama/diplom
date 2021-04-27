@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<PostDto> getPost(long postId) {
+    public ResponseEntity<PostDto> getPost(long postId) throws DocumentNotFoundException {
         Post post = postRepository.findPostWithBaseCondition(postId)
                 .orElseThrow(() -> new DocumentNotFoundException(String.format("Пост id:%d не найден", postId)));
         return ResponseEntity.ok(createPostDto(post));

@@ -10,6 +10,7 @@ import project.dto.auth.login.LoginRequest;
 import project.dto.auth.registration.*;
 import project.dto.auth.user.AuthResponse;
 import project.dto.main.OkResponse;
+import project.exception.UserNotFoundException;
 import project.service.*;
 
 import javax.servlet.http.*;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements _AuthService {
     }
 
     @Override
-    public ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) {
+    public ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) throws UserNotFoundException {
         AuthResponse response = new AuthResponse();
         if (principal != null) {
             response = new AuthResponse(userService.createAuthUserDtoByEmail(principal.getName()));
@@ -40,7 +41,7 @@ public class AuthServiceImpl implements _AuthService {
     }
 
     @Override
-    public ResponseEntity<AuthResponse> login(LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(LoginRequest request) throws UserNotFoundException {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
