@@ -11,7 +11,7 @@ import project.dto.auth.user.AuthResponse;
 import project.dto.main.OkResponse;
 import project.exception.UserNotFoundException;
 import project.service.CaptchaService;
-import project.service._AuthService;
+import project.service.AuthService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,10 +23,10 @@ import java.security.Principal;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final _AuthService authService;
+    private final AuthService authService;
     private final CaptchaService captchaService;
 
-    public AuthController(_AuthService authService,
+    public AuthController(AuthService authService,
                           CaptchaService captchaService) {
         this.authService = authService;
         this.captchaService = captchaService;

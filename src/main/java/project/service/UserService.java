@@ -5,7 +5,7 @@ import project.exception.UnauthorizedException;
 import project.exception.UserNotFoundException;
 import project.model.User;
 
-public interface _UserService {
+public interface UserService {
 
     User createUser(String name, String email, String password);
 

@@ -17,13 +17,13 @@ import javax.servlet.http.*;
 import java.security.Principal;
 
 @Service
-public class AuthServiceImpl implements _AuthService {
+public class AuthServiceImpl implements AuthService {
 
-    private final _UserService userService;
+    private final UserService userService;
     private final CaptchaService captchaService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthServiceImpl(_UserService userService,
+    public AuthServiceImpl(UserService userService,
                            CaptchaService captchaService,
                            AuthenticationManager authenticationManager) {
         this.userService = userService;

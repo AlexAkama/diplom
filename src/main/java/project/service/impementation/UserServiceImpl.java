@@ -10,10 +10,10 @@ import project.exception.UserNotFoundException;
 import project.model.User;
 import project.repository.UserRepository;
 import project.service.PostService;
-import project.service._UserService;
+import project.service.UserService;
 
 @Service
-public class UserServiceImpl implements _UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PostService postService;

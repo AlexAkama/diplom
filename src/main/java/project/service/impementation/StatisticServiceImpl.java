@@ -20,11 +20,11 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final GlobalSettingRepository globalSettingRepository;
     private final PostService postService;
-    private final _UserService userService;
+    private final UserService userService;
 
     public StatisticServiceImpl(GlobalSettingRepository globalSettingRepository,
                                 PostService postService,
-                                _UserService userService) {
+                                UserService userService) {
         this.globalSettingRepository = globalSettingRepository;
         this.postService = postService;
         this.userService = userService;

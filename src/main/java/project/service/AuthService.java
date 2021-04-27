@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 
-public interface _AuthService {
+public interface AuthService {
 
     ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) throws UserNotFoundException;
 
