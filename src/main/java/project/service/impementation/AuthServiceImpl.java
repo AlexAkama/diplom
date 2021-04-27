@@ -1,16 +1,19 @@
 package project.service.impementation;
 
-import project.dto.auth.login.LoginRequest;
-import project.dto.auth.registration.*;
-import project.dto.auth.user.AuthUserResponse;
-import project.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import project.dto.auth.login.LoginRequest;
+import project.dto.auth.registration.*;
+import project.dto.auth.user.AuthResponse;
+import project.dto.main.OkResponse;
 import project.service.*;
+
+import javax.servlet.http.*;
+import java.security.Principal;
 
 @Service
 public class AuthServiceImpl implements _AuthService {
@@ -28,21 +31,24 @@ public class AuthServiceImpl implements _AuthService {
     }
 
     @Override
-    public ResponseEntity<AuthUserResponse> checkUserAuthorization() {
-        AuthUserResponse response = new AuthUserResponse();
+    public ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) {
+        AuthResponse response = new AuthResponse();
+        if (principal != null) {
+            response = new AuthResponse(userService.createAuthUserDtoByEmail(principal.getName()));
+        }
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<AuthUserResponse> login(LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 ));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = userService.findByEmail(request.getEmail());
-        return ResponseEntity.ok(new AuthUserResponse(user));
+        AuthResponse response = new AuthResponse(userService.createAuthUserDtoByEmail(request.getEmail()));
+        return ResponseEntity.ok(response);
     }
 
     @Override
@@ -72,6 +78,22 @@ public class AuthServiceImpl implements _AuthService {
             response.setErrors(errors.getErrors());
         }
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<OkResponse> logout(HttpServletRequest request, HttpServletResponse response) {
+        SecurityContextHolder.clearContext();
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        for (Cookie cookie : request.getCookies()) {
+            cookie.setValue("");
+            cookie.setPath("/");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+        return ResponseEntity.ok(new OkResponse());
     }
 
 }

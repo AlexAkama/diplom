@@ -1,35 +1,17 @@
 package project.dto.auth.user;
 
-import project.model.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AuthUserDto {
     private long id;
     private String name;
     private String photo;
     private String email;
-    private boolean moderation = false;
-    private long moderationCount = 0;
-    private boolean settings = false;
+    private boolean moderation;
+    @JsonProperty("moderationCount")
+    private long moderationCounter;
+    private boolean settings;
 
-    public AuthUserDto(User user) {
-        id = user.getId();
-        name = user.getName();
-        photo = user.getPhoto();
-        email = user.getEmail();
-        if (user.isModerator()) {
-            moderation = true;
-            settings = true;
-            // FIXME вынести в DAO
-//            try (Session session = Connection.getSession()) {
-//                Transaction transaction = session.beginTransaction();
-//
-//                String hql = "select count(*) from Post p where p.moderationStatus = 'NEW'";
-//                moderationCount = (long) session.createQuery(hql).uniqueResult();
-//
-//                transaction.commit();
-//            }
-        }
-    }
 
     public long getId() {
         return id;
@@ -71,12 +53,12 @@ public class AuthUserDto {
         this.moderation = moderation;
     }
 
-    public long getModerationCount() {
-        return moderationCount;
+    public long getModerationCounter() {
+        return moderationCounter;
     }
 
-    public void setModerationCount(long moderationCount) {
-        this.moderationCount = moderationCount;
+    public void setModerationCounter(long moderationCounter) {
+        this.moderationCounter = moderationCounter;
     }
 
     public boolean isSettings() {

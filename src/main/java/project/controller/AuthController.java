@@ -7,11 +7,15 @@ import project.dto.auth.login.LoginRequest;
 import project.dto.auth.registration.CaptchaDto;
 import project.dto.auth.registration.RegistrationRequest;
 import project.dto.auth.registration.RegistrationResponse;
-import project.dto.auth.user.AuthUserResponse;
+import project.dto.auth.user.AuthResponse;
+import project.dto.main.OkResponse;
 import project.service.CaptchaService;
 import project.service._AuthService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 
 /** Контроллер авторизации */
 @Controller
@@ -30,11 +34,11 @@ public class AuthController {
     /**
      * Метод возвращает давнные о пользователе, если он авторизован
      *
-     * @return {@link AuthUserResponse}
+     * @return {@link AuthResponse}
      */
     @GetMapping("/check")
-    public ResponseEntity<AuthUserResponse> checkUserAuthorization() {
-        return authService.checkUserAuthorization();
+    public ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) {
+        return authService.checkUserAuthorization(principal);
     }
 
     /**
@@ -66,13 +70,18 @@ public class AuthController {
      * Метод возвращает данные полязователя если данные для входа верны
      *
      * @param request {@link LoginRequest}
-     * @return {@link AuthUserResponse}
+     * @return {@link AuthResponse}
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthUserResponse> login(
+    public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequest request
     ) {
         return authService.login(request);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<OkResponse> logout(HttpServletRequest request, HttpServletResponse response) {
+        return authService.logout(request, response);
     }
 
 }
