@@ -31,4 +31,6 @@ public interface PostService {
 
   StatisticDto getUserStatistic(long userId);
 
+  long getModerationCounter();
+
 }

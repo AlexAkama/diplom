@@ -71,4 +71,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT COUNT(p) FROM Post p WHERE p.moderationStatus = 'NEW'")
     long getPostToModerationCounter();
 
+    long countAllByModerationStatus(String status);
+
 }

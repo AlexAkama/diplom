@@ -142,6 +142,11 @@ public class PostServiceImpl implements PostService {
         );
     }
 
+    @Override
+    public long getModerationCounter() {
+        return postRepository.countAllByModerationStatus("NEW");
+    }
+
 
     private PostDto createAnnounce(Post post) {
         return createPostDto(post, ANNOUNCE);
