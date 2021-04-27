@@ -1,7 +1,7 @@
 package project.model;
 
-import project.model.emun.Role;
 import org.hibernate.annotations.Type;
+import project.model.emun.Role;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -149,4 +149,5 @@ public class User {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
+
 }

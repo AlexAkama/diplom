@@ -7,7 +7,7 @@ import project.exception.UnauthorizedException;
 import project.model.GlobalSetting;
 import project.model.User;
 import project.repository.GlobalSettingRepository;
-import project.repository._UserRepository;
+import project.repository.UserRepository;
 import project.service.PostService;
 import project.service.StatisticService;
 
@@ -21,11 +21,11 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final GlobalSettingRepository globalSettingRepository;
     private final PostService postService;
-    private final _UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public StatisticServiceImpl(GlobalSettingRepository globalSettingRepository,
                                 PostService postService,
-                                _UserRepository userRepository) {
+                                UserRepository userRepository) {
         this.globalSettingRepository = globalSettingRepository;
         this.postService = postService;
         this.userRepository = userRepository;
