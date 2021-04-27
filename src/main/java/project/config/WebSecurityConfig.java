@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
@@ -36,7 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(
 //                        "/api/post/moderation",
 //                        "/api/post/my",
-//                        "/api/post/moderation",
 //                        "/api/image",
 //                        "/api/comment/",
 //                        "/api/moderation",
@@ -47,7 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                ).authenticated()
 //                .antMatchers(HttpMethod.PUT, "/api/post/*").authenticated()
 //                .antMatchers(HttpMethod.POST, "/api/post/*").authenticated()
-                .antMatchers("/**", "/swagger-ui.html").permitAll()
+                .antMatchers("/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin().disable()
                 .formLogin().loginPage("/login").failureUrl("/")
@@ -56,9 +57,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    // получает логин/пароль и должен сказать сушествует такой пользователь или нет
+    // и если существует положить этого пользователя в SecurityContext
     protected DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        // userDetailsService пердаставляет пользователей для аутентификации
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
     }
@@ -73,4 +77,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
 }

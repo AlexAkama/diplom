@@ -1,19 +1,17 @@
 package project.model.emun;
 
 public enum Permission {
-    READER("user:read"),
-    WRITER("user:write"),
-    MODERATOR("user:moderate"),
-    ADMINISTRATOR("user:full");
+    READ("user:read"),
+    WRITE("user:write"),
+    MODERATE("user:moderate"),
+    ADMINISTRATE("user:full");
 
     private final String permission;
 
-    // CONSTRUCTORS
     Permission(String permission) {
         this.permission = permission;
     }
 
-    // GETTERS & SETTERS
     public String getPermission() {
         return permission;
     }

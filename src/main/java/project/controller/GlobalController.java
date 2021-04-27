@@ -1,6 +1,7 @@
 package project.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import project.dto.global.*;
 import project.service.GlobalService;
@@ -66,6 +67,7 @@ public class GlobalController {
      * @return объект с {@link CalendarDto данными кол-ва публикаций за год}
      */
     @GetMapping("/calendar")
+    @PreAuthorize("hasAuthority('user:moderate')")
     public ResponseEntity<CalendarDto> getCalendar(@RequestParam(value = "year", defaultValue = "2021") int year) {
         return globalService.getCalendar(year);
     }

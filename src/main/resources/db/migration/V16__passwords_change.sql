@@ -1,0 +1,1 @@
+UPDATE `users` SET `password` = '$2y$12$KI70e.FhfZfRGuWffIMTcepJLFQ0xYYsOWhgaIrpV3txvlPKgHs9y';
