@@ -10,8 +10,7 @@ import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
 import project.exception.DocumentNotFoundException;
 import project.model.Post;
-import project.model.emun.PostDtoStatus;
-import project.model.emun.PostViewMode;
+import project.model.emun.*;
 import project.repository.*;
 import project.service.PostService;
 
@@ -144,7 +143,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public long getModerationCounter() {
-        return postRepository.countAllByModerationStatus("NEW");
+        return postRepository.countAllByModerationStatus(ModerationStatus.NEW);
     }
 
 

@@ -14,7 +14,7 @@ CREATE TABLE `posts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `is_active` integer(4) NOT NULL,
   `moderation_status` varchar(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'NEW',
-  `text` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `text` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime(6) NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `view_count` int(11) NOT NULL,

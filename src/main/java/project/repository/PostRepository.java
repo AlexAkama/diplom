@@ -10,6 +10,7 @@ import project.dto.global.MapDto;
 import project.dto.post.PostYearDto;
 import project.dto.statistic.PostStatisticView;
 import project.model.Post;
+import project.model.emun.ModerationStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "SUM(p.viewCounter) AS viewCounter, " +
             "MIN(p.time) AS firstPublication " +
             "FROM Post p";
+    String statisticSelectByUserId = statisticSelect + " WHERE p.user.id = ?1";
 
     @Query("SELECT " + year + " AS year FROM Post p GROUP BY year ORDER BY " + year + " DESC")
     List<PostYearDto> getYearList();
@@ -65,12 +67,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(statisticSelect)
     PostStatisticView getAllStatistic();
 
-    @Query(statisticSelect +" WHERE p.user.id = ?1")
+    @Query(statisticSelectByUserId)
     PostStatisticView getUserStatistic(long userId);
 
     @Query("SELECT COUNT(p) FROM Post p WHERE p.moderationStatus = 'NEW'")
     long getPostToModerationCounter();
 
-    long countAllByModerationStatus(String status);
+    long countAllByModerationStatus(ModerationStatus status);
 
 }
