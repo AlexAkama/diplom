@@ -4,7 +4,8 @@ import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.config.AppConstant;
-import project.dto.*;
+import project.dto.CommentDto;
+import project.dto.UserDto;
 import project.dto.post.*;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
@@ -119,26 +120,14 @@ public class PostServiceImpl implements PostService {
     public StatisticDto getAllStatistic() {
         PostStatisticView postData = getAllPostStatistic();
         VoteCounterView voteData = getAllVote();
-        return new StatisticDto(
-                postData.getPostCounter(),
-                voteData.getLikeCounter(),
-                voteData.getDislikeCounter(),
-                postData.getViewCounter(),
-                AppConstant.dateToTimestamp(postData.getFirstPublication())
-        );
+        return createStatisticDto(postData, voteData);
     }
 
     @Override
     public StatisticDto getUserStatistic(long userId) {
         PostStatisticView postData = getUserPostStatistic(userId);
         VoteCounterView voteData = getUserVote(userId);
-        return new StatisticDto(
-                postData.getPostCounter(),
-                voteData.getLikeCounter(),
-                voteData.getDislikeCounter(),
-                postData.getViewCounter(),
-                AppConstant.dateToTimestamp(postData.getFirstPublication())
-        );
+        return createStatisticDto(postData, voteData);
     }
 
     @Override
@@ -191,5 +180,16 @@ public class PostServiceImpl implements PostService {
                 .map(this::createAnnounce)
                 .collect(Collectors.toList());
     }
+
+    private StatisticDto createStatisticDto(PostStatisticView postData, VoteCounterView voteData) {
+        return new StatisticDto(
+                postData.getPostCounter(),
+                voteData.getLikeCounter(),
+                voteData.getDislikeCounter(),
+                postData.getViewCounter(),
+                AppConstant.dateToTimestamp(postData.getFirstPublication())
+        );
+    }
+
 
 }

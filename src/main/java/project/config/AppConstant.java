@@ -22,15 +22,18 @@ public class AppConstant {
 
     /**
      * Перевод даты в кол-во секунд (timestamp)
+     *
      * @param date дата для вычисления
      * @return кол-во секунд
      */
     public static long dateToTimestamp(Date date) {
+        if (date == null) return 0;
         return date.getTime() / 1000;
     }
 
     /**
      * Перевод минут в милисекунды
+     *
      * @param minutes кол-во минут
      * @return кол-во миллисекунд
      */

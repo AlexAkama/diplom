@@ -33,7 +33,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     String statisticSelect = "SELECT " +
             "COUNT(p) AS postCounter, " +
-            "SUM(p.viewCounter) AS viewCounter, " +
+            "COALESCE(SUM(p.viewCounter),0) AS viewCounter, " +
             "MIN(p.time) AS firstPublication " +
             "FROM Post p";
     String statisticSelectByUserId = statisticSelect + " WHERE p.user.id = ?1";
