@@ -10,13 +10,13 @@ import project.model.Post;
 
 public interface PostService {
 
-  ResponseEntity<PostResponse> addPost(PostAddRequest request) throws UserNotFoundException, UnauthorizedException;
+  ResponseEntity<PostResponse> addPost(PostAddRequest request) throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException;
 
-  Post getPost(long postId) throws DocumentNotFoundException;
+  Post getPost(long postId) throws ObjectNotFoundException;
 
   void save(Post post);
 
-  ResponseEntity<PostDto> getPostResponse(long postId) throws DocumentNotFoundException;
+  ResponseEntity<PostDto> getPostResponse(long postId) throws ObjectNotFoundException;
 
   ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode);
 

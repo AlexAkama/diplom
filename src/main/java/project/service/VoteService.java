@@ -6,8 +6,8 @@ import project.exception.*;
 
 public interface VoteService {
 
-    ResponseEntity<? extends AppResponse> setLike(long postId) throws UserNotFoundException, UnauthorizedException, DocumentNotFoundException;
+    ResponseEntity<? extends AppResponse> setLike(long postId) throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException;
 
-    ResponseEntity<? extends AppResponse> setDislike(long postId) throws UserNotFoundException, UnauthorizedException, DocumentNotFoundException;
+    ResponseEntity<? extends AppResponse> setDislike(long postId) throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException;
 
 }

@@ -28,12 +28,12 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostResponse> addPost(
             @RequestBody PostAddRequest request
-    ) throws UserNotFoundException, UnauthorizedException {
+    ) throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
         return postService.addPost(request);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable int id) throws DocumentNotFoundException {
+    public ResponseEntity<PostDto> getPostById(@PathVariable int id) throws ObjectNotFoundException {
         return postService.getPostResponse(id);
     }
 

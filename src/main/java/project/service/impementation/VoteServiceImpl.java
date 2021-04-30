@@ -33,18 +33,18 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public ResponseEntity<? extends AppResponse> setLike(long postId)
-            throws UserNotFoundException, UnauthorizedException, DocumentNotFoundException {
+            throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
         return setVote(LIKE, postId);
     }
 
     @Override
     public ResponseEntity<? extends AppResponse> setDislike(long postId)
-            throws UserNotFoundException, UnauthorizedException, DocumentNotFoundException {
+            throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
         return setVote(DISLIKE, postId);
     }
 
     private ResponseEntity<? extends AppResponse> setVote(Vote vote, long postId)
-            throws UserNotFoundException, UnauthorizedException, DocumentNotFoundException {
+            throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
         User user = userService.checkUser();
         Optional<PostVote> optionalPostVote = voteRepository.findByPostIdAndUserId(postId, user.getId());
         if (optionalPostVote.isEmpty()) {

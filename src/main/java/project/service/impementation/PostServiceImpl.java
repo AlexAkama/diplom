@@ -16,8 +16,7 @@ import project.model.Post;
 import project.model.User;
 import project.model.emun.*;
 import project.repository.*;
-import project.service.PostService;
-import project.service.UserService;
+import project.service.*;
 
 import java.util.Date;
 import java.util.List;
@@ -34,6 +33,7 @@ public class PostServiceImpl implements PostService {
     private final TagToPostRepository tagToPostRepository;
     private final VoteRepository voteRepository;
     private final UserService userService;
+    private final TagService tagService;
 
     @Value("${config.post.minlength.title}")
     private int minTitleLength;
@@ -44,17 +44,19 @@ public class PostServiceImpl implements PostService {
                            PostCommentRepository postCommentRepository,
                            TagToPostRepository tagToPostRepository,
                            VoteRepository voteRepository,
-                           UserService userService) {
+                           UserService userService,
+                           TagService tagService) {
         this.postRepository = postRepository;
         this.postCommentRepository = postCommentRepository;
         this.tagToPostRepository = tagToPostRepository;
         this.voteRepository = voteRepository;
         this.userService = userService;
+        this.tagService = tagService;
     }
 
     @Override
     public ResponseEntity<PostResponse> addPost(PostAddRequest request)
-            throws UserNotFoundException, UnauthorizedException {
+            throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
         User user = userService.checkUser();
         PostResponse response = new PostResponse();
 
@@ -72,6 +74,7 @@ public class PostServiceImpl implements PostService {
             post.setUser(user);
             post.setModerationStatus(NEW);
             postRepository.save(post);
+            tagService.addTagsToPost(request.getTagArray(), post);
         } else {
             PostErrorMap errors = new PostErrorMap();
             if (!(title.length() > minTitleLength)) errors.addTitleError();
@@ -82,9 +85,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPost(long postId) throws DocumentNotFoundException {
+    public Post getPost(long postId) throws ObjectNotFoundException {
         return postRepository.findPostById(postId)
-                .orElseThrow(() -> new DocumentNotFoundException(String.format("Пост id:%d не найден", postId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пост id:%d не найден", postId)));
     }
 
     @Override
@@ -93,9 +96,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<PostDto> getPostResponse(long postId) throws DocumentNotFoundException {
+    public ResponseEntity<PostDto> getPostResponse(long postId) throws ObjectNotFoundException {
         Post post = postRepository.findPostById(postId)
-                .orElseThrow(() -> new DocumentNotFoundException(String.format("Пост id:%d не найден", postId)));
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пост id:%d не найден", postId)));
         return ResponseEntity.ok(createPostDto(post));
     }
 
