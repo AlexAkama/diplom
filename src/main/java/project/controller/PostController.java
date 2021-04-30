@@ -2,8 +2,7 @@ package project.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.dto.post.PostDto;
-import project.dto.post.PostListDto;
+import project.dto.post.*;
 import project.exception.*;
 import project.service.PostService;
 
@@ -24,6 +23,13 @@ public class PostController {
             @RequestParam("mode") String mode
     ) {
         return postService.getAnnounceList(offset, limit, mode);
+    }
+
+    @PostMapping
+    public ResponseEntity<PostResponse> addPost(
+            @RequestBody PostAddRequest request
+    ) throws UserNotFoundException, UnauthorizedException {
+        return postService.addPost(request);
     }
 
     @GetMapping("/{id}")

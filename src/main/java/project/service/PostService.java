@@ -1,8 +1,7 @@
 package project.service;
 
 import org.springframework.http.ResponseEntity;
-import project.dto.post.PostDto;
-import project.dto.post.PostListDto;
+import project.dto.post.*;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
 import project.dto.vote.VoteCounterView;
@@ -10,6 +9,8 @@ import project.exception.*;
 import project.model.Post;
 
 public interface PostService {
+
+  ResponseEntity<PostResponse> addPost(PostAddRequest request) throws UserNotFoundException, UnauthorizedException;
 
   Post getPost(long postId) throws DocumentNotFoundException;
 

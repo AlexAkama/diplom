@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import project.config.AppConstant;
 import project.dto.CommentDto;
 import project.dto.UserDto;
-import project.dto.post.PostDto;
-import project.dto.post.PostListDto;
+import project.dto.post.*;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
 import project.dto.vote.VoteCounterView;
@@ -19,6 +18,7 @@ import project.repository.*;
 import project.service.PostService;
 import project.service.UserService;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +44,21 @@ public class PostServiceImpl implements PostService {
         this.tagToPostRepository = tagToPostRepository;
         this.voteRepository = voteRepository;
         this.userService = userService;
+    }
+
+    @Override
+    public ResponseEntity<PostResponse> addPost(PostAddRequest request)
+            throws UserNotFoundException, UnauthorizedException {
+        User user = userService.checkUser();
+        Post post = new Post();
+        post.setActive(request.isActive());
+        post.setTitle(request.getTitle());
+        post.setText(request.getText());
+        post.setTime(new Date(request.getTimestamp() * 1000));
+        post.setUser(user);
+        post.setModerationStatus(NEW);
+        postRepository.save(post);
+        return null;
     }
 
     @Override
