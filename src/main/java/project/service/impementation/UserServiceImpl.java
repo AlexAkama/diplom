@@ -1,7 +1,6 @@
 package project.service.impementation;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import project.dto.auth.user.AuthUserDto;
@@ -78,9 +77,11 @@ public class UserServiceImpl implements UserService {
     }
 
     public User checkUser() throws UnauthorizedException, UserNotFoundException {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (userDetails != null) {
-            String email = userDetails.getUsername();
+        org.springframework.security.core.userdetails.User user =
+                (org.springframework.security.core.userdetails.User)
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user != null) {
+            String email = user.getUsername();
             return findByEmail(email);
         } else {
             throw new UnauthorizedException("Требуется авторизация");
