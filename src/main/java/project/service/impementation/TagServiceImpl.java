@@ -20,23 +20,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void addTags(String[] tags) {
-        for (String tag : tags) {
-            addTagIfNotExist(tag);
-        }
-    }
-
-    @Override
-    public void addTagIfNotExist(String tagName) {
-        if (!tagRepository.existsByName(tagName)) {
-            Tag tag = new Tag(tagName);
-            tagRepository.save(tag);
-        }
-    }
-
-    @Override
     public void addTagsToPost(String[] tags, Post post) throws ObjectNotFoundException {
-        addTags(tags);
         for (String tagName : tags) {
             Tag tag = tagRepository.findByName(tagName)
                     .orElseThrow(() -> new ObjectNotFoundException(String.format("Tag %s not found", tagName)));
