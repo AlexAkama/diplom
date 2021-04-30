@@ -16,3 +16,7 @@ config:
     image:
       width: 110
       height: 35
+  post:
+    minlength:
+      title: 3
+      text: 50

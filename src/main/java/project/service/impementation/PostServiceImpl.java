@@ -1,5 +1,6 @@
 package project.service.impementation;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,11 @@ public class PostServiceImpl implements PostService {
     private final VoteRepository voteRepository;
     private final UserService userService;
 
+    @Value("${config.post.minlength.title}")
+    private int minTitleLength;
+    @Value("${config.post.minlength.text}")
+    private int minTextLength;
+
     public PostServiceImpl(PostRepository postRepository,
                            PostCommentRepository postCommentRepository,
                            TagToPostRepository tagToPostRepository,
@@ -50,15 +56,29 @@ public class PostServiceImpl implements PostService {
     public ResponseEntity<PostResponse> addPost(PostAddRequest request)
             throws UserNotFoundException, UnauthorizedException {
         User user = userService.checkUser();
-        Post post = new Post();
-        post.setActive(request.isActive());
-        post.setTitle(request.getTitle());
-        post.setText(request.getText());
-        post.setTime(new Date(request.getTimestamp() * 1000));
-        post.setUser(user);
-        post.setModerationStatus(NEW);
-        postRepository.save(post);
-        return null;
+        PostResponse response = new PostResponse();
+
+        String title = request.getTitle();
+        String text = request.getText();
+
+        if (title.length() > minTitleLength && text.length() > minTextLength) {
+            Date date = new Date(request.getTimestamp() * 1000);
+            date = (date.before(new Date())) ? new Date() : date;
+            Post post = new Post();
+            post.setActive(request.isActive());
+            post.setTitle(request.getTitle());
+            post.setText(request.getText());
+            post.setTime(date);
+            post.setUser(user);
+            post.setModerationStatus(NEW);
+            postRepository.save(post);
+        } else {
+            PostErrorMap errors = new PostErrorMap();
+            if (!(title.length() > minTitleLength)) errors.addTitleError();
+            if (!(text.length() > minTextLength)) errors.addTextError();
+            response.setErrors(errors.getErrors());
+        }
+        return ResponseEntity.ok(response);
     }
 
     @Override
