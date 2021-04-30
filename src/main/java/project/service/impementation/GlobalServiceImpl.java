@@ -107,6 +107,7 @@ public class GlobalServiceImpl implements GlobalService {
             GlobalSetting publicStatistic = optionalPublicStatistic.get();
             if(!Objects.equals(settings.isPublicStatistic(), publicStatistic.getValue() == YES)) {
                 publicStatistic.setValue(getGlobalSettingsValue(settings.isPublicStatistic()));
+                globalSettingRepository.save(publicStatistic);
             }
         }
     }

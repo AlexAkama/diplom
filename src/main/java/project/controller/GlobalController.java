@@ -44,7 +44,7 @@ public class GlobalController {
      *
      * @param settings объект с {@link GlobalSettingsDto глобальными настройками}
      */
-    @PostMapping("/settings")
+    @PutMapping("/settings")
     public void setGlobalSettings(@RequestBody GlobalSettingsDto settings) {
         globalService.saveGlobalSettings(settings);
     }
