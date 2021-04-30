@@ -37,16 +37,16 @@ public class Post {
     @Column(nullable = false)
     private String text;
 
-    @Column(name = "view_count", nullable = false)
+    @Column(name = "view_count")
     private long viewCounter;
 
-    @Column(name = "like")
+    @Column(name = "like_count")
     private long likeCounter;
 
-    @Column(name = "dislike")
+    @Column(name = "dislike_count")
     private long dislikeCounter;
 
-    @Column(name = "comment")
+    @Column(name = "comment_count")
     private long commentCounter;
 
 

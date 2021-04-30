@@ -17,7 +17,7 @@ CREATE TABLE `posts` (
   `text` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime(6) NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `view_count` int(11) NOT NULL,
+  `view_count` int(11) NOT NULL DEFAULT 0,
   `moderator_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
