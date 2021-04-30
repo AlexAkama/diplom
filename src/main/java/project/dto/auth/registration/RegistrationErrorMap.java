@@ -1,47 +1,26 @@
 package project.dto.auth.registration;
 
-import java.util.HashMap;
-import java.util.Map;
+import project.dto.main.AppErrorMap;
 
 /**
  * Конструктор ошибок в данных для регистрации пользователя
  */
-public class RegistrationErrorMap {
-
-    Map<String, String> errors;
-
-    // CONSTRUCTORS
-    public RegistrationErrorMap() {
-        errors = new HashMap<>();
-    }
-
-
-    //METHODS
+public class RegistrationErrorMap extends AppErrorMap {
 
     public void addEmailError() {
-        errors.put("email", "Этот e-mail уже зарегистрирован");
+        getErrors().put("email", "Этот e-mail уже зарегистрирован");
     }
 
     public void addNameError() {
-        errors.put("name", "Имя указано не верно");
+        getErrors().put("name", "Имя указано не верно");
     }
 
     public void addPasswordError() {
-        errors.put("password", "Пароль короче 6-ти символов");
+        getErrors().put("password", "Пароль короче 6-ти символов");
     }
 
     public void addCaptchaError() {
-        errors.put("captcha", "Код с картинки введен не верно");
+        getErrors().put("captcha", "Код с картинки введен не верно");
     }
 
-
-    // GETTERS & SETTERS
-
-    public Map<String, String> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(Map<String, String> errors) {
-        this.errors = errors;
-    }
 }

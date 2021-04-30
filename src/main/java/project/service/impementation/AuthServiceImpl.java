@@ -68,10 +68,10 @@ public class AuthServiceImpl implements AuthService {
 
         boolean registration = emailCorrect && nameCorrect && passwordCorrect && captchaCorrect;
         RegistrationResponse response = new RegistrationResponse();
-        RegistrationErrorMap errors = new RegistrationErrorMap();
         if (registration) {
             userService.createAndSaveUser(name, email, password);
         } else {
+            RegistrationErrorMap errors = new RegistrationErrorMap();
             if (!emailCorrect) errors.addEmailError();
             if (!nameCorrect) errors.addNameError();
             if (!passwordCorrect) errors.addPasswordError();
