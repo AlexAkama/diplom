@@ -2,8 +2,10 @@ package project.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import project.dto.post.VoteCounterView;
+import project.dto.vote.VoteCounterView;
 import project.model.PostVote;
+
+import java.util.Optional;
 
 public interface VoteRepository extends JpaRepository<PostVote, Long> {
 
@@ -22,5 +24,7 @@ public interface VoteRepository extends JpaRepository<PostVote, Long> {
 
     @Query(baseSelectByPostId)
     VoteCounterView getPostResult(long postId);
+
+    Optional<PostVote> findByPostIdAndUserId(long postId, long userId);
 
 }

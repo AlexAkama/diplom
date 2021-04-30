@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import project.config.AppConstant;
 import project.dto.CommentDto;
 import project.dto.UserDto;
-import project.dto.post.*;
+import project.dto.post.PostDto;
+import project.dto.post.PostListDto;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
+import project.dto.vote.VoteCounterView;
 import project.exception.*;
 import project.model.Post;
 import project.model.User;
@@ -45,7 +47,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<PostDto> getPost(long postId) throws DocumentNotFoundException {
+    public Post getPost(long postId) throws DocumentNotFoundException {
+        return postRepository.findPostById(postId)
+                .orElseThrow(() -> new DocumentNotFoundException(String.format("Пост id:%d не найден", postId)));
+    }
+
+    @Override
+    public void save(Post post) {
+        postRepository.save(post);
+    }
+
+    @Override
+    public ResponseEntity<PostDto> getPostResponse(long postId) throws DocumentNotFoundException {
         Post post = postRepository.findPostById(postId)
                 .orElseThrow(() -> new DocumentNotFoundException(String.format("Пост id:%d не найден", postId)));
         return ResponseEntity.ok(createPostDto(post));

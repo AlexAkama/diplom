@@ -28,7 +28,7 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable int id) throws DocumentNotFoundException {
-        return postService.getPost(id);
+        return postService.getPostResponse(id);
     }
 
     @GetMapping("/byTag")

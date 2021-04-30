@@ -1,16 +1,21 @@
 package project.service;
 
 import org.springframework.http.ResponseEntity;
-import project.dto.post.VoteCounterView;
 import project.dto.post.PostDto;
 import project.dto.post.PostListDto;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
+import project.dto.vote.VoteCounterView;
 import project.exception.*;
+import project.model.Post;
 
 public interface PostService {
 
-  ResponseEntity<PostDto> getPost(long postId) throws DocumentNotFoundException;
+  Post getPost(long postId) throws DocumentNotFoundException;
+
+  void save(Post post);
+
+  ResponseEntity<PostDto> getPostResponse(long postId) throws DocumentNotFoundException;
 
   ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode);
 
