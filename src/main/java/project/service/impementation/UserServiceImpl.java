@@ -7,21 +7,23 @@ import project.dto.auth.user.AuthUserDto;
 import project.exception.UnauthorizedException;
 import project.exception.UserNotFoundException;
 import project.model.User;
+import project.repository.PostRepository;
 import project.repository.UserRepository;
-import project.service.PostService;
 import project.service.UserService;
+
+import static project.model.emun.ModerationStatus.NEW;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PostService postService;
+    private final PostRepository postRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     public UserServiceImpl(UserRepository userRepository,
-                           PostService postService) {
+                           PostRepository postRepository) {
         this.userRepository = userRepository;
-        this.postService = postService;
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -62,7 +64,7 @@ public class UserServiceImpl implements UserService {
         if (user.isModerator()) {
             dto.setModeration(true);
             dto.setSettings(true);
-            dto.setModerationCounter(postService.getModerationCounter());
+            dto.setModerationCounter(postRepository.countAllByActiveAndModerationStatus(true, NEW));
         } else {
             dto.setModeration(false);
             dto.setSettings(false);

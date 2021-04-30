@@ -6,13 +6,17 @@ import project.dto.post.PostDto;
 import project.dto.post.PostListDto;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
-import project.exception.DocumentNotFoundException;
+import project.exception.*;
 
 public interface PostService {
 
   ResponseEntity<PostDto> getPost(long postId) throws DocumentNotFoundException;
 
   ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode);
+
+  ResponseEntity<PostListDto> getAnnounceListToModeration(int offset, int limit, String status) throws UserNotFoundException, UnauthorizedException;
+
+  ResponseEntity<PostListDto> getAnnounceListByAuthUser(int offset, int limit, String status) throws UserNotFoundException, UnauthorizedException;
 
   ResponseEntity<PostListDto> getAnnounceListByTag(int offset, int limit, String tag);
 
@@ -31,7 +35,5 @@ public interface PostService {
   StatisticDto getAllStatistic();
 
   StatisticDto getUserStatistic(long userId);
-
-  long getModerationCounter();
 
 }

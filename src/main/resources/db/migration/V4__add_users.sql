@@ -1,7 +1,7 @@
 insert into users(name, email, password, reg_time, is_moderator)
-values ('Евгения', 'euq@gmal.com', '123', '2001-01-01 01:01:01', 0);
+values ('Евгения', 'euq@gmail.com', '123', '2001-01-01 01:01:01', 0);
 insert into users(name, email, password, reg_time, is_moderator)
-values ('Екатерина', 'ekaterina@gmail', '234', '2002-02-02 02:02:02', 0);
+values ('Екатерина', 'ekaterina@gmail.com', '234', '2002-02-02 02:02:02', 0);
 insert into users(name, email, password, reg_time, is_moderator)
 values ('Александра', 'alexa@gmail.com', '345', '2003-03-03 03:03:03', 0);
 insert into users(name, email, password, reg_time, is_moderator)

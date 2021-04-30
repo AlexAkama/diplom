@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.dto.post.PostDto;
 import project.dto.post.PostListDto;
-import project.exception.DocumentNotFoundException;
+import project.exception.*;
 import project.service.PostService;
 
 @RestController
@@ -59,37 +59,22 @@ public class PostController {
         return postService.getAnnounceListBySearch(offset, limit, search);
     }
 
-//    @GetMapping("/my")
-//    public ResponseEntity<PostListDto> getUserPostStatistic(
-//            @RequestParam("offset") int offset,
-//            @RequestParam("limit") int limit,
-//            @RequestParam("status") String status
-//    ) {
-//
-//        //FIXME --- ИМИТАЦИЯ АВТОРИЗАЦИИ ---
-//        int id = 10;
-//        String byId = "p.user.id= " + id + " and ";
-//
-//        String condition = "";
-//        PostState postState = PostState.valueOf(status.toUpperCase());
-//        switch (postState) {
-//            case PENDING:
-//                condition = "p.isActive=1 and p.moderationStatus='NEW'";
-//                break;
-//            case DECLINED:
-//                condition = "p.isActive=1 and p.moderationStatus='DECLINED'";
-//                break;
-//            case PUBLISHED:
-//                condition = "p.isActive=1 and p.moderationStatus='ACCEPTED'";
-//                break;
-//            case INACTIVE:
-//                condition = " p.isActive=0";
-//                break;
-//        }
-//
-//        return new ResponseEntity<>(
-//                new PostListDto().makeAnnounces(byId + condition, offset, limit),
-//                HttpStatus.OK);
-//    }
+    @GetMapping("/moderation")
+    public ResponseEntity<PostListDto> getToModerationList(
+            @RequestParam("offset") int offset,
+            @RequestParam("limit") int limit,
+            @RequestParam("status") String status
+    ) throws UserNotFoundException, UnauthorizedException {
+        return postService.getAnnounceListToModeration(offset, limit, status);
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<PostListDto> getUserPostStatistic(
+            @RequestParam("offset") int offset,
+            @RequestParam("limit") int limit,
+            @RequestParam("status") String status
+    ) throws UserNotFoundException, UnauthorizedException {
+        return postService.getAnnounceListByAuthUser(offset, limit, status);
+    }
 
 }

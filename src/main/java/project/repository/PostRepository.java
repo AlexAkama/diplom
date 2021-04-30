@@ -52,6 +52,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("FROM Post p WHERE " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
     Page<Post> findAllWithBaseCondition(Pageable pageable);
 
+    Optional<Post> findPostById(long id);
+
     @Query("FROM Post p WHERE p.id = ?1 AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
     Optional<Post> findPostWithBaseCondition(long id);
 
@@ -61,7 +63,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("FROM Post p WHERE " + byDateCondition + " AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
     Page<Post> findPostByDateWithBaseCondition(String date, Pageable pageable);
 
-    @Query("FROM Post p WHERE ("  + bySearchCondition + ") AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    @Query("FROM Post p WHERE (" + bySearchCondition + ") AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
     Page<Post> findPostBySearchWithBaseCondition(String search, Pageable pageable);
 
     @Query(statisticSelect)
@@ -73,6 +75,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT COUNT(p) FROM Post p WHERE p.moderationStatus = 'NEW'")
     long getPostToModerationCounter();
 
-    long countAllByModerationStatus(ModerationStatus status);
+    long countAllByActiveAndModerationStatus(boolean active, ModerationStatus status);
+
+    Page<Post> findAllByActiveAndModerationStatusAndModeratorId
+            (boolean active, ModerationStatus status, long moderatorId, Pageable pageable);
+
+    Page<Post> findAllByActiveAndModerationStatus(boolean active, ModerationStatus status, Pageable pageable);
+
+    Page<Post> findAllByActiveAndModerationStatusAndUserId
+            (boolean active, ModerationStatus status, long userId, Pageable pageable);
 
 }

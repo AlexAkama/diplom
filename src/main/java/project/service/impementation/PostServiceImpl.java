@@ -9,15 +9,18 @@ import project.dto.UserDto;
 import project.dto.post.*;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
-import project.exception.DocumentNotFoundException;
+import project.exception.*;
 import project.model.Post;
+import project.model.User;
 import project.model.emun.*;
 import project.repository.*;
 import project.service.PostService;
+import project.service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static project.model.emun.ModerationStatus.*;
 import static project.model.emun.PostDtoStatus.ANNOUNCE;
 
 @Service
@@ -27,20 +30,23 @@ public class PostServiceImpl implements PostService {
     private final PostCommentRepository postCommentRepository;
     private final TagToPostRepository tagToPostRepository;
     private final VoteRepository voteRepository;
+    private final UserService userService;
 
     public PostServiceImpl(PostRepository postRepository,
                            PostCommentRepository postCommentRepository,
                            TagToPostRepository tagToPostRepository,
-                           VoteRepository voteRepository) {
+                           VoteRepository voteRepository,
+                           UserService userService) {
         this.postRepository = postRepository;
         this.postCommentRepository = postCommentRepository;
         this.tagToPostRepository = tagToPostRepository;
         this.voteRepository = voteRepository;
+        this.userService = userService;
     }
 
     @Override
     public ResponseEntity<PostDto> getPost(long postId) throws DocumentNotFoundException {
-        Post post = postRepository.findPostWithBaseCondition(postId)
+        Post post = postRepository.findPostById(postId)
                 .orElseThrow(() -> new DocumentNotFoundException(String.format("Пост id:%d не найден", postId)));
         return ResponseEntity.ok(createPostDto(post));
     }
@@ -65,6 +71,43 @@ public class PostServiceImpl implements PostService {
         }
         Pageable pageable = PageRequest.of(pageNumber, limit, sort);
         Page<Post> page = postRepository.findAllWithBaseCondition(pageable);
+        List<PostDto> list = createPostListFromPage(page);
+        return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
+    }
+
+    @Override
+    public ResponseEntity<PostListDto> getAnnounceListToModeration(int offset, int limit, String status)
+            throws UserNotFoundException, UnauthorizedException {
+        User user = userService.checkUser();
+        ModerationStatus moderationStatus = valueOf(status.toUpperCase());
+        long moderatorId = (moderationStatus == NEW)
+                ? 0
+                : user.getId();
+        int pageNumber = offset / limit;
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Page<Post> page;
+        switch (moderationStatus) {
+            case ACCEPTED:
+                page = getModerationPostPage(ACCEPTED, moderatorId, pageable);
+                break;
+            case DECLINED:
+                page = getModerationPostPage(DECLINED, moderatorId, pageable);
+                break;
+            default:
+                page = getModerationPostPage(pageable);
+        }
+        List<PostDto> list = createPostListFromPage(page);
+        return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
+    }
+
+    @Override
+    public ResponseEntity<PostListDto> getAnnounceListByAuthUser(int offset, int limit, String status)
+            throws UserNotFoundException, UnauthorizedException {
+        long userId = userService.checkUser().getId();
+        PostState postState = PostState.valueOf(status.toUpperCase());
+        int pageNumber = offset / limit;
+        Pageable pageable = PageRequest.of(pageNumber, limit);
+        Page<Post> page = getUserPostPage(userId, postState, pageable);
         List<PostDto> list = createPostListFromPage(page);
         return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
     }
@@ -130,11 +173,6 @@ public class PostServiceImpl implements PostService {
         return createStatisticDto(postData, voteData);
     }
 
-    @Override
-    public long getModerationCounter() {
-        return postRepository.countAllByModerationStatus(ModerationStatus.NEW);
-    }
-
 
     private PostDto createAnnounce(Post post) {
         return createPostDto(post, ANNOUNCE);
@@ -191,5 +229,35 @@ public class PostServiceImpl implements PostService {
         );
     }
 
+    private Page<Post> getModerationPostPage(ModerationStatus status, long moderatorId, Pageable pageable) {
+        return (moderatorId == 0)
+                ? postRepository.findAllByActiveAndModerationStatus(true, status, pageable)
+                : postRepository.findAllByActiveAndModerationStatusAndModeratorId(
+                true, status, moderatorId, pageable);
+    }
+
+    private Page<Post> getModerationPostPage(Pageable pageable) {
+        return getModerationPostPage(NEW, 0, pageable);
+    }
+
+    private Page<Post> getUserPostPage(long userId, PostState postState, Pageable pageable) {
+        boolean active = postState != PostState.INACTIVE;
+        ModerationStatus status;
+        switch (postState) {
+            case INACTIVE:
+            case PENDING:
+                status = NEW;
+                break;
+            case DECLINED:
+                status = DECLINED;
+                break;
+            case PUBLISHED:
+                status = ACCEPTED;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + postState);
+        }
+        return postRepository.findAllByActiveAndModerationStatusAndUserId(active, status, userId, pageable);
+    }
 
 }
