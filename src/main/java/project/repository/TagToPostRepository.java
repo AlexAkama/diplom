@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import project.dto.global.MapDto;
-import project.model.TagToPost;
+import project.model.*;
 
 import java.util.List;
 
@@ -19,5 +19,7 @@ public interface TagToPostRepository extends JpaRepository<TagToPost, Long> {
 
     @Query("SELECT t.name FROM TagToPost tp JOIN Tag t ON tp.tag.id = t.id WHERE tp.post.id = ?1")
     List<String> getTagList(long postId);
+
+    boolean existsByTagAndPost(Tag tag, Post post);
 
 }
