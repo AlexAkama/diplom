@@ -12,8 +12,4 @@ import project.dto.main.AppResponseWithErrors;
  */
 public class RegistrationResponse extends AppResponseWithErrors {
 
-    public RegistrationResponse() {
-        setResult(true);
-    }
-
 }

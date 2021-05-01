@@ -12,6 +12,10 @@ public class AppResponseWithErrors extends AppResponse{
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> errors;
 
+    public AppResponseWithErrors() {
+        setResult(true);
+    }
+
     public Map<String, String> getErrors() {
         return errors;
     }
