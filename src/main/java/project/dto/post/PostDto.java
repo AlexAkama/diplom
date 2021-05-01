@@ -1,7 +1,7 @@
 package project.dto.post;
 
 import com.fasterxml.jackson.annotation.*;
-import project.dto.CommentDto;
+import project.dto.comment.CommentDto;
 import project.dto.UserDto;
 
 import java.util.List;

@@ -5,7 +5,7 @@ import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.config.AppConstant;
-import project.dto.CommentDto;
+import project.dto.comment.CommentDto;
 import project.dto.UserDto;
 import project.dto.post.*;
 import project.dto.statistic.PostStatisticView;
