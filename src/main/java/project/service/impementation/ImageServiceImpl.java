@@ -53,7 +53,7 @@ public class ImageServiceImpl implements ImageService {
             } catch (IOException e) {
                 throw new InternalServerException(String.format("Неудалось сохранить файл %s", filename));
             }
-            relativeFile = File.separator + "img" + relativeFile;
+            relativeFile = File.separator + "images" + relativeFile;
             throw new ImageSuccess(relativeFile);
         } else {
             ImageResponse response = new ImageResponse();
