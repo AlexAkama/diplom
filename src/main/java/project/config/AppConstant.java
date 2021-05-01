@@ -41,4 +41,14 @@ public class AppConstant {
         return minutes * 60 * 1000;
     }
 
+    /**
+     * Перевод байтов в мегабайты
+     *
+     * @param bytes кол-во байтов
+     * @return кол-во мегабайтов
+     */
+    public static long byteToMb(long bytes) {
+        return bytes / 1024 / 1024;
+    }
+
 }

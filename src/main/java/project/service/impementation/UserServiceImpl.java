@@ -79,10 +79,10 @@ public class UserServiceImpl implements UserService {
     }
 
     public User checkUser() throws UnauthorizedException, NotFoundException {
-        Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (object != null) {
-            org.springframework.security.core.userdetails.User user =
-                    (org.springframework.security.core.userdetails.User) object;
+        org.springframework.security.core.userdetails.User user =
+                (org.springframework.security.core.userdetails.User)
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user != null) {
             String email = user.getUsername();
             return findByEmail(email);
         } else {

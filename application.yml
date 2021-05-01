@@ -23,3 +23,14 @@ config:
   comment:
     minlength:
       text: 10
+
+upload:
+  path: \s:\Education\SKILLBOX\JAVA\Diplom\uploads_image
+  maxSize: 1048576
+  expansion: jpg, png
+  randomPart:
+    value: 3
+    length: 2
+
+avatar:
+  path: \s:\Education\SKILLBOX\JAVA\Diplom\uploads_avatar
