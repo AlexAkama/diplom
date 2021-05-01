@@ -7,6 +7,8 @@ import project.repository.TagRepository;
 import project.repository.TagToPostRepository;
 import project.service.TagService;
 
+import java.util.Locale;
+
 @Service
 public class TagServiceImpl implements TagService {
 
@@ -20,7 +22,24 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public void addTags(String[] tags) {
+        for (String tag : tags) {
+            addTagIfNotExist(tag);
+        }
+    }
+
+    @Override
+    public void addTagIfNotExist(String tagName) {
+        tagName = tagName.toLowerCase(Locale.ROOT);
+        if (!tagRepository.existsByName(tagName)) {
+            Tag tag = new Tag(tagName);
+            tagRepository.save(tag);
+        }
+    }
+
+    @Override
     public void addTagsToPost(String[] tags, Post post) throws NotFoundException {
+        addTags(tags);
         for (String tagName : tags) {
             Tag tag = tagRepository.findByName(tagName)
                     .orElseThrow(() -> new NotFoundException(String.format("Tag %s not found", tagName)));
