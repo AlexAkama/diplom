@@ -1,7 +1,7 @@
 package project.service.impementation;
 
 import org.springframework.stereotype.Service;
-import project.exception.ObjectNotFoundException;
+import project.exception.NotFoundException;
 import project.model.*;
 import project.repository.TagRepository;
 import project.repository.TagToPostRepository;
@@ -20,10 +20,10 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void addTagsToPost(String[] tags, Post post) throws ObjectNotFoundException {
+    public void addTagsToPost(String[] tags, Post post) throws NotFoundException {
         for (String tagName : tags) {
             Tag tag = tagRepository.findByName(tagName)
-                    .orElseThrow(() -> new ObjectNotFoundException(String.format("Tag %s not found", tagName)));
+                    .orElseThrow(() -> new NotFoundException(String.format("Tag %s not found", tagName)));
             if (!tagToPostRepository.existsByTagAndPost(tag, post)) {
                 TagToPost tagToPost = new TagToPost(tag, post);
                 tagToPostRepository.save(tagToPost);

@@ -4,7 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.dto.main.*;
 import project.dto.vote.VoteCounterView;
-import project.exception.*;
+import project.exception.NotFoundException;
+import project.exception.UnauthorizedException;
 import project.model.*;
 import project.model.emun.Vote;
 import project.repository.VoteRepository;
@@ -33,18 +34,18 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public ResponseEntity<? extends AppResponse> setLike(long postId)
-            throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
+            throws NotFoundException, UnauthorizedException {
         return setVote(LIKE, postId);
     }
 
     @Override
     public ResponseEntity<? extends AppResponse> setDislike(long postId)
-            throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
+            throws NotFoundException, UnauthorizedException {
         return setVote(DISLIKE, postId);
     }
 
     private ResponseEntity<? extends AppResponse> setVote(Vote vote, long postId)
-            throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
+            throws NotFoundException, UnauthorizedException {
         User user = userService.checkUser();
         Optional<PostVote> optionalPostVote = voteRepository.findByPostIdAndUserId(postId, user.getId());
         if (optionalPostVote.isEmpty()) {

@@ -56,7 +56,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseEntity<PostResponse> addPost(PostAddRequest request)
-            throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
+            throws NotFoundException, UnauthorizedException {
         User user = userService.checkUser();
         PostResponse response = new PostResponse();
 
@@ -85,9 +85,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPost(long postId) throws ObjectNotFoundException {
+    public Post getPost(long postId) throws NotFoundException {
         return postRepository.findPostById(postId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пост id:%d не найден", postId)));
+                .orElseThrow(() -> new NotFoundException(String.format("Пост id:%d не найден", postId)));
     }
 
     @Override
@@ -96,9 +96,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<PostDto> getPostResponse(long postId) throws ObjectNotFoundException {
-        Post post = postRepository.findPostById(postId)
-                .orElseThrow(() -> new ObjectNotFoundException(String.format("Пост id:%d не найден", postId)));
+    public ResponseEntity<PostDto> getPostResponse(long postId) throws NotFoundException {
+        Post post = getPost(postId);
         return ResponseEntity.ok(createPostDto(post));
     }
 
@@ -128,7 +127,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseEntity<PostListDto> getAnnounceListToModeration(int offset, int limit, String status)
-            throws UserNotFoundException, UnauthorizedException {
+            throws NotFoundException, UnauthorizedException {
         User user = userService.checkUser();
         ModerationStatus moderationStatus = valueOf(status.toUpperCase());
         long moderatorId = (moderationStatus == NEW)
@@ -153,7 +152,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseEntity<PostListDto> getAnnounceListByAuthUser(int offset, int limit, String status)
-            throws UserNotFoundException, UnauthorizedException {
+            throws NotFoundException, UnauthorizedException {
         long userId = userService.checkUser().getId();
         PostState postState = PostState.valueOf(status.toUpperCase());
         int pageNumber = offset / limit;

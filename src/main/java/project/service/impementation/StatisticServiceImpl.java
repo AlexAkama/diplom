@@ -3,8 +3,8 @@ package project.service.impementation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.dto.statistic.StatisticDto;
+import project.exception.NotFoundException;
 import project.exception.UnauthorizedException;
-import project.exception.UserNotFoundException;
 import project.model.GlobalSetting;
 import project.model.User;
 import project.repository.GlobalSettingRepository;
@@ -31,7 +31,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public ResponseEntity<StatisticDto> getAllStatistic() throws UserNotFoundException, UnauthorizedException {
+    public ResponseEntity<StatisticDto> getAllStatistic() throws NotFoundException, UnauthorizedException {
         Optional<GlobalSetting> optionalPublicStatistic =
                 globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
         boolean statisticIsPublic =
@@ -46,7 +46,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public ResponseEntity<StatisticDto> getUserStatistic() throws UserNotFoundException, UnauthorizedException {
+    public ResponseEntity<StatisticDto> getUserStatistic() throws NotFoundException, UnauthorizedException {
         User user = userService.checkUser();
         StatisticDto response = postService.getUserStatistic(user.getId());
         return ResponseEntity.ok(response);

@@ -1,15 +1,15 @@
 package project.service;
 
 import project.dto.auth.user.AuthUserDto;
+import project.exception.NotFoundException;
 import project.exception.UnauthorizedException;
-import project.exception.UserNotFoundException;
 import project.model.User;
 
 public interface UserService {
 
     User createUser(String name, String email, String password);
 
-    User findByEmail (String email) throws UserNotFoundException;
+    User findByEmail (String email) throws NotFoundException;
 
     boolean existByEmail(String email);
 
@@ -19,8 +19,8 @@ public interface UserService {
 
     AuthUserDto createAuthUserDto(User user);
 
-    AuthUserDto createAuthUserDtoByEmail(String email) throws UserNotFoundException;
+    AuthUserDto createAuthUserDtoByEmail(String email) throws NotFoundException;
 
-    User checkUser() throws UnauthorizedException, UserNotFoundException;
+    User checkUser() throws UnauthorizedException, NotFoundException;
 
 }

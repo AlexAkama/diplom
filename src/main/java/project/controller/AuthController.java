@@ -4,14 +4,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project.dto.auth.login.LoginRequest;
-import project.dto.auth.registration.CaptchaDto;
-import project.dto.auth.registration.RegistrationRequest;
-import project.dto.auth.registration.RegistrationResponse;
+import project.dto.auth.registration.*;
 import project.dto.auth.user.AuthResponse;
 import project.dto.main.OkResponse;
-import project.exception.UserNotFoundException;
-import project.service.CaptchaService;
+import project.exception.NotFoundException;
 import project.service.AuthService;
+import project.service.CaptchaService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +36,7 @@ public class AuthController {
      * @return {@link AuthResponse}
      */
     @GetMapping("/check")
-    public ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) throws UserNotFoundException {
+    public ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) throws NotFoundException {
         return authService.checkUserAuthorization(principal);
     }
 
@@ -76,7 +74,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequest request
-    ) throws UserNotFoundException {
+    ) throws NotFoundException {
         return authService.login(request);
     }
 

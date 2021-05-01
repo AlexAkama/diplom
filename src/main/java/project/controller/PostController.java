@@ -28,12 +28,12 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostResponse> addPost(
             @RequestBody PostAddRequest request
-    ) throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
+    ) throws NotFoundException, UnauthorizedException {
         return postService.addPost(request);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable int id) throws ObjectNotFoundException {
+    public ResponseEntity<PostDto> getPostById(@PathVariable int id) throws NotFoundException {
         return postService.getPostResponse(id);
     }
 
@@ -70,7 +70,7 @@ public class PostController {
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("status") String status
-    ) throws UserNotFoundException, UnauthorizedException {
+    ) throws NotFoundException, UnauthorizedException {
         return postService.getAnnounceListToModeration(offset, limit, status);
     }
 
@@ -79,7 +79,7 @@ public class PostController {
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("status") String status
-    ) throws UserNotFoundException, UnauthorizedException {
+    ) throws NotFoundException, UnauthorizedException {
         return postService.getAnnounceListByAuthUser(offset, limit, status);
     }
 

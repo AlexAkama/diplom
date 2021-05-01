@@ -2,11 +2,13 @@ package project.service.impementation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import project.dto.comment.CommentRequest;
+import project.dto.comment.CommentResponse;
 import project.dto.main.OkResponse;
 import project.dto.moderation.ModerationRequest;
-import project.exception.*;
-import project.model.Post;
-import project.model.User;
+import project.exception.NotFoundException;
+import project.exception.UnauthorizedException;
+import project.model.*;
 import project.model.emun.ModerationDecision;
 import project.model.emun.ModerationStatus;
 import project.service.*;
@@ -30,7 +32,7 @@ public class SubPostServiceImpl implements SubPostService {
 
     @Override
     public ResponseEntity<OkResponse> setModerationDecision(ModerationRequest request)
-            throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException {
+            throws NotFoundException, UnauthorizedException {
         User user = userService.checkUser();
         if (user.isModerator()) {
             ModerationDecision decision = valueOf(request.getDecision().toUpperCase());
@@ -42,6 +44,14 @@ public class SubPostServiceImpl implements SubPostService {
             return ResponseEntity.ok(new OkResponse());
         } else // TODO Передалать на 403
             throw new UnauthorizedException("Нет прав для модерации");
+    }
+
+    @Override
+    public ResponseEntity<CommentResponse> addComment(CommentRequest request)
+            throws NotFoundException, UnauthorizedException {
+        User user = userService.checkUser();
+        PostComment comment = new PostComment();
+        return null;
     }
 
 }

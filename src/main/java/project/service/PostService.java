@@ -10,19 +10,19 @@ import project.model.Post;
 
 public interface PostService {
 
-  ResponseEntity<PostResponse> addPost(PostAddRequest request) throws UserNotFoundException, UnauthorizedException, ObjectNotFoundException;
+  ResponseEntity<PostResponse> addPost(PostAddRequest request) throws NotFoundException, UnauthorizedException;
 
-  Post getPost(long postId) throws ObjectNotFoundException;
+  Post getPost(long postId) throws NotFoundException;
 
   void save(Post post);
 
-  ResponseEntity<PostDto> getPostResponse(long postId) throws ObjectNotFoundException;
+  ResponseEntity<PostDto> getPostResponse(long postId) throws NotFoundException;
 
   ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode);
 
-  ResponseEntity<PostListDto> getAnnounceListToModeration(int offset, int limit, String status) throws UserNotFoundException, UnauthorizedException;
+  ResponseEntity<PostListDto> getAnnounceListToModeration(int offset, int limit, String status) throws NotFoundException, UnauthorizedException;
 
-  ResponseEntity<PostListDto> getAnnounceListByAuthUser(int offset, int limit, String status) throws UserNotFoundException, UnauthorizedException;
+  ResponseEntity<PostListDto> getAnnounceListByAuthUser(int offset, int limit, String status) throws NotFoundException, UnauthorizedException;
 
   ResponseEntity<PostListDto> getAnnounceListByTag(int offset, int limit, String tag);
 

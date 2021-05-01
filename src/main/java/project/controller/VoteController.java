@@ -21,14 +21,14 @@ public class VoteController {
     @PostMapping("like")
     public ResponseEntity<? extends AppResponse> setLike(
             @RequestBody VoteRequest request
-    ) throws UserNotFoundException, ObjectNotFoundException, UnauthorizedException {
+    ) throws NotFoundException, UnauthorizedException {
         return voteService.setLike(request.getPostId());
     }
 
     @PostMapping("dislike")
     public ResponseEntity<? extends AppResponse> setDislike(
             @RequestBody VoteRequest request
-    ) throws UserNotFoundException, ObjectNotFoundException, UnauthorizedException {
+    ) throws NotFoundException, UnauthorizedException {
         return voteService.setDislike(request.getPostId());
     }
 

@@ -4,8 +4,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import project.dto.auth.user.AuthUserDto;
+import project.exception.NotFoundException;
 import project.exception.UnauthorizedException;
-import project.exception.UserNotFoundException;
 import project.model.User;
 import project.repository.PostRepository;
 import project.repository.UserRepository;
@@ -34,9 +34,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) throws UserNotFoundException {
+    public User findByEmail(String email) throws NotFoundException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
+                .orElseThrow(() -> new NotFoundException(String.format("User %s not found", email)));
     }
 
     @Override
@@ -74,11 +74,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthUserDto createAuthUserDtoByEmail(String email) throws UserNotFoundException {
+    public AuthUserDto createAuthUserDtoByEmail(String email) throws NotFoundException {
         return createAuthUserDto(findByEmail(email));
     }
 
-    public User checkUser() throws UnauthorizedException, UserNotFoundException {
+    public User checkUser() throws UnauthorizedException, NotFoundException {
         Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (object != null) {
             org.springframework.security.core.userdetails.User user =
