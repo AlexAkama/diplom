@@ -7,6 +7,7 @@ import project.dto.statistic.StatisticDto;
 import project.dto.vote.VoteCounterView;
 import project.exception.*;
 import project.model.Post;
+import project.model.PostComment;
 
 public interface PostService {
 
@@ -15,6 +16,12 @@ public interface PostService {
   Post getPost(long postId) throws NotFoundException;
 
   void save(Post post);
+
+  PostComment getComment(long commentId) throws NotFoundException;
+
+  void save(PostComment comment);
+
+  PostComment saveAndFlush(PostComment comment);
 
   ResponseEntity<PostDto> getPostResponse(long postId) throws NotFoundException;
 

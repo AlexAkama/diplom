@@ -26,8 +26,6 @@ public class PostComment {
     @Column(nullable = false)
     private String text;
 
-    public PostComment() {
-    }
 
     public long getId() {
         return id;

@@ -5,15 +5,15 @@ import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.config.AppConstant;
-import project.dto.comment.CommentDto;
 import project.dto.UserDto;
+import project.dto.comment.CommentDto;
 import project.dto.post.*;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
 import project.dto.vote.VoteCounterView;
-import project.exception.*;
-import project.model.Post;
-import project.model.User;
+import project.exception.NotFoundException;
+import project.exception.UnauthorizedException;
+import project.model.*;
 import project.model.emun.*;
 import project.repository.*;
 import project.service.*;
@@ -93,6 +93,21 @@ public class PostServiceImpl implements PostService {
     @Override
     public void save(Post post) {
         postRepository.save(post);
+    }
+
+    @Override
+    public PostComment getComment(long commentId) throws NotFoundException {
+        return postCommentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException(String.format("Комментарий id:%d не найден", commentId)));
+    }
+
+    @Override
+    public void save(PostComment comment) {
+        postCommentRepository.save(comment);
+    }
+
+    public PostComment saveAndFlush(PostComment comment) {
+        return postCommentRepository.saveAndFlush(comment);
     }
 
     @Override
