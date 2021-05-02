@@ -1,4 +1,4 @@
-package project.service.impementation;
+package project.service.implementation;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;

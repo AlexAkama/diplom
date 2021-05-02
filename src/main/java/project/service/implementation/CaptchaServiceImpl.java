@@ -1,4 +1,4 @@
-package project.service.impementation;
+package project.service.implementation;
 
 import com.github.cage.GCage;
 import org.springframework.beans.factory.annotation.Value;

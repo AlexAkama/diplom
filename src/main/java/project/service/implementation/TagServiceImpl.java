@@ -1,4 +1,4 @@
-package project.service.impementation;
+package project.service.implementation;
 
 import org.springframework.stereotype.Service;
 import project.exception.NotFoundException;
