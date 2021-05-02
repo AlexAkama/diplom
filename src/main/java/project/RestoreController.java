@@ -20,11 +20,14 @@ public class RestoreController {
     }
 
     @PostMapping("/restore")
-    public ResponseEntity<? extends AppResponse> restorePassword(
+    public ResponseEntity<AppResponse> restorePassword(
             @RequestBody RestoreRequest request,
             HttpServletRequest httpServletRequest
     ) throws InternalServerException, NotFoundException {
         return restoreService.restorePassword(request, httpServletRequest);
     }
+
+//    @PostMapping("/password")
+//    public
 
 }

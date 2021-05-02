@@ -26,9 +26,14 @@ public class RestoreServiceImpl implements RestoreService {
 
     @Override
     public ResponseEntity<AppResponse> restorePassword(RestoreRequest request, HttpServletRequest httpServletRequest)
-            throws NotFoundException, InternalServerException {
+            throws InternalServerException {
         String email = request.getEmail();
-        User user = userService.findByEmail(email);
+        User user;
+        try {
+            user = userService.findByEmail(email);
+        } catch (NotFoundException e) {
+            return ResponseEntity.ok(new AppResponse().bad());
+        }
         String code = UUID.randomUUID().toString().replace("-", "");
         user.setCode(code);
         userService.save(user);
