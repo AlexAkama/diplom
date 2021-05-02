@@ -34,3 +34,5 @@ upload:
 
 avatar:
   path: \s:\Education\SKILLBOX\JAVA\Diplom\uploads_avatar
+  width: 36
+  height: 36
