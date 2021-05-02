@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import project.dto.image.ImageErrorMap;
 import project.dto.image.ImageResponse;
 import project.exception.*;
+import project.model.User;
 import project.service.ImageService;
 import project.service.UserService;
 
@@ -40,7 +41,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public ResponseEntity<ImageResponse> save(MultipartFile file)
             throws BadRequestException, UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException {
-//        User user = userService.checkUser();
+        User user = userService.checkUser();
         ImageErrorMap errors = checkFile(file);
         if (errors.getErrors().isEmpty()) {
             String relativePath = buildPath();

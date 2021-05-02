@@ -9,6 +9,7 @@ import project.exception.UnauthorizedException;
 import project.model.User;
 import project.repository.PostRepository;
 import project.repository.UserRepository;
+import project.security.SecurityUser;
 import project.service.UserService;
 
 import static project.model.emun.ModerationStatus.NEW;
@@ -79,13 +80,12 @@ public class UserServiceImpl implements UserService {
     }
 
     public User checkUser() throws UnauthorizedException, NotFoundException {
-        org.springframework.security.core.userdetails.User user =
-                (org.springframework.security.core.userdetails.User)
-                        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user != null) {
+        SecurityUser user;
+        try {
+            user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String email = user.getUsername();
             return findByEmail(email);
-        } else {
+        } catch (Exception e) {
             throw new UnauthorizedException("Требуется авторизация");
         }
     }
