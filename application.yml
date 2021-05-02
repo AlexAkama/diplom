@@ -11,6 +11,8 @@ flyway.password:
 flyway.locations:
 
 config:
+  password:
+    minlength: 6
   captcha:
     timeout: 10
     image:
@@ -23,6 +25,8 @@ config:
   comment:
     minlength:
       text: 10
+  restore:
+    timeout: 10
 
 upload:
   path:

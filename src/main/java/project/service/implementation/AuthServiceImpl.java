@@ -1,5 +1,6 @@
 package project.service.implementation;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,12 @@ public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final CaptchaService captchaService;
     private final AuthenticationManager authenticationManager;
+
+    /**
+     * Минимальная длинна пароля
+     */
+    @Value("${config.password.minlength}")
+    private int passwordMinLength;
 
     public AuthServiceImpl(UserService userService,
                            CaptchaService captchaService,
@@ -64,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
         boolean emailCorrect = !userService.existByEmail(email);
         boolean captchaCorrect = captchaService.isCodeCorrect(code, secret);
         boolean nameCorrect = name.length() == name.replaceAll("[^A-Za-zА-Яа-яЁё\\s]+", "").length();
-        boolean passwordCorrect = password.length() > 5;
+        boolean passwordCorrect = password.length() >= passwordMinLength;
 
         boolean registration = emailCorrect && nameCorrect && passwordCorrect && captchaCorrect;
         RegistrationResponse response = new RegistrationResponse();
