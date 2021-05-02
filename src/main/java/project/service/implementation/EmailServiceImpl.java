@@ -3,6 +3,7 @@ package project.service.implementation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import project.exception.InternalServerException;
 import project.service.EmailService;
 
@@ -17,10 +18,12 @@ import java.util.regex.Pattern;
  * <h2>РЕАЛИЗАЦИЯ СЕРВИСА ОТПРАВКИ ПИСЕМ</h2>
  * {@link EmailService Oбязательные функции}
  */
+@Service
 public class EmailServiceImpl implements EmailService {
 
     private static final String RESTORE_SUBJECT = "Восстановление пароля";
-    private static final String RESTORE_TEMPLATE = "<p>Для восстановления пароля перейдите по ссылке</p><p>%s</p>";
+    private static final String RESTORE_TEMPLATE = "<p>Для восстановления пароля перейдите " +
+            "<a href=\"%s\">по ссылке</a></p>";
 
     /**
      * Инструмент для отпpавки электронной почты
