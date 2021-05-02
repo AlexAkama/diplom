@@ -1,6 +1,6 @@
 package project;
 
-public class RestoreRequest {
+public class PasswordRestoreRequest {
 
     private String email;
 

@@ -7,9 +7,9 @@ import project.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface RestoreService {
+public interface PasswordService {
 
-    ResponseEntity<AppResponse> restorePassword(RestoreRequest request, HttpServletRequest httpServletRequest)
+    ResponseEntity<AppResponse> restorePassword(PasswordRestoreRequest request, HttpServletRequest httpServletRequest)
             throws NotFoundException, InternalServerException;
 
 }

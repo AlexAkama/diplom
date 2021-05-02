@@ -13,19 +13,19 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 @Service
-public class RestoreServiceImpl implements RestoreService {
+public class PasswordServiceImpl implements PasswordService {
 
     private final UserService userService;
     private final EmailService emailService;
 
-    public RestoreServiceImpl(UserService userService,
-                              EmailService emailService) {
+    public PasswordServiceImpl(UserService userService,
+                               EmailService emailService) {
         this.userService = userService;
         this.emailService = emailService;
     }
 
     @Override
-    public ResponseEntity<AppResponse> restorePassword(RestoreRequest request, HttpServletRequest httpServletRequest)
+    public ResponseEntity<AppResponse> restorePassword(PasswordRestoreRequest request, HttpServletRequest httpServletRequest)
             throws InternalServerException {
         String email = request.getEmail();
         User user;

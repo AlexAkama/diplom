@@ -11,20 +11,20 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/api/auth")
-public class RestoreController {
+public class PasswordController {
 
-    private final RestoreService restoreService;
+    private final PasswordService passwordService;
 
-    public RestoreController(RestoreService restoreService) {
-        this.restoreService = restoreService;
+    public PasswordController(PasswordService passwordService) {
+        this.passwordService = passwordService;
     }
 
     @PostMapping("/restore")
     public ResponseEntity<AppResponse> restorePassword(
-            @RequestBody RestoreRequest request,
+            @RequestBody PasswordRestoreRequest request,
             HttpServletRequest httpServletRequest
     ) throws InternalServerException, NotFoundException {
-        return restoreService.restorePassword(request, httpServletRequest);
+        return passwordService.restorePassword(request, httpServletRequest);
     }
 
 //    @PostMapping("/password")
