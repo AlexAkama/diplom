@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.dto.comment.*;
-import project.dto.main.OkResponse;
+import project.dto.main.AppResponse;
 import project.dto.moderation.ModerationRequest;
 import project.exception.NotFoundException;
 import project.exception.UnauthorizedException;
@@ -36,7 +36,7 @@ public class SubPostServiceImpl implements SubPostService {
     }
 
     @Override
-    public ResponseEntity<OkResponse> setModerationDecision(ModerationRequest request)
+    public ResponseEntity<AppResponse> setModerationDecision(ModerationRequest request)
             throws NotFoundException, UnauthorizedException {
         User user = userService.checkUser();
         if (user.isModerator()) {
@@ -46,7 +46,7 @@ public class SubPostServiceImpl implements SubPostService {
             post.setModerationStatus(status);
             post.setModerator(user);
             postService.save(post);
-            return ResponseEntity.ok(new OkResponse());
+            return ResponseEntity.ok(new AppResponse().ok());
         } else // TODO Передалать на 403
             throw new UnauthorizedException("Нет прав для модерации");
     }

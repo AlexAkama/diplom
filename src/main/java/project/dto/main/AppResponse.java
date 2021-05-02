@@ -3,7 +3,7 @@ package project.dto.main;
 /**
  * Базовый ответ результата
  */
-public abstract class AppResponse {
+public class AppResponse {
 
     /**
      * Отвтет запрос удачен/нет
@@ -11,9 +11,9 @@ public abstract class AppResponse {
     private boolean result;
 
     /**
-     * Конструктор базового ответа,<br>результат по умолчанию null
+     * Конструктор базового ответа,<br>результат по умолчанию false
      */
-    protected AppResponse() {
+    public AppResponse() {
         result = false;
     }
 
@@ -25,4 +25,14 @@ public abstract class AppResponse {
     public void setResult(boolean result) {
         this.result = result;
     }
+
+    public AppResponse ok() {
+        setResult(true);
+        return this;
+    }
+
+    public AppResponse bad() {
+        return this;
+    }
+
 }

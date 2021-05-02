@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import project.dto.comment.CommentRequest;
 import project.dto.comment.CommentResponse;
 import project.dto.image.ImageResponse;
-import project.dto.main.OkResponse;
+import project.dto.main.AppResponse;
 import project.dto.moderation.ModerationRequest;
 import project.exception.*;
 import project.service.ImageService;
@@ -27,7 +27,7 @@ public class SubPostController {
     }
 
     @PostMapping("/moderation")
-    public ResponseEntity<OkResponse> setModerationDecision(
+    public ResponseEntity<AppResponse> setModerationDecision(
             @RequestBody ModerationRequest request
     ) throws NotFoundException, UnauthorizedException {
         return subPostService.setModerationDecision(request);

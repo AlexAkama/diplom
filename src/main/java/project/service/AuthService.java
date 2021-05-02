@@ -5,7 +5,7 @@ import project.dto.auth.login.LoginRequest;
 import project.dto.auth.registration.RegistrationRequest;
 import project.dto.auth.registration.RegistrationResponse;
 import project.dto.auth.user.AuthResponse;
-import project.dto.main.OkResponse;
+import project.dto.main.AppResponse;
 import project.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,5 +20,5 @@ public interface AuthService {
 
     ResponseEntity<RegistrationResponse> registration(RegistrationRequest request);
 
-    ResponseEntity<OkResponse> logout(HttpServletRequest request, HttpServletResponse response);
+    ResponseEntity<AppResponse> logout(HttpServletRequest request, HttpServletResponse response);
 }

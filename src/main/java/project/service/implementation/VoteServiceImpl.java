@@ -33,18 +33,18 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public ResponseEntity<? extends AppResponse> setLike(long postId)
+    public ResponseEntity<AppResponse> setLike(long postId)
             throws NotFoundException, UnauthorizedException {
         return setVote(LIKE, postId);
     }
 
     @Override
-    public ResponseEntity<? extends AppResponse> setDislike(long postId)
+    public ResponseEntity<AppResponse> setDislike(long postId)
             throws NotFoundException, UnauthorizedException {
         return setVote(DISLIKE, postId);
     }
 
-    private ResponseEntity<? extends AppResponse> setVote(Vote vote, long postId)
+    private ResponseEntity<AppResponse> setVote(Vote vote, long postId)
             throws NotFoundException, UnauthorizedException {
         User user = userService.checkUser();
         Optional<PostVote> optionalPostVote = voteRepository.findByPostIdAndUserId(postId, user.getId());
@@ -57,15 +57,15 @@ public class VoteServiceImpl implements VoteService {
             postVote.setValue(vote.getValue());
             voteRepository.save(postVote);
             updatePost(post);
-            return ResponseEntity.ok(new OkResponse());
+            return ResponseEntity.ok(new AppResponse().ok());
         } else if (optionalPostVote.get().getValue() != vote.getValue()) {
             PostVote postVote = optionalPostVote.get();
             postVote.setValue(-postVote.getValue());
             voteRepository.save(postVote);
             updatePost(postVote.getPost());
-            return ResponseEntity.ok(new OkResponse());
+            return ResponseEntity.ok(new AppResponse().ok());
         } else {
-            return ResponseEntity.ok(new BadResponse());
+            return ResponseEntity.ok(new AppResponse().bad());
         }
     }
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import project.dto.auth.login.LoginRequest;
 import project.dto.auth.registration.*;
 import project.dto.auth.user.AuthResponse;
-import project.dto.main.OkResponse;
+import project.dto.main.AppResponse;
 import project.exception.NotFoundException;
 import project.service.*;
 
@@ -82,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<OkResponse> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<AppResponse> logout(HttpServletRequest request, HttpServletResponse response) {
         SecurityContextHolder.clearContext();
         HttpSession session = request.getSession(false);
         if (session != null) {
@@ -94,7 +94,7 @@ public class AuthServiceImpl implements AuthService {
             cookie.setMaxAge(0);
             response.addCookie(cookie);
         }
-        return ResponseEntity.ok(new OkResponse());
+        return ResponseEntity.ok(new AppResponse().ok());
     }
 
 }
