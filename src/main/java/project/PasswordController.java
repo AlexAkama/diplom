@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project.dto.main.AppResponse;
+import project.dto.main.AppResponseWithErrors;
 import project.exception.InternalServerException;
 import project.exception.NotFoundException;
 
@@ -27,7 +28,11 @@ public class PasswordController {
         return passwordService.restorePassword(request, httpServletRequest);
     }
 
-//    @PostMapping("/password")
-//    public
+    @PostMapping("/password")
+    public ResponseEntity<AppResponseWithErrors> changePassword(
+            @RequestBody PasswordChangeRequest request
+    ) throws NotFoundException {
+        return passwordService.changePassword(request);
+    }
 
 }
