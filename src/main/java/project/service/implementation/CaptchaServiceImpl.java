@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import project.config.AppConstant;
 import project.dto.auth.registration.CaptchaDto;
 import project.model.CaptchaCode;
-import project.repository.CaptchaRepository;
+import project.repository.CaptchaCodeRepository;
 import project.service.CaptchaService;
 
 import javax.imageio.ImageIO;
@@ -20,7 +20,7 @@ import java.util.*;
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
 
-    private final CaptchaRepository captchaRepository;
+    private final CaptchaCodeRepository captchaCodeRepository;
 
     /**
      * Срок действия кода капчи в минутах
@@ -40,8 +40,8 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Value("${config.captcha.image.height}")
     private int height;
 
-    public CaptchaServiceImpl(CaptchaRepository captchaRepository) {
-        this.captchaRepository = captchaRepository;
+    public CaptchaServiceImpl(CaptchaCodeRepository captchaCodeRepository) {
+        this.captchaCodeRepository = captchaCodeRepository;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CaptchaServiceImpl implements CaptchaService {
 
         String secret = randomString(25);
         CaptchaCode captchaCode = new CaptchaCode(new Date(), token, secret);
-        captchaRepository.save(captchaCode);
+        captchaCodeRepository.save(captchaCode);
 
         return ResponseEntity.ok(new CaptchaDto(secret, image));
     }
@@ -77,8 +77,8 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Override
     public boolean isCodeCorrect(String code, String secret) {
         Date limit = new Date(System.currentTimeMillis() - AppConstant.minuteToMillis(captchaTimeout));
-        captchaRepository.deleteAllByTimeBefore(limit);
-        Optional<CaptchaCode> result = captchaRepository.findCaptchaCodeBySecretCode(secret);
+        captchaCodeRepository.deleteAllByTimeBefore(limit);
+        Optional<CaptchaCode> result = captchaCodeRepository.findCaptchaCodeBySecretCode(secret);
         return result.isPresent() && result.get().getCode().equals(code);
     }
 

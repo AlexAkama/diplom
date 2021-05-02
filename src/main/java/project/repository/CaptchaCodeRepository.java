@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Repository
-public interface CaptchaRepository extends JpaRepository<CaptchaCode, Long> {
+public interface CaptchaCodeRepository extends JpaRepository<CaptchaCode, Long> {
 
     Optional<CaptchaCode> findCaptchaCodeBySecretCode(String secret);
 
