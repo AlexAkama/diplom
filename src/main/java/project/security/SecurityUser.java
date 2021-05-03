@@ -20,14 +20,10 @@ public class SecurityUser implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserDetails fromUser(User user) {
-        return new org.springframework.security.core.userdetails.User(
+    public static SecurityUser fromUser(User user) {
+        return new SecurityUser(
                 user.getEmail(),
                 user.getPassword(),
-                true,
-                true,
-                true,
-                true,
                 user.getRole().getAuthorities()
         );
     }

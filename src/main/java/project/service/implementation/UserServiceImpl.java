@@ -80,11 +80,9 @@ public class UserServiceImpl implements UserService {
     }
 
     public User checkUser() throws UnauthorizedException, NotFoundException {
-        SecurityUser user;
         try {
-            user = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String email = user.getUsername();
-            return findByEmail(email);
+            SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return userRepository.findByEmail(securityUser.getUsername()).orElseThrow();
         } catch (Exception e) {
             throw new UnauthorizedException("Требуется авторизация");
         }
