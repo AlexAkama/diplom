@@ -1,4 +1,4 @@
-package project;
+package project.service.implementation;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import project.config.AppConstant;
 import project.dto.main.AppResponse;
 import project.dto.main.AppResponseWithErrors;
+import project.dto.password.*;
 import project.exception.InternalServerException;
 import project.exception.NotFoundException;
 import project.model.*;
 import project.repository.*;
-import project.service.EmailService;
-import project.service.UserService;
+import project.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;

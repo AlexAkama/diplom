@@ -1,6 +1,8 @@
-package project;
+package project.service;
 
 import org.springframework.http.ResponseEntity;
+import project.dto.password.PasswordChangeRequest;
+import project.dto.password.PasswordRestoreRequest;
 import project.dto.main.AppResponse;
 import project.dto.main.AppResponseWithErrors;
 import project.exception.InternalServerException;

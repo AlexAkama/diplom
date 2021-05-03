@@ -1,4 +1,4 @@
-package project;
+package project.dto.password;
 
 public class PasswordRestoreRequest {
 
