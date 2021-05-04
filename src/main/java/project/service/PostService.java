@@ -25,7 +25,7 @@ public interface PostService {
 
   PostComment saveAndFlush(PostComment comment);
 
-  ResponseEntity<PostDto> getPostResponse(long postId) throws NotFoundException;
+  ResponseEntity<PostDto> getPostForResponse(long postId) throws NotFoundException;
 
   ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode);
 

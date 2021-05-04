@@ -34,7 +34,7 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable long id) throws NotFoundException {
-        return postService.getPostResponse(id);
+        return postService.getPostForResponse(id);
     }
 
     @PutMapping("/{id}")

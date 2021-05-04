@@ -125,8 +125,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<PostDto> getPostResponse(long postId) throws NotFoundException {
+    public ResponseEntity<PostDto> getPostForResponse(long postId) throws NotFoundException {
         Post post = getPost(postId);
+        boolean increment = true;
+        try {
+            User user = userService.checkUser();
+            if (user.isModerator() || user.getId() == post.getUser().getId()) increment = false;
+        } catch (UnauthorizedException ignored) {
+        }
+        if (increment) post.setViewCounter(post.getViewCounter() + 1);
+        postRepository.save(post);
         return ResponseEntity.ok(createPostDto(post));
     }
 
