@@ -44,6 +44,6 @@ public class SubPostController {
     public ResponseEntity<ImageResponse> saveImage(
             @RequestParam("image") MultipartFile file
     ) throws BadRequestException, UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException {
-        return imageService.save(file);
+        return imageService.saveImage(file);
     }
 }

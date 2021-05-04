@@ -11,9 +11,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${upload.path}")
     private String uploadPath;
 
-    @Value("${avatar.path}")
-    private String avatarPath;
-
     /**
      * Add handlers to serve static resources such as images, js, and, css
      * files from specific locations under web application root, the classpath,
@@ -23,10 +20,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/images/**")
-                .addResourceLocations("file://" + uploadPath + "/");
-        registry.addResourceHandler("/avatars/**")
-                .addResourceLocations("file://" + avatarPath + "/");
+        registry.addResourceHandler("/image/**")
+                .addResourceLocations("file://" + uploadPath + "/image/");
+        registry.addResourceHandler("/avatar/**")
+                .addResourceLocations("file://" + uploadPath + "/avatar/");
     }
 
 }

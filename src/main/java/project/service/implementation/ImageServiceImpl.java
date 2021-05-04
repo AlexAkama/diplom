@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import project.dto.image.ImageErrorMap;
 import project.dto.image.ImageResponse;
 import project.exception.*;
-import project.model.User;
+import project.model.emun.ImageTarget;
 import project.service.ImageService;
 import project.service.UserService;
 
@@ -17,6 +17,8 @@ import java.util.Random;
 import java.util.Set;
 
 import static project.config.AppConstant.byteToMb;
+import static project.model.emun.ImageTarget.AVATAR;
+import static project.model.emun.ImageTarget.IMAGE;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -39,23 +41,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ResponseEntity<ImageResponse> save(MultipartFile file)
+    public ResponseEntity<ImageResponse> saveImage(MultipartFile file)
             throws BadRequestException, UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException {
-        User user = userService.checkUser();
+        userService.checkUser();
         ImageErrorMap errors = checkFile(file);
         if (errors.getErrors().isEmpty()) {
-            String relativePath = buildPath();
-            String filename = file.getOriginalFilename();
-            String relativeFile = relativePath + File.separator + filename;
-            String resultFile = uploadPath + relativeFile;
-            createDirIfNotExist(resultFile);
-            try {
-                file.transferTo(new File(resultFile));
-            } catch (IOException e) {
-                throw new InternalServerException(String.format("Неудалось сохранить файл %s", filename));
-            }
-            relativeFile = File.separator + "images" + relativeFile;
-            throw new ImageSuccess(relativeFile);
+            String name =save(file, IMAGE);
+            throw new ImageSuccess(name);
         } else {
             ImageResponse response = new ImageResponse();
             response.setErrors(errors.getErrors());
@@ -63,7 +55,13 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-    private ImageErrorMap checkFile(MultipartFile file) {
+    @Override
+    public String saveAvatar(MultipartFile file)
+            throws BadRequestException, UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException {
+        return save(file, AVATAR);
+    }
+
+    public ImageErrorMap checkFile(MultipartFile file) {
         ImageErrorMap errors = new ImageErrorMap();
         if (file == null || file.getOriginalFilename() == null) {
             errors.addNotFoundError();
@@ -79,6 +77,20 @@ public class ImageServiceImpl implements ImageService {
                 errors.addSizeError(byteToMb(file.getSize()), byteToMb(fileMaxSize));
         }
         return errors;
+    }
+
+    private String save(MultipartFile file, ImageTarget target) throws InternalServerException {
+        String relativePath = buildPath();
+        String filename = file.getOriginalFilename();
+        String relativeFile = relativePath + File.separator + filename;
+        String resultFile = uploadPath + File.separator + target.toString().toLowerCase() + relativeFile;
+        createDirIfNotExist(resultFile);
+        try {
+            file.transferTo(new File(resultFile));
+        } catch (IOException e) {
+            throw new InternalServerException(String.format("Неудалось сохранить файл %s", filename));
+        }
+        return File.separator + target.toString().toLowerCase() + relativeFile;
     }
 
     private String getExpansionFromFileName(String filename) {
