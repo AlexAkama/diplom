@@ -72,7 +72,6 @@ public class User {
         this.password = password;
         this.registrationTime = new Date();
         this.moderator = false;
-        this.photo = "/default-1.png";
     }
 
     public Role getRole() {

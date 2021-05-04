@@ -1,5 +1,6 @@
 package project.service.implementation;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class UserServiceImpl implements UserService {
     private final PostRepository postRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
+    @Value("${avatar.default}")
+    private String defaultAvatar;
+
     public UserServiceImpl(UserRepository userRepository,
                            PostRepository postRepository) {
         this.userRepository = userRepository;
@@ -31,6 +35,7 @@ public class UserServiceImpl implements UserService {
     public User createUser(String name, String email, String password) {
         String encodePassword = bCryptPasswordEncoder.encode(password);
         User user = new User(name, email, encodePassword);
+        user.setPhoto(defaultAvatar);
         return userRepository.save(user);
     }
 

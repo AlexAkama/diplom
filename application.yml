@@ -40,6 +40,7 @@ avatar:
   path:
   width: 36
   height: 36
+  default: /default-1.png
 
 email:
   host:
