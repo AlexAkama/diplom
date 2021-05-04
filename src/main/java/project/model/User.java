@@ -50,13 +50,11 @@ public class User {
      * Пароль пользователя
      */
     @Column(nullable = false)
-    // FIXME хранить надо hash
     private String password;
 
     /**
-     * Какой-то код
+     * Код для восстановления пароля
      */
-    //FIXME что за код???
     private String code;
 
     /**
@@ -65,7 +63,6 @@ public class User {
     private String photo;
 
 
-    // CONSTRUCTORS
     public User() {
     }
 
@@ -78,14 +75,12 @@ public class User {
         this.photo = "/default-1.png";
     }
 
-    //METHODS
     public Role getRole() {
         return isModerator()
                 ? Role.MODERATOR
                 : Role.USER;
     }
 
-    // GETTERS & SETTERS
 
     public long getId() {
         return id;
