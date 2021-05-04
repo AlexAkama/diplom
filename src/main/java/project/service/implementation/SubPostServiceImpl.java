@@ -46,7 +46,7 @@ public class SubPostServiceImpl implements SubPostService {
             post.setModerator(user);
             postService.save(post);
             return ResponseEntity.ok(new AppResponse().ok());
-        } else // TODO Передалать на 403
+        } else
             throw new ForbiddenException("Нет прав для модерации");
     }
 
