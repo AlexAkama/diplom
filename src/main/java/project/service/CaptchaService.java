@@ -10,8 +10,8 @@ public interface CaptchaService {
 
     ResponseEntity<CaptchaDto> getCaptcha() throws IOException;
 
-    BufferedImage resizeImage (BufferedImage image);
+    BufferedImage resizeImage(BufferedImage image);
 
-    boolean isCodeCorrect(String code, String secret);
+    boolean codeIsCorrect(String code, String secret);
 
 }

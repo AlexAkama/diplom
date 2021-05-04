@@ -75,7 +75,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     }
 
     @Override
-    public boolean isCodeCorrect(String code, String secret) {
+    public boolean codeIsCorrect(String code, String secret) {
         Date limit = new Date(System.currentTimeMillis() - AppConstant.minuteToMillis(captchaTimeout));
         captchaCodeRepository.deleteAllByTimeBefore(limit);
         Optional<CaptchaCode> result = captchaCodeRepository.findCaptchaCodeBySecretCode(secret);

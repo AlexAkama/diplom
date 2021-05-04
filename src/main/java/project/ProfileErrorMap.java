@@ -1,5 +1,6 @@
 package project;
 
+import project.dto.image.ImageErrorMap;
 import project.dto.main.AppErrorMap;
 
 public class ProfileErrorMap extends AppErrorMap {
@@ -13,7 +14,11 @@ public class ProfileErrorMap extends AppErrorMap {
     }
 
     public void addPhotoFormatError(String format) {
-        getErrors().put("image", String.format("Файл не соответствует формату (%s)", format));
+        getErrors().put("photo", String.format("Файл не соответствует формату (%s)", format));
+    }
+
+    public void addPhotoError(ImageErrorMap imageErrors) {
+        getErrors().put("photo", imageErrors.getErrors().get("image"));
     }
 
     public void addNameError() {

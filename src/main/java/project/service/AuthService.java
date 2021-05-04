@@ -21,4 +21,10 @@ public interface AuthService {
     ResponseEntity<RegistrationResponse> registration(RegistrationRequest request);
 
     ResponseEntity<AppResponse> logout(HttpServletRequest request, HttpServletResponse response);
+
+    boolean nameIsCorrect(String name);
+
+    boolean emailIsCorrect(String email);
+
+    boolean passwordIsCorrect(String password);
 }

@@ -68,10 +68,10 @@ public class AuthServiceImpl implements AuthService {
         String code = request.getCode();
         String secret = request.getSecret();
 
-        boolean emailCorrect = !userService.existByEmail(email);
-        boolean captchaCorrect = captchaService.isCodeCorrect(code, secret);
-        boolean nameCorrect = name.length() == name.replaceAll("[^A-Za-zА-Яа-яЁё\\s]+", "").length();
-        boolean passwordCorrect = password.length() >= passwordMinLength;
+        boolean emailCorrect = emailIsCorrect(email);
+        boolean captchaCorrect = captchaService.codeIsCorrect(code, secret);
+        boolean nameCorrect = nameIsCorrect(name);
+        boolean passwordCorrect = passwordIsCorrect(password);
 
         boolean registration = emailCorrect && nameCorrect && passwordCorrect && captchaCorrect;
         RegistrationResponse response = new RegistrationResponse();
@@ -102,6 +102,22 @@ public class AuthServiceImpl implements AuthService {
             response.addCookie(cookie);
         }
         return ResponseEntity.ok(new AppResponse().ok());
+    }
+
+    @Override
+    public boolean nameIsCorrect(String name) {
+        return name.length() == name.replaceAll("[^A-Za-zА-Яа-яЁё\\s]+", "").length();
+    }
+
+    @Override
+    public boolean emailIsCorrect(String email) {
+        return !userService.existByEmail(email);
+    }
+
+    @Override
+    public boolean passwordIsCorrect(String password) {
+        //FIXME убрать после тестов
+        return password.length() >= passwordMinLength + 2;
     }
 
 }
