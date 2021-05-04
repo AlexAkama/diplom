@@ -2,14 +2,14 @@ package project.dto.post;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PostAddRequest {
+public class PostRequest {
 
-    long timestamp;
-    boolean active;
-    String title;
+    private long timestamp;
+    private boolean active;
+    private String title;
     @JsonProperty("tags")
-    String[] tagArray;
-    String text;
+    private String[] tagArray;
+    private String text;
 
 
     public long getTimestamp() {

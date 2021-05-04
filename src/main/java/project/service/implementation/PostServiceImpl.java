@@ -11,8 +11,7 @@ import project.dto.post.*;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
 import project.dto.vote.VoteCounterView;
-import project.exception.NotFoundException;
-import project.exception.UnauthorizedException;
+import project.exception.*;
 import project.model.*;
 import project.model.emun.*;
 import project.repository.*;
@@ -55,30 +54,45 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<PostResponse> addPost(PostAddRequest request)
-            throws NotFoundException, UnauthorizedException {
+    public ResponseEntity<PostResponse> addPost(PostRequest request)
+            throws NotFoundException, UnauthorizedException, ForbiddenException {
+        return updatePost(-1, request);
+    }
+
+    @Override
+    public ResponseEntity<PostResponse> updatePost(long postId, PostRequest request)
+            throws UnauthorizedException, NotFoundException, ForbiddenException {
         User user = userService.checkUser();
         PostResponse response = new PostResponse();
-
-        String title = request.getTitle();
-        String text = request.getText();
-
-        if (title.length() > minTitleLength && text.length() > minTextLength) {
-            Date date = new Date(request.getTimestamp() * 1000);
-            date = (date.before(new Date())) ? new Date() : date;
-            Post post = new Post();
-            post.setActive(request.isActive());
-            post.setTitle(request.getTitle());
-            post.setText(request.getText());
-            post.setTime(date);
-            post.setUser(user);
-            post.setModerationStatus(NEW);
-            postRepository.save(post);
-            tagService.addTagsToPost(request.getTagArray(), post);
+        PostErrorMap errors = checkPostUpdateRequest(request);
+        if (errors.isEmpty()) {
+            Post post;
+            ModerationStatus status;
+            if (postId == -1) {
+                post = new Post();
+                status = NEW;
+            } else {
+                post = getPost(postId);
+                if (post.getUser().getId() == user.getId()) {
+                    status = NEW;
+                } else if (user.isModerator()) {
+                    status = post.getModerationStatus();
+                } else {
+                    throw new ForbiddenException("Нет прав для измения поста");
+                }
+            }
+            Date date = checkDate(request.getTimestamp());
+            PostRequestDto dto = new PostRequestDto(
+                    request.isActive(),
+                    request.getTitle(),
+                    request.getText(),
+                    date,
+                    user,
+                    status,
+                    request.getTagArray()
+            );
+            updatePostAndSave(post, dto);
         } else {
-            PostErrorMap errors = new PostErrorMap();
-            if (!(title.length() > minTitleLength)) errors.addTitleError();
-            if (!(text.length() > minTextLength)) errors.addTextError();
             response.setErrors(errors.getErrors());
         }
         return ResponseEntity.ok(response);
@@ -238,6 +252,31 @@ public class PostServiceImpl implements PostService {
         return createStatisticDto(postData, voteData);
     }
 
+
+    private Date checkDate(long timestamp) {
+        Date date = new Date(timestamp * 1000);
+        return (date.before(new Date())) ? new Date() : date;
+    }
+
+    private PostErrorMap checkPostUpdateRequest(PostRequest request) {
+        String title = request.getTitle();
+        String text = request.getText();
+        PostErrorMap errors = new PostErrorMap();
+        if (!(title.length() > minTitleLength)) errors.addTitleError();
+        if (!(text.length() > minTextLength)) errors.addTextError();
+        return errors;
+    }
+
+    private void updatePostAndSave(Post post, PostRequestDto dto) throws NotFoundException {
+        post.setActive(dto.isActive());
+        post.setTitle(dto.getTitle());
+        post.setText(dto.getText());
+        post.setTime(dto.getTime());
+        post.setUser(dto.getUser());
+        post.setModerationStatus(dto.getStatus());
+        postRepository.save(post);
+        tagService.addTagsToPost(dto.getTagArray(), post);
+    }
 
     private PostDto createAnnounce(Post post) {
         return createPostDto(post, ANNOUNCE);

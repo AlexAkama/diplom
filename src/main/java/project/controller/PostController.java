@@ -27,14 +27,22 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<PostResponse> addPost(
-            @RequestBody PostAddRequest request
-    ) throws NotFoundException, UnauthorizedException {
+            @RequestBody PostRequest request
+    ) throws NotFoundException, UnauthorizedException, ForbiddenException {
         return postService.addPost(request);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable int id) throws NotFoundException {
+    public ResponseEntity<PostDto> getPostById(@PathVariable long id) throws NotFoundException {
         return postService.getPostResponse(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PostResponse> editPost(
+            @PathVariable long id,
+            @RequestBody PostRequest request
+    ) throws ForbiddenException, UnauthorizedException, NotFoundException {
+        return postService.updatePost(id, request);
     }
 
     @GetMapping("/byTag")

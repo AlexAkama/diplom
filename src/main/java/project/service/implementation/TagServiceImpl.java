@@ -40,13 +40,12 @@ public class TagServiceImpl implements TagService {
     @Override
     public void addTagsToPost(String[] tags, Post post) throws NotFoundException {
         addTags(tags);
+        tagToPostRepository.deleteAllByPostId(post.getId());
         for (String tagName : tags) {
             Tag tag = tagRepository.findByName(tagName)
                     .orElseThrow(() -> new NotFoundException(String.format("Tag %s not found", tagName)));
-            if (!tagToPostRepository.existsByTagAndPost(tag, post)) {
-                TagToPost tagToPost = new TagToPost(tag, post);
-                tagToPostRepository.save(tagToPost);
-            }
+            TagToPost tagToPost = new TagToPost(tag, post);
+            tagToPostRepository.save(tagToPost);
         }
     }
 

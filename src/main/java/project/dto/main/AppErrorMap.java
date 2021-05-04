@@ -19,4 +19,8 @@ public abstract class AppErrorMap {
         this.errors = errors;
     }
 
+    public boolean isEmpty() {
+        return getErrors().isEmpty();
+    }
+
 }

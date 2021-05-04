@@ -11,7 +11,9 @@ import project.model.PostComment;
 
 public interface PostService {
 
-  ResponseEntity<PostResponse> addPost(PostAddRequest request) throws NotFoundException, UnauthorizedException;
+  ResponseEntity<PostResponse> addPost(PostRequest request) throws NotFoundException, UnauthorizedException, ForbiddenException;
+
+  ResponseEntity<PostResponse> updatePost(long postId, PostRequest update) throws UnauthorizedException, NotFoundException, ForbiddenException;
 
   Post getPost(long postId) throws NotFoundException;
 
