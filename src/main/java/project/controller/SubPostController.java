@@ -29,7 +29,7 @@ public class SubPostController {
     @PostMapping("/moderation")
     public ResponseEntity<AppResponse> setModerationDecision(
             @RequestBody ModerationRequest request
-    ) throws NotFoundException, UnauthorizedException {
+    ) throws NotFoundException, UnauthorizedException, ForbiddenException {
         return subPostService.setModerationDecision(request);
     }
 

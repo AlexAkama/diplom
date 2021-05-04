@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import project.dto.comment.*;
 import project.dto.main.AppResponse;
 import project.dto.moderation.ModerationRequest;
-import project.exception.NotFoundException;
-import project.exception.UnauthorizedException;
+import project.exception.*;
 import project.model.*;
 import project.model.emun.ModerationDecision;
 import project.model.emun.ModerationStatus;
@@ -37,7 +36,7 @@ public class SubPostServiceImpl implements SubPostService {
 
     @Override
     public ResponseEntity<AppResponse> setModerationDecision(ModerationRequest request)
-            throws NotFoundException, UnauthorizedException {
+            throws NotFoundException, UnauthorizedException, ForbiddenException {
         User user = userService.checkUser();
         if (user.isModerator()) {
             ModerationDecision decision = valueOf(request.getDecision().toUpperCase());
@@ -48,7 +47,7 @@ public class SubPostServiceImpl implements SubPostService {
             postService.save(post);
             return ResponseEntity.ok(new AppResponse().ok());
         } else // TODO Передалать на 403
-            throw new UnauthorizedException("Нет прав для модерации");
+            throw new ForbiddenException("Нет прав для модерации");
     }
 
     @Override
