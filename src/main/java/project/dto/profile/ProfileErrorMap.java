@@ -1,11 +1,11 @@
-package project;
+package project.dto.profile;
 
 import project.dto.image.ImageErrorMap;
 import project.dto.main.AppErrorMap;
 
 public class ProfileErrorMap extends AppErrorMap {
 
-    void addEmailError(String email) {
+    public void addEmailError(String email) {
         getErrors().put("email", String.format("E-mail %s уже зарегистривован", email));
     }
 

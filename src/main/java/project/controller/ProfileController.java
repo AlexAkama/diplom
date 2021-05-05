@@ -1,10 +1,12 @@
-package project;
+package project.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import project.dto.profile.*;
 import project.exception.*;
+import project.service.ProfileService;
 
 import javax.servlet.http.HttpServletRequest;
 

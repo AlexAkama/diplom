@@ -1,8 +1,8 @@
-package project;
+package project.dto.profile;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class ProfileRequest extends ProfileRequestWithoutPhoto{
+public class ProfileRequest extends ProfileRequestWithoutPhoto {
 
     private MultipartFile photo;
 

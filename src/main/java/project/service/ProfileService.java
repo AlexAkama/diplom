@@ -1,6 +1,8 @@
-package project;
+package project.service;
 
 import org.springframework.http.ResponseEntity;
+import project.dto.profile.ProfileRequest;
+import project.dto.profile.ProfileResponse;
 import project.exception.*;
 
 import javax.servlet.http.HttpServletRequest;

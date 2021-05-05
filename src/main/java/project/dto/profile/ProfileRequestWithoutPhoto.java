@@ -1,4 +1,4 @@
-package project;
+package project.dto.profile;
 
 public class ProfileRequestWithoutPhoto {
 
