@@ -17,6 +17,8 @@ public class RestoreCode {
     @Column(nullable = false)
     private Date time;
 
+    private String email;
+
     public RestoreCode() {
     }
 
@@ -47,6 +49,14 @@ public class RestoreCode {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

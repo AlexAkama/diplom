@@ -23,4 +23,6 @@ public interface UserService {
 
     User checkUser() throws UnauthorizedException, NotFoundException;
 
+    User findByCode(String code) throws NotFoundException;
+
 }

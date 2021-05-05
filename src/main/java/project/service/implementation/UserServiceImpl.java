@@ -93,4 +93,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User findByCode(String code) throws NotFoundException {
+        return userRepository.findByCode(code)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+    }
+
 }

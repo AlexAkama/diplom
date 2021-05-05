@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import project.config.AppConstant;
 import project.dto.main.AppResponse;
 import project.dto.main.AppResponseWithErrors;
 import project.dto.password.*;
@@ -15,7 +14,8 @@ import project.repository.*;
 import project.service.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PasswordServiceImpl implements PasswordService {
@@ -77,8 +77,7 @@ public class PasswordServiceImpl implements PasswordService {
     @Override
     public ResponseEntity<AppResponseWithErrors> changePassword(PasswordChangeRequest request)
             throws NotFoundException {
-        Date limit = new Date(System.currentTimeMillis() - AppConstant.minuteToMillis(restoreTimeout));
-        restoreCodeRepository.deleteAllByTimeBefore(limit);
+        restoreCodeRepository.deleteExpiredCode(restoreTimeout);
         Optional<RestoreCode> optionalCode = restoreCodeRepository.findByCode(request.getCode());
         Optional<CaptchaCode> optionalCaptcha = captchaCodeRepository.findCaptchaCodeBySecretCode(request.getSecret());
         PasswordChangeErrorMap errors = new PasswordChangeErrorMap();
@@ -93,11 +92,10 @@ public class PasswordServiceImpl implements PasswordService {
         } else {
             RestoreCode code = optionalCode
                     .orElseThrow(() -> new NotFoundException("Код востановления не найден"));
-            User user = userRepository.findByCode(optionalCode.get().getCode())
-                    .orElseThrow(() -> new NotFoundException("Пользователь для смены пароля не найден"));
+            User user = userService.findByCode(optionalCode.get().getCode());
             user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
             user.setCode(null);
-            userRepository.save(user);
+            userService.save(user);
             restoreCodeRepository.delete(code);
         }
         return ResponseEntity.ok(response);

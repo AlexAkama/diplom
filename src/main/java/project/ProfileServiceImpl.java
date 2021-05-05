@@ -7,8 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import project.dto.image.ImageErrorMap;
 import project.exception.*;
+import project.model.RestoreCode;
 import project.model.User;
+import project.repository.RestoreCodeRepository;
 import project.service.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProfileServiceImpl implements ProfileService {
@@ -16,23 +22,35 @@ public class ProfileServiceImpl implements ProfileService {
     private final UserService userService;
     private final AuthService authService;
     private final ImageService imageService;
+    private final EmailService emailService;
+    private final RestoreCodeRepository restoreCodeRepository;
 
     @Value("${avatar.default}")
     private String defaultAvatar;
+
+    /**
+     * Срок действия кода востановления пароля в минутах
+     */
+    @Value("${config.restore.timeout}")
+    private int restoreTimeout;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     public ProfileServiceImpl(UserService userService,
                               AuthService authService,
-                              ImageService imageService) {
+                              ImageService imageService,
+                              EmailService emailService,
+                              RestoreCodeRepository restoreCodeRepository) {
         this.userService = userService;
         this.authService = authService;
         this.imageService = imageService;
+        this.emailService = emailService;
+        this.restoreCodeRepository = restoreCodeRepository;
     }
 
 
     @Override
-    public ResponseEntity<ProfileResponse> updateProfile(ProfileRequest request)
+    public ResponseEntity<ProfileResponse> updateProfile(ProfileRequest request, HttpServletRequest httpServletRequest)
             throws UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException, BadRequestException {
         User user = userService.checkUser();
         printRequest(request);
@@ -88,7 +106,13 @@ public class ProfileServiceImpl implements ProfileService {
                 user.setPhoto(fileName);
             }
             if (emailChange) {
-                // окончательная смена после подтверждения
+                String code = UUID.randomUUID().toString().replace("-", "");
+                RestoreCode restoreCode = new RestoreCode(code);
+                restoreCode.setEmail(email);
+                restoreCodeRepository.save(restoreCode);
+                user.setCode(code);
+                String link = emailService.getHostAndPort(httpServletRequest) + "/confirm/" + code;
+                emailService.sendConfirmEmail(request.getEmail(), link);
             }
             userService.save(user);
         } else {
@@ -99,8 +123,20 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void confirm(String code) {
-
+    public String confirm(String code) throws BadRequestException, NotFoundException {
+        restoreCodeRepository.deleteExpiredCode(restoreTimeout);
+        Optional<RestoreCode> optionalRestoreCode = restoreCodeRepository.findByCode(code);
+        if (optionalRestoreCode.isEmpty()) {
+            throw new BadRequestException("Код устарел");
+        } else {
+            RestoreCode restoreCode = optionalRestoreCode.get();
+            User user = userService.findByCode(code);
+            user.setEmail(restoreCode.getEmail());
+            user.setCode(null);
+            userService.save(user);
+            restoreCodeRepository.delete(restoreCode);
+        }
+        return "index";
     }
 
 

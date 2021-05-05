@@ -24,6 +24,9 @@ public class EmailServiceImpl implements EmailService {
     private static final String RESTORE_SUBJECT = "Восстановление пароля";
     private static final String RESTORE_TEMPLATE = "<p>Для восстановления пароля перейдите " +
             "<a href=\"%s\">по ссылке</a></p>";
+    private static final String CONFIRM_SUBJECT = "Подтверждения email";
+    private static final String CONFIRM_TEMPLATE = "<p>Для подтверждения email перейдите " +
+            "<a href=\"%s\">по ссылке</a></p>";
 
     /**
      * Инструмент для отпpавки электронной почты
@@ -66,6 +69,16 @@ public class EmailServiceImpl implements EmailService {
                 MessagingException e) {
             throw new InternalServerException("Email не отправлен");
         }
+    }
+
+    /**
+     * Отправка письма для подвержения нового email
+     * @param to адрес получателя
+     * @param link сыылка на подтверждение emial
+     */
+    @Override
+    public void sendConfirmEmail(String to, String link) throws InternalServerException {
+        sendHtmlEmail(to, CONFIRM_SUBJECT, String.format(CONFIRM_TEMPLATE, link));
     }
 
     /**
