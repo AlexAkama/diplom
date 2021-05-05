@@ -24,7 +24,6 @@ public class PasswordServiceImpl implements PasswordService {
     private final EmailService emailService;
     private final RestoreCodeRepository restoreCodeRepository;
     private final CaptchaCodeRepository captchaCodeRepository;
-    private final UserRepository userRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
@@ -43,13 +42,11 @@ public class PasswordServiceImpl implements PasswordService {
     public PasswordServiceImpl(UserService userService,
                                EmailService emailService,
                                RestoreCodeRepository restoreCodeRepository,
-                               CaptchaCodeRepository captchaCodeRepository,
-                               UserRepository userRepository) {
+                               CaptchaCodeRepository captchaCodeRepository) {
         this.userService = userService;
         this.emailService = emailService;
         this.restoreCodeRepository = restoreCodeRepository;
         this.captchaCodeRepository = captchaCodeRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
