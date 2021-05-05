@@ -2,6 +2,7 @@ package project;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -135,6 +136,7 @@ public class ProfileServiceImpl implements ProfileService {
             user.setCode(null);
             userService.save(user);
             restoreCodeRepository.delete(restoreCode);
+            SecurityContextHolder.clearContext();
         }
         return "index";
     }
