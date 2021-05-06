@@ -42,4 +42,4 @@ hs_err_pid*
 Diplom.iml
 /API-2020-07-24.html
 /uploads/
-/application-local.yml
+/src/main/resources/application-local.yml
