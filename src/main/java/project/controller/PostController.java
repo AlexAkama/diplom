@@ -16,7 +16,8 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("")
+    @GetMapping
+//    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<PostListDto> getPostList(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
