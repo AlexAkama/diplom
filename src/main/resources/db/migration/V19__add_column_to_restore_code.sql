@@ -1,0 +1,1 @@
+ALTER TABLE `restore_codes` ADD `email` varchar(255) COLLATE utf8_unicode_ci;

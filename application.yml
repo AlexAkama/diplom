@@ -1,0 +1,49 @@
+spring.jpa.hibernate.ddl-auto: none
+
+spring.datasource.url:
+spring.datasource.username:
+spring.datasource.password:
+
+flyway.url:
+flyway.schemas:
+flyway.user:
+flyway.password:
+flyway.locations:
+
+config:
+  password:
+    minlength: 6
+  captcha:
+    timeout: 10
+    image:
+      width: 110
+      height: 35
+  post:
+    minlength:
+      title: 3
+      text: 50
+  comment:
+    minlength:
+      text: 10
+  restore:
+    timeout: 10
+
+upload:
+  path:
+  maxSize: 1048576
+  expansion: jpg, png
+  randomPart:
+    value: 3
+    length: 2
+
+avatar:
+  path:
+  width: 36
+  height: 36
+  default: /default-1.png
+
+email:
+  host:
+  port:
+  username:
+  password:

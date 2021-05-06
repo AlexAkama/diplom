@@ -1,0 +1,26 @@
+<!--<hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">-->
+<!--    <session-factory>-->
+
+<!--        <property name="connection.url">jdbc:mysql://localhost:3306/diplom</property>-->
+<!--        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>-->
+<!--        <property name="connection.username">root</property>-->
+<!--        <property name="connection.password">testskill</property>-->
+
+<!--        <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>-->
+<!--        <property name="show_sql">true</property>-->
+<!--        <property name="hbm2ddl.auto">validate</property>-->
+
+<!--        <mapping class="project.model.User" />-->
+
+<!--        <mapping class="project.model.Post" />-->
+<!--        <mapping class="project.model.PostComment" />-->
+<!--        <mapping class="project.model.PostVote" />-->
+
+<!--        <mapping class="project.model.Tag" />-->
+<!--        <mapping class="project.model.TagToPost" />-->
+
+<!--        <mapping class="project.model.CaptchaCode" />-->
+<!--        <mapping class="project.model.GlobalSetting" />-->
+
+<!--    </session-factory>-->
+<!--</hibernate-configuration>-->

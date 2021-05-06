@@ -37,3 +37,9 @@ hs_err_pid*
 
 # Если игнорируемое уже в репозитории, удалить так:
 # git rm --cached <file>
+
+/.idea/
+Diplom.iml
+/API-2020-07-24.html
+/uploads/
+/application-local.yml

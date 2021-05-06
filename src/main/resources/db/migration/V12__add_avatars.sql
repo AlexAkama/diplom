@@ -1,0 +1,12 @@
+update users set photo = '/img/avatars/av1.jpg' where id = 1;
+update users set photo = '/img/avatars/av2.jpg' where id = 2;
+update users set photo = '/img/avatars/av3.jpg' where id = 3;
+update users set photo = '/img/avatars/av4.jpg' where id = 4;
+update users set photo = '/img/avatars/av5.jpg' where id = 5;
+update users set photo = '/img/avatars/av6.jpg' where id = 6;
+update users set photo = '/img/avatars/av7.jpg' where id = 7;
+update users set photo = '/img/avatars/av8.jpg' where id = 8;
+update users set photo = '/img/avatars/av9.jpg' where id = 9;
+update users set photo = '/img/avatars/av0.jpg' where id = 10;
+update users set photo = '/img/avatars/jake.jpg' where id = 11;
+update users set photo = '/img/avatars/avatar.jpg' where id = 12;
