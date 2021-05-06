@@ -1,14 +1,8 @@
-spring.jpa.hibernate.ddl-auto: none
+spring.jpa.hibernate.ddl-auto: validate
 
-spring.datasource.url:
-spring.datasource.username:
-spring.datasource.password:
-
-flyway.url:
-flyway.schemas:
-flyway.user:
-flyway.password:
-flyway.locations:
+spring.datasource.url: jdbc:mysql://localhost:3306/diplom?serverTimezone=UTC
+spring.datasource.username: root
+spring.datasource.password: skillboxsql
 
 config:
   password:
@@ -29,7 +23,7 @@ config:
     timeout: 10
 
 upload:
-  path:
+  path: /project/diplom/uploads
   maxSize: 1048576
   expansion: jpg, png
   randomPart:
@@ -37,13 +31,12 @@ upload:
     length: 2
 
 avatar:
-  path:
   width: 36
   height: 36
   default: /default-1.png
 
 email:
-  host:
-  port:
-  username:
-  password:
+  host: smtp.gmail.com
+  port: 465
+  username: java10skillbox@gmail.com
+  password: java10rezone
