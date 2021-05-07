@@ -1,8 +1,8 @@
 spring.jpa.hibernate.ddl-auto: none
 
 spring.datasource.url: jdbc:mysql://localhost:3306/diplom?serverTimezone=UTC
-spring.datasource.username: root
-spring.datasource.password: skillboxsql
+spring.datasource.username: sqluser
+spring.datasource.password: diplomsql
 
 config:
   password:
