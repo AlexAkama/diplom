@@ -16,7 +16,7 @@ public interface AuthService {
 
     ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) throws NotFoundException;
 
-    ResponseEntity<AuthResponse> login(LoginRequest request) throws NotFoundException;
+    ResponseEntity<AuthResponse> login(LoginRequest request);
 
     ResponseEntity<RegistrationResponse> registration(RegistrationRequest request);
 
