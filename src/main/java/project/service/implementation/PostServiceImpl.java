@@ -200,11 +200,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<PostListDto> getAnnounceListByTag(int offset, int limit, String tag) {
+    public ResponseEntity<PostListDto> getAnnounceListByTag(int offset, int limit, String tag)
+            throws NotFoundException {
         int pageNumber = offset / limit;
         Pageable pageable = PageRequest.of(pageNumber, limit);
         Page<Post> page = postRepository.findPostByTagWithBaseCondition(tag, pageable);
         List<PostDto> list = createPostListFromPage(page);
+        if (list.isEmpty()) {
+            tagService.hideTag(tag);
+            throw new NotFoundException(String.format("Нет постов по тегу %s", tag));
+        }
         return ResponseEntity.ok(new PostListDto(page.getTotalElements(), list));
     }
 
@@ -258,6 +263,12 @@ public class PostServiceImpl implements PostService {
         PostStatisticView postData = getUserPostStatistic(userId);
         VoteCounterView voteData = getUserVote(userId);
         return createStatisticDto(postData, voteData);
+    }
+
+    @Override
+    public void saveAndActivateTags(Post post) throws NotFoundException {
+        save(post);
+        tagService.activateTags(post);
     }
 
 

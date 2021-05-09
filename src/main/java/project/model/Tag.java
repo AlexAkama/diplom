@@ -13,6 +13,9 @@ public class Tag {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private boolean active;
+
     public Tag() {
     }
 
@@ -35,4 +38,13 @@ public class Tag {
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
 }
