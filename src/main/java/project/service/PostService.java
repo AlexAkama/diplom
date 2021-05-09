@@ -33,7 +33,7 @@ public interface PostService {
 
   ResponseEntity<PostListDto> getAnnounceListByAuthUser(int offset, int limit, String status) throws NotFoundException, UnauthorizedException;
 
-  ResponseEntity<PostListDto> getAnnounceListByTag(int offset, int limit, String tag);
+  ResponseEntity<PostListDto> getAnnounceListByTag(int offset, int limit, String tag) throws NotFoundException;
 
   ResponseEntity<PostListDto> getAnnounceListByDate(int offset, int limit, String date);
 
@@ -50,5 +50,7 @@ public interface PostService {
   StatisticDto getAllStatistic();
 
   StatisticDto getUserStatistic(long userId);
+
+  void saveAndActivateTags(Post post) throws NotFoundException;
 
 }

@@ -44,7 +44,7 @@ public class SubPostServiceImpl implements SubPostService {
             ModerationStatus status = (decision == ACCEPT) ? ACCEPTED : DECLINED;
             post.setModerationStatus(status);
             post.setModerator(user);
-            postService.save(post);
+            postService.saveAndActivateTags(post);
             return ResponseEntity.ok(new AppResponse().ok());
         } else
             throw new ForbiddenException("Нет прав для модерации");

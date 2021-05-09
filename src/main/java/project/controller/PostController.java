@@ -51,7 +51,7 @@ public class PostController {
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("tag") String tag
-    ) {
+    ) throws NotFoundException {
         return postService.getAnnounceListByTag(offset, limit, tag);
     }
 

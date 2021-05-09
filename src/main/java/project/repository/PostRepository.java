@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import project.config.AppConstant;
 import project.dto.global.MapDto;
 import project.dto.post.PostYearDto;
 import project.dto.statistic.PostStatisticView;
@@ -14,6 +13,8 @@ import project.model.emun.ModerationStatus;
 
 import java.util.List;
 import java.util.Optional;
+
+import static project.config.AppConstant.HQL_BASIC_SEARCH_CONDITION;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -43,27 +44,27 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT " + date + " AS key, COUNT(p) AS value FROM Post p"
             + " WHERE function('YEAR', p.time) = ?1"
-            + " AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION
+            + " AND " + HQL_BASIC_SEARCH_CONDITION
             + " GROUP BY key ORDER BY " + date + " DESC")
     List<MapDto> getPostCounterList(int year);
 
     Page<Post> findAll(Pageable pageable);
 
-    @Query("FROM Post p WHERE " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    @Query("FROM Post p WHERE " + HQL_BASIC_SEARCH_CONDITION)
     Page<Post> findAllWithBaseCondition(Pageable pageable);
 
     Optional<Post> findPostById(long id);
 
-    @Query("FROM Post p WHERE p.id = ?1 AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    @Query("FROM Post p WHERE p.id = ?1 AND " + HQL_BASIC_SEARCH_CONDITION)
     Optional<Post> findPostWithBaseCondition(long id);
 
-    @Query("FROM Post p WHERE " + byTagCondition + " AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    @Query("FROM Post p WHERE " + byTagCondition + " AND " + HQL_BASIC_SEARCH_CONDITION)
     Page<Post> findPostByTagWithBaseCondition(String tag, Pageable pageable);
 
-    @Query("FROM Post p WHERE " + byDateCondition + " AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    @Query("FROM Post p WHERE " + byDateCondition + " AND " + HQL_BASIC_SEARCH_CONDITION)
     Page<Post> findPostByDateWithBaseCondition(String date, Pageable pageable);
 
-    @Query("FROM Post p WHERE (" + bySearchCondition + ") AND " + AppConstant.HQL_BASIC_SEARCH_CONDITION)
+    @Query("FROM Post p WHERE (" + bySearchCondition + ") AND " + HQL_BASIC_SEARCH_CONDITION)
     Page<Post> findPostBySearchWithBaseCondition(String search, Pageable pageable);
 
     @Query(statisticSelect)

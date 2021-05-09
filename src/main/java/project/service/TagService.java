@@ -11,4 +11,8 @@ public interface TagService {
 
     void addTagsToPost(String[] tags, Post post) throws NotFoundException;
 
+    void activateTags(Post post) throws NotFoundException;
+
+    void hideTag(String tagName) throws NotFoundException;
+
 }
