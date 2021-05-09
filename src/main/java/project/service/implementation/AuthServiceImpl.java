@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import project.dto.auth.login.LoginRequest;
 import project.dto.auth.registration.*;
 import project.dto.auth.user.AuthResponse;
+import project.dto.auth.user.AuthUserDto;
 import project.dto.main.AppResponse;
 import project.exception.NotFoundException;
 import project.service.*;
@@ -48,14 +49,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<AuthResponse> login(LoginRequest request) throws NotFoundException {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                ));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        AuthResponse response = new AuthResponse(userService.createAuthUserDtoByEmail(request.getEmail()));
+    public ResponseEntity<AuthResponse> login(LoginRequest request) {
+        AuthResponse response = new AuthResponse();
+        try {
+            AuthUserDto user = userService.createAuthUserDtoByEmail(request.getEmail());
+            response.setUser(user);
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    ));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (NotFoundException ignore) {
+        }
         return ResponseEntity.ok(response);
     }
 
