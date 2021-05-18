@@ -55,7 +55,6 @@ public class ProfileServiceImpl implements ProfileService {
     public ResponseEntity<ProfileResponse> updateProfile(ProfileRequest request, HttpServletRequest httpServletRequest)
             throws UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException, BadRequestException {
         User user = userService.checkUser();
-        printRequest(request);
 
         ProfileErrorMap errors = new ProfileErrorMap();
 
@@ -140,15 +139,6 @@ public class ProfileServiceImpl implements ProfileService {
             SecurityContextHolder.clearContext();
         }
         return "index";
-    }
-
-
-    private void printRequest(ProfileRequest request) {
-        System.out.println(request.getName());
-        System.out.println(request.getEmail());
-        System.out.println(request.getPassword());
-        System.out.println(request.getRemovePhoto());
-        System.out.println(request.getPhoto());
     }
 
 }
