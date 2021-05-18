@@ -9,10 +9,9 @@ import project.dto.auth.registration.CaptchaDto;
 import project.model.CaptchaCode;
 import project.repository.CaptchaCodeRepository;
 import project.service.CaptchaService;
+import project.service.ImageService;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
@@ -21,6 +20,7 @@ import java.util.*;
 public class CaptchaServiceImpl implements CaptchaService {
 
     private final CaptchaCodeRepository captchaCodeRepository;
+    private final ImageService imageService;
 
     /**
      * Срок действия кода капчи в минутах
@@ -28,20 +28,9 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Value("${config.captcha.timeout}")
     private int captchaTimeout;
 
-    /**
-     * Ширина картинки капчи
-     */
-    @Value("${config.captcha.image.width}")
-    private int width;
-
-    /**
-     * Высота картинки капчи
-     */
-    @Value("${config.captcha.image.height}")
-    private int height;
-
-    public CaptchaServiceImpl(CaptchaCodeRepository captchaCodeRepository) {
+    public CaptchaServiceImpl(CaptchaCodeRepository captchaCodeRepository, ImageService imageService) {
         this.captchaCodeRepository = captchaCodeRepository;
+        this.imageService = imageService;
     }
 
     @Override
@@ -52,7 +41,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         String image = "data:image/" + gCage.getFormat() + ";base64,";
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(
-                resizeImage(gCage.drawImage(token)),
+                imageService.resizeCaptchaImage(gCage.drawImage(token)),
                 gCage.getFormat(),
                 outputStream);
         image += Base64.getEncoder().encodeToString(outputStream.toByteArray());
@@ -62,16 +51,6 @@ public class CaptchaServiceImpl implements CaptchaService {
         captchaCodeRepository.save(captchaCode);
 
         return ResponseEntity.ok(new CaptchaDto(secret, image));
-    }
-
-    @Override
-    public BufferedImage resizeImage(BufferedImage originalImage) {
-        BufferedImage resizedImage = new BufferedImage(width, height, originalImage.getType());
-        Graphics2D graphics2D = resizedImage.createGraphics();
-        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        graphics2D.drawImage(originalImage, 0, 0, width, height, null);
-        graphics2D.dispose();
-        return resizedImage;
     }
 
     @Override

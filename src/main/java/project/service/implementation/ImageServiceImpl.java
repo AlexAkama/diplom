@@ -7,10 +7,14 @@ import org.springframework.web.multipart.MultipartFile;
 import project.dto.image.ImageErrorMap;
 import project.dto.image.ImageResponse;
 import project.exception.*;
+import project.model.User;
 import project.model.emun.ImageTarget;
 import project.service.ImageService;
 import project.service.UserService;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -25,6 +29,17 @@ public class ImageServiceImpl implements ImageService {
 
     private final UserService userService;
 
+    /**
+     * Ширина картинки капчи
+     */
+    @Value("${config.captcha.image.width}")
+    private int captchaWidth;
+    /**
+     * Высота картинки капчи
+     */
+    @Value("${config.captcha.image.height}")
+    private int captchaHeight;
+
     @Value("${upload.path}")
     private String uploadPath;
     @Value("${upload.maxSize}")
@@ -36,8 +51,24 @@ public class ImageServiceImpl implements ImageService {
     @Value("${upload.randomPart.length}")
     private int randomPathPartLength;
 
+    /**
+     * Ширина картинки аватара
+     */
+    @Value("${avatar.width}")
+    private int avatarWidth;
+    /**
+     * Высота картинкаи аватара
+     */
+    @Value("${avatar.height}")
+    private int avatarHeight;
+
     public ImageServiceImpl(UserService userService) {
         this.userService = userService;
+    }
+
+    @Override
+    public BufferedImage resizeCaptchaImage(BufferedImage originalImage) {
+        return resizeImage(originalImage, captchaWidth, captchaHeight);
     }
 
     @Override
@@ -46,7 +77,7 @@ public class ImageServiceImpl implements ImageService {
         userService.checkUser();
         ImageErrorMap errors = checkFile(file);
         if (errors.getErrors().isEmpty()) {
-            String name =save(file, IMAGE);
+            String name = save(file, IMAGE);
             throw new ImageSuccess(name);
         } else {
             ImageResponse response = new ImageResponse();
@@ -61,12 +92,13 @@ public class ImageServiceImpl implements ImageService {
         return save(file, AVATAR);
     }
 
+    @Override
     public ImageErrorMap checkFile(MultipartFile file) {
         ImageErrorMap errors = new ImageErrorMap();
         if (file == null || file.getOriginalFilename() == null) {
             errors.addNotFoundError();
         } else {
-            String expansion = getExpansionFromFileName(file.getOriginalFilename());
+            String expansion = getExtensionFromFileName(file.getOriginalFilename());
             Set<String> expansions = Set.of(this.expansions.split(", "));
             if (!expansions.contains(expansion)) {
                 errors.addFormatError(this.expansions);
@@ -79,21 +111,49 @@ public class ImageServiceImpl implements ImageService {
         return errors;
     }
 
-    private String save(MultipartFile file, ImageTarget target) throws InternalServerException {
-        String relativePath = buildPath();
+
+    private BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
+        BufferedImage resizedImage = new BufferedImage(width, height, originalImage.getType());
+        Graphics2D graphics2D = resizedImage.createGraphics();
+        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        graphics2D.drawImage(originalImage, 0, 0, width, height, null);
+        graphics2D.dispose();
+        return resizedImage;
+    }
+
+    private String save(MultipartFile file, ImageTarget target) throws InternalServerException, UnauthorizedException, NotFoundException {
+
+        String avatar = null;
+        if (target == AVATAR) {
+            User user = userService.checkUser();
+            avatar = user.getPhoto();
+        }
         String filename = file.getOriginalFilename();
-        String relativeFile = relativePath + File.separator + filename;
-        String resultFile = uploadPath + File.separator + target.toString().toLowerCase() + relativeFile;
-        createDirIfNotExist(resultFile);
+        String relativePath;
+        String relativeFile;
+        if (avatar != null) {
+            File avatarFile = new File(avatar);
+            relativePath = avatarFile.getPath().replace(avatarFile.getName(), "");
+            relativeFile = relativePath + filename;
+        } else {
+            relativePath = File.separator + target.toString().toLowerCase() + buildPath();
+            createDirIfNotExist(uploadPath + relativePath);
+            relativeFile = relativePath + File.separator + filename;
+        }
+        String resultFile = uploadPath + relativeFile;
         try {
-            file.transferTo(new File(resultFile));
+            if (target == AVATAR) {
+                saveFileAsAvatar(file, resultFile);
+            } else {
+                file.transferTo(new File(resultFile));
+            }
         } catch (IOException e) {
             throw new InternalServerException(String.format("Неудалось сохранить файл %s", filename));
         }
-        return File.separator + target.toString().toLowerCase() + relativeFile;
+        return relativeFile;
     }
 
-    private String getExpansionFromFileName(String filename) {
+    private String getExtensionFromFileName(String filename) {
         return (filename != null && filename.lastIndexOf(".") > 0)
                 ? filename.substring(filename.lastIndexOf(".") + 1)
                 : "";
@@ -123,6 +183,23 @@ public class ImageServiceImpl implements ImageService {
         File dir = new File(path);
         if (!dir.exists() && !dir.mkdirs())
             throw new InternalServerException(String.format("Не удалось создать папку для хранения [%s]", path));
+    }
+
+    private BufferedImage cropToSquare(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int min = Math.min(width, height);
+        int deltaWidth = (width > min) ? (width - min) / 2 : 0;
+        int deltaHeight = (height > min) ? (height - min) / 2 : 0;
+        return image.getSubimage(deltaWidth, deltaHeight, min, min);
+    }
+
+    private void saveFileAsAvatar(MultipartFile file, String relativeFile) throws IOException {
+        BufferedImage image = ImageIO.read(file.getInputStream());
+        image = cropToSquare(image);
+        image = resizeImage(image, avatarWidth, avatarHeight);
+        String extension = getExtensionFromFileName(file.getOriginalFilename());
+        ImageIO.write(image, extension, new File(relativeFile));
     }
 
 }

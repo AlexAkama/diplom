@@ -31,8 +31,8 @@ upload:
     length: 2
 
 avatar:
-  width: 36
-  height: 36
+  width: 90
+  height: 90
   default: /default-1.png
 
 email:

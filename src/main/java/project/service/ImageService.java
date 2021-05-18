@@ -6,8 +6,11 @@ import project.dto.image.ImageErrorMap;
 import project.dto.image.ImageResponse;
 import project.exception.*;
 
+import java.awt.image.BufferedImage;
+
 public interface ImageService {
 
+    BufferedImage resizeCaptchaImage(BufferedImage originalImage);
 
     ResponseEntity<ImageResponse> saveImage(MultipartFile file)
             throws BadRequestException, UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException;
