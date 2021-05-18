@@ -122,8 +122,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean passwordIsCorrect(String password) {
-        //FIXME убрать после тестов
-        return password.length() >= passwordMinLength + 2;
+        return password.length() >= passwordMinLength;
     }
 
 }
