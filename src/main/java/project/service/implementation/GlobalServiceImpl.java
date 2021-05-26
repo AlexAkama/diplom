@@ -23,6 +23,9 @@ import static project.model.emun.GlobalSettingsValue.YES;
 @Service
 public class GlobalServiceImpl implements GlobalService {
 
+    /**
+     * Минимальный вес тега, для корекного визуального отображения на фронте
+     */
     private static final double MIN_WEIGHT = 0.25;
 
     private final ConfigParameterRepository configParameterRepository;
@@ -40,10 +43,15 @@ public class GlobalServiceImpl implements GlobalService {
         this.postRepository = postRepository;
     }
 
+    /**
+     * Получение персональной информации о владельце блога
+     *
+     * @return объект с {@link PersonalInfoDto персональными данными}
+     */
     @Override
     public ResponseEntity<PersonalInfoDto> getPersonalInfo() {
 
-        PersonalInfoDto infoDto = new PersonalInfoDto();
+        var infoDto = new PersonalInfoDto();
 
         Optional<ConfigParameter> title = configParameterRepository.findConfigParameterByName("title");
         infoDto.setTitle(title.isPresent() ? title.get().getValue() : "");
@@ -66,6 +74,11 @@ public class GlobalServiceImpl implements GlobalService {
         return ResponseEntity.ok(infoDto);
     }
 
+    /**
+     * Получение глобальных насроек блога
+     *
+     * @return объект с {@link GlobalSettingsDto глобальными настройками}
+     */
     @Override
     public ResponseEntity<GlobalSettingsDto> getGlobalSettings() {
 
@@ -81,6 +94,11 @@ public class GlobalServiceImpl implements GlobalService {
         return ResponseEntity.ok(new GlobalSettingsDto(multiUser, preModeration, publicStatistic));
     }
 
+    /**
+     * Сохранение глобальных настроек блока
+     *
+     * @param settings объект с {@link GlobalSettingsDto глобальными настройками}
+     */
     @Override
     public void saveGlobalSettings(GlobalSettingsDto settings) {
 
@@ -96,22 +114,27 @@ public class GlobalServiceImpl implements GlobalService {
         Optional<GlobalSetting> optionalPreModeration = globalSettingRepository.findByCode(POST_PREMODERATION.name());
         if (optionalPreModeration.isPresent()) {
             GlobalSetting preModeration = optionalPreModeration.get();
-            if(!Objects.equals(settings.isPreModeration(), preModeration.getValue() == YES)) {
+            if (!Objects.equals(settings.isPreModeration(), preModeration.getValue() == YES)) {
                 preModeration.setValue(getGlobalSettingsValue(settings.isPreModeration()));
                 globalSettingRepository.save(preModeration);
             }
         }
 
         Optional<GlobalSetting> optionalPublicStatistic = globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
-        if(optionalPublicStatistic.isPresent()) {
+        if (optionalPublicStatistic.isPresent()) {
             GlobalSetting publicStatistic = optionalPublicStatistic.get();
-            if(!Objects.equals(settings.isPublicStatistic(), publicStatistic.getValue() == YES)) {
+            if (!Objects.equals(settings.isPublicStatistic(), publicStatistic.getValue() == YES)) {
                 publicStatistic.setValue(getGlobalSettingsValue(settings.isPublicStatistic()));
                 globalSettingRepository.save(publicStatistic);
             }
         }
     }
 
+    /**
+     * Получение списка тегов
+     *
+     * @return объект со {@link TagListDto списком тегов}
+     */
     @Override
     public ResponseEntity<TagListDto> getTagList() {
         List<MapDto> list = tagToPostRepository.getTagCounterList();
@@ -127,6 +150,12 @@ public class GlobalServiceImpl implements GlobalService {
         return ResponseEntity.ok(new TagListDto(tagListWithWeight));
     }
 
+    /**
+     * Получение карты кол-ва публикаций постов
+     *
+     * @param year год поска публикаций
+     * @return объект с {@link CalendarDto данными кол-ва публикаций за год}
+     */
     @Override
     public ResponseEntity<CalendarDto> getCalendar(int year) {
         List<PostYearDto> list = postRepository.getYearList();
@@ -139,8 +168,8 @@ public class GlobalServiceImpl implements GlobalService {
         return ResponseEntity.ok(new CalendarDto(yearList, postCounterMap));
     }
 
-    private GlobalSettingsValue getGlobalSettingsValue(boolean b){
-        return b ? YES : NO ;
+    private GlobalSettingsValue getGlobalSettingsValue(boolean b) {
+        return b ? YES : NO;
     }
 
 }

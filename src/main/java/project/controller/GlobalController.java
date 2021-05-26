@@ -1,6 +1,7 @@
 package project.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import project.dto.global.*;
 import project.service.GlobalService;
@@ -19,7 +20,7 @@ public class GlobalController {
     }
 
     /**
-     * Запрос на получение данных об автое блога
+     * Запрос на получение данных об авторе блога
      *
      * @return объект с {@link PersonalInfoDto персональными данными}
      */
@@ -43,6 +44,7 @@ public class GlobalController {
      *
      * @param settings объект с {@link GlobalSettingsDto глобальными настройками}
      */
+    @PreAuthorize("hasAuthority('user:moderate')")
     @PutMapping("/settings")
     public void setGlobalSettings(@RequestBody GlobalSettingsDto settings) {
         globalService.saveGlobalSettings(settings);

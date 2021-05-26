@@ -28,6 +28,7 @@ public interface GlobalService {
 
     /**
      * Сохранение глобальных настроек блока
+     *
      * @param settings объект с {@link GlobalSettingsDto глобальными настройками}
      */
     void saveGlobalSettings(GlobalSettingsDto settings);
@@ -41,6 +42,7 @@ public interface GlobalService {
 
     /**
      * Получение карты кол-ва публикаций постов
+     *
      * @param year год поска публикаций
      * @return объект с {@link CalendarDto данными кол-ва публикаций за год}
      */
