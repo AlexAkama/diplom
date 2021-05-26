@@ -62,9 +62,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponseEntity<PostResponse> updatePost(long postId, PostRequest request)
             throws UnauthorizedException, NotFoundException, ForbiddenException {
-        User user = userService.checkUser();
-        PostResponse response = new PostResponse();
-        PostErrorMap errors = checkPostUpdateRequest(request);
+        var user = userService.checkUser();
+        var response = new PostResponse();
+        var errors = checkPostUpdateRequest(request);
         if (errors.isEmpty()) {
             Post post;
             ModerationStatus status;
@@ -81,8 +81,8 @@ public class PostServiceImpl implements PostService {
                     throw new ForbiddenException("Нет прав для измения поста");
                 }
             }
-            Date date = checkDate(request.getTimestamp());
-            PostRequestDto dto = new PostRequestDto(
+            var date = checkDate(request.getTimestamp());
+            var dto = new PostRequestDto(
                     request.isActive(),
                     request.getTitle(),
                     request.getText(),
@@ -126,10 +126,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseEntity<PostDto> getPostForResponse(long postId) throws NotFoundException {
-        Post post = getPost(postId);
-        boolean increment = true;
+        var post = getPost(postId);
+        var increment = true;
         try {
-            User user = userService.checkUser();
+            var user = userService.checkUser();
             if (user.isModerator() || user.getId() == post.getUser().getId()) increment = false;
         } catch (UnauthorizedException ignored) {
             // если пользователь не авторизован - ничего не делаем (игнорируем)
@@ -144,12 +144,12 @@ public class PostServiceImpl implements PostService {
      *
      * @param offset сдвиг для постраничного вывода
      * @param limit  кол-во запрашиваемых постов
-     * @param mode режим вывода (сортировка)
+     * @param mode   режим вывода (сортировка)
      * @return {@link PostListDto объект с данными постов}
      */
     @Override
     public ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode) {
-        PostViewMode postMode = PostViewMode.valueOf(mode.toUpperCase());
+        var postMode = PostViewMode.valueOf(mode.toUpperCase());
         int pageNumber = offset / limit;
         Sort sort;
         switch (postMode) {
@@ -174,8 +174,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponseEntity<PostListDto> getAnnounceListToModeration(int offset, int limit, String status)
             throws NotFoundException, UnauthorizedException {
-        User user = userService.checkUser();
-        ModerationStatus moderationStatus = valueOf(status.toUpperCase());
+        var user = userService.checkUser();
+        var moderationStatus = valueOf(status.toUpperCase());
         long moderatorId = (moderationStatus == NEW)
                 ? 0
                 : user.getId();
@@ -200,7 +200,7 @@ public class PostServiceImpl implements PostService {
     public ResponseEntity<PostListDto> getAnnounceListByAuthUser(int offset, int limit, String status)
             throws NotFoundException, UnauthorizedException {
         long userId = userService.checkUser().getId();
-        PostState postState = PostState.valueOf(status.toUpperCase());
+        var postState = PostState.valueOf(status.toUpperCase());
         int pageNumber = offset / limit;
         Pageable pageable = PageRequest.of(pageNumber, limit);
         Page<Post> page = getUserPostPage(userId, postState, pageable);
@@ -282,16 +282,16 @@ public class PostServiceImpl implements PostService {
 
 
     private Date checkDate(long timestamp) {
-        Date date = new Date(timestamp * 1000);
+        var date = new Date(timestamp * 1000);
         return (date.before(new Date())) ? new Date() : date;
     }
 
     private PostErrorMap checkPostUpdateRequest(PostRequest request) {
         String title = request.getTitle();
         String text = request.getText();
-        PostErrorMap errors = new PostErrorMap();
-        if (!(title.length() > minTitleLength)) errors.addTitleError();
-        if (!(text.length() > minTextLength)) errors.addTextError();
+        var errors = new PostErrorMap();
+        if (title.length() <= minTitleLength) errors.addTitleError();
+        if (text.length() <= minTextLength) errors.addTextError();
         return errors;
     }
 
@@ -315,7 +315,7 @@ public class PostServiceImpl implements PostService {
     }
 
     private PostDto createPostDto(Post post, PostDtoStatus status) {
-        PostDto postDto = new PostDto();
+        var postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setTimestamp(AppConstant.dateToTimestamp(post.getTime()));
         postDto.setUser(new UserDto(
