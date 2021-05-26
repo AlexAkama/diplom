@@ -9,6 +9,9 @@ import project.exception.*;
 import project.model.Post;
 import project.model.PostComment;
 
+/**
+ * <h2>Сервис обработки запросов постов</h2>
+ */
 public interface PostService {
 
   ResponseEntity<PostResponse> addPost(PostRequest request) throws NotFoundException, UnauthorizedException, ForbiddenException;
@@ -27,6 +30,14 @@ public interface PostService {
 
   ResponseEntity<PostDto> getPostForResponse(long postId) throws NotFoundException;
 
+  /**
+   * Получение списка постов
+   *
+   * @param offset сдвиг для постраничного вывода
+   * @param limit  кол-во запрашиваемых постов
+   * @param mode режим вывода (сортировка)
+   * @return {@link PostListDto объект с данными постов}
+   */
   ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode);
 
   ResponseEntity<PostListDto> getAnnounceListToModeration(int offset, int limit, String status) throws NotFoundException, UnauthorizedException;

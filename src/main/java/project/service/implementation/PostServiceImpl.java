@@ -132,12 +132,21 @@ public class PostServiceImpl implements PostService {
             User user = userService.checkUser();
             if (user.isModerator() || user.getId() == post.getUser().getId()) increment = false;
         } catch (UnauthorizedException ignored) {
+            // если пользователь не авторизован - ничего не делаем (игнорируем)
         }
         if (increment) post.setViewCounter(post.getViewCounter() + 1);
         postRepository.save(post);
         return ResponseEntity.ok(createPostDto(post));
     }
 
+    /**
+     * Получение списка постов
+     *
+     * @param offset сдвиг для постраничного вывода
+     * @param limit  кол-во запрашиваемых постов
+     * @param mode режим вывода (сортировка)
+     * @return {@link PostListDto объект с данными постов}
+     */
     @Override
     public ResponseEntity<PostListDto> getAnnounceList(int offset, int limit, String mode) {
         PostViewMode postMode = PostViewMode.valueOf(mode.toUpperCase());
