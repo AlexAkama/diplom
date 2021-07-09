@@ -39,7 +39,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "FROM Post p";
     String statisticSelectByUserId = statisticSelect + " WHERE p.user.id = ?1";
 
-    @Query("SELECT " + year + " AS year FROM Post p GROUP BY year ORDER BY " + year + " DESC")
+    @Query("SELECT " + year + " AS year FROM Post p WHERE p.moderationStatus = 'ACCEPTED'" +
+            "GROUP BY year ORDER BY " + year + " DESC")
     List<PostYearDto> getYearList();
 
     @Query("SELECT " + date + " AS key, COUNT(p) AS value FROM Post p"
