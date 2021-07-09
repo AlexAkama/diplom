@@ -1,7 +1,7 @@
 package project.model;
 
 import org.hibernate.annotations.Type;
-import project.model.emun.Role;
+import project.model.enums.Role;
 
 import javax.persistence.*;
 import java.util.Date;

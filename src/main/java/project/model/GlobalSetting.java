@@ -1,6 +1,6 @@
 package project.model;
 
-import project.model.emun.GlobalSettingsValue;
+import project.model.enums.GlobalSettingsValue;
 
 import javax.persistence.*;
 
@@ -15,21 +15,9 @@ public class GlobalSetting {
     @Column(nullable = false)
     private String code;
 
-//    @Column(nullable = false)
-//    private String name;
-
     @Enumerated(EnumType.STRING)
-    @Column(length = 3, columnDefinition = "varchar(3) default 'NO'")
+    @Column(length = 3, columnDefinition = "varchar(3) default 'YES'")
     private GlobalSettingsValue value;
-
-    public GlobalSetting() {
-    }
-
-//    public GlobalSetting(String code, String name) {
-//        this.code = code;
-//        this.name = name;
-//        this.value = GlobalSettingsValue.NO;
-//    }
 
     public String getCode() {
         return code;

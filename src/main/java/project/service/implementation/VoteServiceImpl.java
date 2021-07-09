@@ -7,15 +7,15 @@ import project.dto.vote.VoteCounterView;
 import project.exception.NotFoundException;
 import project.exception.UnauthorizedException;
 import project.model.*;
-import project.model.emun.Vote;
+import project.model.enums.Vote;
 import project.repository.VoteRepository;
 import project.service.*;
 
 import java.util.Date;
 import java.util.Optional;
 
-import static project.model.emun.Vote.DISLIKE;
-import static project.model.emun.Vote.LIKE;
+import static project.model.enums.Vote.DISLIKE;
+import static project.model.enums.Vote.LIKE;
 
 @Service
 public class VoteServiceImpl implements VoteService {
@@ -46,11 +46,11 @@ public class VoteServiceImpl implements VoteService {
 
     private ResponseEntity<AppResponse> setVote(Vote vote, long postId)
             throws NotFoundException, UnauthorizedException {
-        User user = userService.checkUser();
+        var user = userService.checkUser();
         Optional<PostVote> optionalPostVote = voteRepository.findByPostIdAndUserId(postId, user.getId());
         if (optionalPostVote.isEmpty()) {
-            PostVote postVote = new PostVote();
-            Post post = postService.getPost(postId);
+            var postVote = new PostVote();
+            var post = postService.getPost(postId);
             postVote.setPost(post);
             postVote.setUser(user);
             postVote.setTime(new Date());
@@ -59,7 +59,7 @@ public class VoteServiceImpl implements VoteService {
             updatePost(post);
             return ResponseEntity.ok(new AppResponse().ok());
         } else if (optionalPostVote.get().getValue() != vote.getValue()) {
-            PostVote postVote = optionalPostVote.get();
+            var postVote = optionalPostVote.get();
             postVote.setValue(-postVote.getValue());
             voteRepository.save(postVote);
             updatePost(postVote.getPost());

@@ -13,7 +13,7 @@ import project.dto.statistic.StatisticDto;
 import project.dto.vote.VoteCounterView;
 import project.exception.*;
 import project.model.*;
-import project.model.emun.*;
+import project.model.enums.*;
 import project.repository.*;
 import project.service.*;
 
@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static project.model.emun.ModerationStatus.*;
-import static project.model.emun.PostDtoStatus.ANNOUNCE;
+import static project.model.enums.ModerationStatus.*;
+import static project.model.enums.PostDtoStatus.ANNOUNCE;
 
 @Service
 public class PostServiceImpl implements PostService {

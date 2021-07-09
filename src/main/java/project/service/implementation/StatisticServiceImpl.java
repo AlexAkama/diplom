@@ -6,14 +6,13 @@ import project.dto.statistic.StatisticDto;
 import project.exception.NotFoundException;
 import project.exception.UnauthorizedException;
 import project.model.GlobalSetting;
-import project.model.User;
 import project.repository.GlobalSettingRepository;
 import project.service.*;
 
 import java.util.Optional;
 
-import static project.model.emun.GlobalSettings.STATISTICS_IS_PUBLIC;
-import static project.model.emun.GlobalSettingsValue.YES;
+import static project.model.enums.GlobalSettings.STATISTICS_IS_PUBLIC;
+import static project.model.enums.GlobalSettingsValue.YES;
 
 @Service
 public class StatisticServiceImpl implements StatisticService {
@@ -37,7 +36,7 @@ public class StatisticServiceImpl implements StatisticService {
         boolean statisticIsPublic =
                 optionalPublicStatistic.isPresent() && optionalPublicStatistic.get().getValue() == YES;
 
-        User user = userService.checkUser();
+        var user = userService.checkUser();
         StatisticDto response;
         if (statisticIsPublic || user.isModerator()) {
             response = postService.getAllStatistic();
@@ -47,7 +46,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public ResponseEntity<StatisticDto> getUserStatistic() throws NotFoundException, UnauthorizedException {
-        User user = userService.checkUser();
+        var user = userService.checkUser();
         StatisticDto response = postService.getUserStatistic(user.getId());
         return ResponseEntity.ok(response);
     }

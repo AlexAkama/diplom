@@ -6,16 +6,16 @@ import project.dto.global.*;
 import project.dto.post.PostYearDto;
 import project.model.ConfigParameter;
 import project.model.GlobalSetting;
-import project.model.emun.GlobalSettingsValue;
+import project.model.enums.GlobalSettingsValue;
 import project.repository.*;
 import project.service.GlobalService;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static project.model.emun.GlobalSettings.*;
-import static project.model.emun.GlobalSettingsValue.NO;
-import static project.model.emun.GlobalSettingsValue.YES;
+import static project.model.enums.GlobalSettings.*;
+import static project.model.enums.GlobalSettingsValue.NO;
+import static project.model.enums.GlobalSettingsValue.YES;
 
 /**
  * <h2>Реализация сервиса обработки глобальных запросов блога</h2>

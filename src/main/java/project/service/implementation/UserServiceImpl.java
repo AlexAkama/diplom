@@ -13,7 +13,7 @@ import project.repository.UserRepository;
 import project.security.SecurityUser;
 import project.service.UserService;
 
-import static project.model.emun.ModerationStatus.NEW;
+import static project.model.enums.ModerationStatus.NEW;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(String name, String email, String password) {
         String encodePassword = bCryptPasswordEncoder.encode(password);
-        User user = new User(name, email, encodePassword);
+        var user = new User(name, email, encodePassword);
         user.setPhoto(defaultAvatar);
         return userRepository.save(user);
     }
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthUserDto createAuthUserDto(User user) {
-        AuthUserDto dto = new AuthUserDto();
+        var dto = new AuthUserDto();
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setPhoto(user.getPhoto());
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
     public User checkUser() throws UnauthorizedException, NotFoundException {
         try {
-            SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            var securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             return userRepository.findByEmail(securityUser.getUsername()).orElseThrow();
         } catch (Exception e) {
             throw new UnauthorizedException("Требуется авторизация");

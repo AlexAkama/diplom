@@ -1,7 +1,7 @@
 package project.dto.post;
 
 import project.model.User;
-import project.model.emun.ModerationStatus;
+import project.model.enums.ModerationStatus;
 
 import java.util.Date;
 

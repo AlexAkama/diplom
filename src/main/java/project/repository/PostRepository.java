@@ -9,7 +9,7 @@ import project.dto.global.MapDto;
 import project.dto.post.PostYearDto;
 import project.dto.statistic.PostStatisticView;
 import project.model.Post;
-import project.model.emun.ModerationStatus;
+import project.model.enums.ModerationStatus;
 
 import java.util.List;
 import java.util.Optional;

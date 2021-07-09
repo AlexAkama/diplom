@@ -7,8 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import project.dto.image.ImageErrorMap;
 import project.dto.image.ImageResponse;
 import project.exception.*;
-import project.model.User;
-import project.model.emun.ImageTarget;
+import project.model.enums.ImageTarget;
 import project.service.ImageService;
 import project.service.UserService;
 
@@ -21,11 +20,13 @@ import java.util.Random;
 import java.util.Set;
 
 import static project.config.AppConstant.byteToMb;
-import static project.model.emun.ImageTarget.AVATAR;
-import static project.model.emun.ImageTarget.IMAGE;
+import static project.model.enums.ImageTarget.AVATAR;
+import static project.model.enums.ImageTarget.IMAGE;
 
 @Service
 public class ImageServiceImpl implements ImageService {
+
+    private final Random random = new Random();
 
     private final UserService userService;
 
@@ -80,7 +81,7 @@ public class ImageServiceImpl implements ImageService {
             String name = save(file, IMAGE);
             throw new ImageSuccess(name);
         } else {
-            ImageResponse response = new ImageResponse();
+            var response = new ImageResponse();
             response.setErrors(errors.getErrors());
             return ResponseEntity.ok(response);
         }
@@ -94,17 +95,14 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ImageErrorMap checkFile(MultipartFile file) {
-        ImageErrorMap errors = new ImageErrorMap();
+        var errors = new ImageErrorMap();
         if (file == null || file.getOriginalFilename() == null) {
             errors.addNotFoundError();
         } else {
             String expansion = getExtensionFromFileName(file.getOriginalFilename());
-            Set<String> expansions = Set.of(this.expansions.split(", "));
-            if (!expansions.contains(expansion)) {
+            Set<String> expansionSet = Set.of(this.expansions.split(", "));
+            if (!expansionSet.contains(expansion)) {
                 errors.addFormatError(this.expansions);
-                //FIXME
-                // org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException:
-                // The field image exceeds its maximum permitted size of 1048576 bytes
             } else if (file.getSize() > fileMaxSize)
                 errors.addSizeError(byteToMb(file.getSize()), byteToMb(fileMaxSize));
         }
@@ -113,8 +111,8 @@ public class ImageServiceImpl implements ImageService {
 
 
     private BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
-        BufferedImage resizedImage = new BufferedImage(width, height, originalImage.getType());
-        Graphics2D graphics2D = resizedImage.createGraphics();
+        var resizedImage = new BufferedImage(width, height, originalImage.getType());
+        var graphics2D = resizedImage.createGraphics();
         graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         graphics2D.drawImage(originalImage, 0, 0, width, height, null);
         graphics2D.dispose();
@@ -125,14 +123,14 @@ public class ImageServiceImpl implements ImageService {
 
         String avatar = null;
         if (target == AVATAR) {
-            User user = userService.checkUser();
+            var user = userService.checkUser();
             avatar = user.getPhoto();
         }
         String filename = file.getOriginalFilename();
         String relativePath;
         String relativeFile;
         if (avatar != null) {
-            File avatarFile = new File(avatar);
+            var avatarFile = new File(avatar);
             relativePath = avatarFile.getPath().replace(avatarFile.getName(), "");
             relativeFile = relativePath + filename;
         } else {
@@ -161,9 +159,8 @@ public class ImageServiceImpl implements ImageService {
 
     private String[] randomPathParts() {
         char[] chars = "abcdefhijkprstuvwx".toCharArray();
-        Random random = new Random();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < randomPathPart * randomPathPartLength; i++) {
+        var stringBuilder = new StringBuilder();
+        for (var i = 0; i < randomPathPart * randomPathPartLength; i++) {
             stringBuilder.append(chars[random.nextInt(chars.length)]);
         }
         return stringBuilder.toString().split("(?<=\\G.{" + randomPathPartLength + "})");
@@ -171,7 +168,7 @@ public class ImageServiceImpl implements ImageService {
 
     private String buildPath() {
         String[] randomPart = randomPathParts();
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         for (String element : randomPart) {
             stringBuilder.append(File.separator);
             stringBuilder.append(element);
@@ -180,7 +177,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private void createDirIfNotExist(String path) throws InternalServerException {
-        File dir = new File(path);
+        var dir = new File(path);
         if (!dir.exists() && !dir.mkdirs())
             throw new InternalServerException(String.format("Не удалось создать папку для хранения [%s]", path));
     }

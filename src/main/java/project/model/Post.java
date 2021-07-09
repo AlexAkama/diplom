@@ -1,7 +1,7 @@
 package project.model;
 
 import org.hibernate.annotations.Type;
-import project.model.emun.ModerationStatus;
+import project.model.enums.ModerationStatus;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -48,10 +48,6 @@ public class Post {
 
     @Column(name = "comment_count")
     private long commentCounter;
-
-
-    public Post() {
-    }
 
     public long getId() {
         return id;

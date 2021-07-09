@@ -8,16 +8,16 @@ import project.dto.main.AppResponse;
 import project.dto.moderation.ModerationRequest;
 import project.exception.*;
 import project.model.*;
-import project.model.emun.ModerationDecision;
-import project.model.emun.ModerationStatus;
+import project.model.enums.ModerationDecision;
+import project.model.enums.ModerationStatus;
 import project.service.*;
 
 import java.util.Date;
 
-import static project.model.emun.ModerationDecision.ACCEPT;
-import static project.model.emun.ModerationDecision.valueOf;
-import static project.model.emun.ModerationStatus.ACCEPTED;
-import static project.model.emun.ModerationStatus.DECLINED;
+import static project.model.enums.ModerationDecision.ACCEPT;
+import static project.model.enums.ModerationDecision.valueOf;
+import static project.model.enums.ModerationStatus.ACCEPTED;
+import static project.model.enums.ModerationStatus.DECLINED;
 
 @Service
 public class SubPostServiceImpl implements SubPostService {
@@ -37,10 +37,10 @@ public class SubPostServiceImpl implements SubPostService {
     @Override
     public ResponseEntity<AppResponse> setModerationDecision(ModerationRequest request)
             throws NotFoundException, UnauthorizedException, ForbiddenException {
-        User user = userService.checkUser();
+        var user = userService.checkUser();
         if (user.isModerator()) {
             ModerationDecision decision = valueOf(request.getDecision().toUpperCase());
-            Post post = postService.getPost(request.getPostId());
+            var post = postService.getPost(request.getPostId());
             ModerationStatus status = (decision == ACCEPT) ? ACCEPTED : DECLINED;
             post.setModerationStatus(status);
             post.setModerator(user);
@@ -53,12 +53,12 @@ public class SubPostServiceImpl implements SubPostService {
     @Override
     public ResponseEntity<CommentResponse> addComment(CommentRequest request)
             throws NotFoundException, UnauthorizedException {
-        User user = userService.checkUser();
-        CommentResponse response = new CommentResponse();
+        var user = userService.checkUser();
+        var response = new CommentResponse();
         String text = request.getText();
         if (text.length() > minTextLength) {
-            Post post = postService.getPost(request.getPostId());
-            PostComment comment = new PostComment();
+            var post = postService.getPost(request.getPostId());
+            var comment = new PostComment();
             comment.setText(text);
             comment.setPost(post);
             comment.setUser(user);
@@ -71,7 +71,7 @@ public class SubPostServiceImpl implements SubPostService {
             comment = postService.saveAndFlush(comment);
             response.setId(comment.getId());
         } else {
-            CommentErrorMap errors = new CommentErrorMap();
+            var errors = new CommentErrorMap();
             errors.addTextError();
             response.setErrors(errors.getErrors());
         }
