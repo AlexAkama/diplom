@@ -1,0 +1,103 @@
+{
+  "properties": [
+    {
+      "name": "config.password.minlength",
+      "type": "java.lang.String",
+      "description": "Description for config.password.minlength."
+    },
+    {
+      "name": "config.captcha.timeout",
+      "type": "java.lang.String",
+      "description": "Description for config.captcha.timeout."
+    },
+    {
+      "name": "config.captcha.image.width",
+      "type": "java.lang.String",
+      "description": "Description for config.captcha.image.width."
+    },
+    {
+      "name": "config.captcha.image.height",
+      "type": "java.lang.String",
+      "description": "Description for config.captcha.image.height."
+    },
+    {
+      "name": "config.post.minlength.title",
+      "type": "java.lang.String",
+      "description": "Description for config.post.minlength.title."
+    },
+    {
+      "name": "config.post.minlength.text",
+      "type": "java.lang.String",
+      "description": "Description for config.post.minlength.text."
+    },
+    {
+      "name": "config.comment.minlength.text",
+      "type": "java.lang.String",
+      "description": "Description for config.comment.minlength.text."
+    },
+    {
+      "name": "config.restore.timeout",
+      "type": "java.lang.String",
+      "description": "Description for config.restore.timeout."
+    },
+    {
+      "name": "upload.path",
+      "type": "java.lang.String",
+      "description": "Description for upload.path."
+    },
+    {
+      "name": "upload.maxSize",
+      "type": "java.lang.String",
+      "description": "Description for upload.maxSize."
+    },
+    {
+      "name": "upload.expansion",
+      "type": "java.lang.String",
+      "description": "Description for upload.expansion."
+    },
+    {
+      "name": "avatar.width",
+      "type": "java.lang.String",
+      "description": "Description for avatar.width."
+    },
+    {
+      "name": "avatar.height",
+      "type": "java.lang.String",
+      "description": "Description for avatar.height."
+    },
+    {
+      "name": "avatar.default",
+      "type": "java.lang.String",
+      "description": "Description for avatar.default."
+    },
+    {
+      "name": "email.host",
+      "type": "java.lang.String",
+      "description": "Description for email.host."
+    },
+    {
+      "name": "email.port",
+      "type": "java.lang.String",
+      "description": "Description for email.port."
+    },
+    {
+      "name": "email.username",
+      "type": "java.lang.String",
+      "description": "Description for email.username."
+    },
+    {
+      "name": "email.password",
+      "type": "java.lang.String",
+      "description": "Description for email.password."
+    },
+    {
+      "name": "upload.randomPart.value",
+      "type": "java.lang.String",
+      "description": "Description for upload.randomPart.value."
+    },
+    {
+      "name": "upload.randomPart.length",
+      "type": "java.lang.String",
+      "description": "Description for upload.randomPart.length."
+    }
+  ] }
