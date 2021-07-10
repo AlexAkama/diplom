@@ -1,28 +1,93 @@
 package project.service;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import project.dto.auth.user.AuthUserDto;
 import project.exception.NotFoundException;
 import project.exception.UnauthorizedException;
 import project.model.User;
+import project.repository.PostRepository;
+import project.repository.UserRepository;
+import project.security.SecurityUser;
 
-public interface UserService {
+import static project.model.enums.ModerationStatus.NEW;
 
-    User createUser(String name, String email, String password);
+@Service
+public class UserService {
 
-    User findByEmail (String email) throws NotFoundException;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
-    boolean existByEmail(String email);
+    @Value("${avatar.default}")
+    private String defaultAvatar;
 
-    User save(User user);
+    public UserService(UserRepository userRepository,
+                       PostRepository postRepository) {
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
+    }
 
-    User createAndSaveUser(String name, String email, String password);
+    public User createUser(String name, String email, String password) {
+        String encodePassword = bCryptPasswordEncoder.encode(password);
+        var user = new User(name, email, encodePassword);
+        user.setPhoto(defaultAvatar);
+        return userRepository.save(user);
+    }
 
-    AuthUserDto createAuthUserDto(User user);
+    public User findByEmail(String email) throws NotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(String.format("User %s not found", email)));
+    }
 
-    AuthUserDto createAuthUserDtoByEmail(String email) throws NotFoundException;
+    public boolean existByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 
-    User checkUser() throws UnauthorizedException, NotFoundException;
+    public User save(User user) {
+        return userRepository.save(user);
+    }
 
-    User findByCode(String code) throws NotFoundException;
+    public User createAndSaveUser(String name, String email, String password) {
+        return save(createUser(name, email, password));
+    }
+
+    public AuthUserDto createAuthUserDto(User user) {
+        var dto = new AuthUserDto();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setPhoto(user.getPhoto());
+        dto.setEmail(user.getEmail());
+        if (user.isModerator()) {
+            dto.setModeration(true);
+            dto.setSettings(true);
+            dto.setModerationCounter(postRepository.countAllByActiveAndModerationStatus(true, NEW));
+        } else {
+            dto.setModeration(false);
+            dto.setSettings(false);
+            dto.setModerationCounter(0);
+        }
+        return dto;
+    }
+
+    public AuthUserDto createAuthUserDtoByEmail(String email) throws NotFoundException {
+        return createAuthUserDto(findByEmail(email));
+    }
+
+    public User checkUser() throws UnauthorizedException {
+        try {
+            var securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return userRepository.findByEmail(securityUser.getUsername()).orElseThrow();
+        } catch (Exception e) {
+            throw new UnauthorizedException("Требуется авторизация");
+        }
+    }
+
+    public User findByCode(String code) throws NotFoundException {
+        return userRepository.findByCode(code)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+    }
 
 }
