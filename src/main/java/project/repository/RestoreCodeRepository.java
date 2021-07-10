@@ -18,7 +18,7 @@ public interface RestoreCodeRepository extends JpaRepository<RestoreCode, Long> 
     void deleteAllByTimeBefore(Date date);
 
     default void deleteExpiredCode(int timeout) {
-        Date limit = new Date(System.currentTimeMillis() - AppConstant.minuteToMillis(timeout));
+        var limit = new Date(System.currentTimeMillis() - AppConstant.minuteToMillis(timeout));
         deleteAllByTimeBefore(limit);
     }
 
