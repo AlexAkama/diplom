@@ -1,22 +1,19 @@
 package project.dto.main;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
+@Setter
 public abstract class AppErrorMap {
 
     private Map<String, String> errors;
 
-    public AppErrorMap() {
+    protected AppErrorMap() {
         errors = new HashMap<>();
-    }
-
-    public Map<String, String> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(Map<String, String> errors) {
-        this.errors = errors;
     }
 
     public boolean isEmpty() {

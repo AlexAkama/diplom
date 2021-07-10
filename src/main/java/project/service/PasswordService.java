@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,14 +19,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PasswordService {
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     private final UserService userService;
     private final EmailService emailService;
     private final RestoreCodeRepository restoreCodeRepository;
     private final CaptchaCodeRepository captchaCodeRepository;
-
-    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     /**
      * Срок действия кода востановления пароля в минутах
@@ -39,15 +41,6 @@ public class PasswordService {
     @Value("${config.password.minlength}")
     private int passwordMinLength;
 
-    public PasswordService(UserService userService,
-                           EmailService emailService,
-                           RestoreCodeRepository restoreCodeRepository,
-                           CaptchaCodeRepository captchaCodeRepository) {
-        this.userService = userService;
-        this.emailService = emailService;
-        this.restoreCodeRepository = restoreCodeRepository;
-        this.captchaCodeRepository = captchaCodeRepository;
-    }
 
     public ResponseEntity<AppResponse> restorePassword(
             PasswordRestoreRequest request,

@@ -1,17 +1,13 @@
 package project.dto.vote;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class VoteRequest {
     @JsonProperty("post_id")
     private long postId;
-
-    public long getPostId() {
-        return postId;
-    }
-
-    public void setPostId(long postId) {
-        this.postId = postId;
-    }
 
 }

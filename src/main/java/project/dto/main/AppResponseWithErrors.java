@@ -1,9 +1,11 @@
 package project.dto.main;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
 
 import java.util.Map;
 
+@Getter
 public class AppResponseWithErrors extends AppResponse{
 
     /**
@@ -14,10 +16,6 @@ public class AppResponseWithErrors extends AppResponse{
 
     public AppResponseWithErrors() {
         setResult(true);
-    }
-
-    public Map<String, String> getErrors() {
-        return errors;
     }
 
     public void setErrors(Map<String, String> errors) {

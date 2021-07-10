@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import project.exception.NotFoundException;
 import project.model.*;
@@ -10,16 +11,12 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
+@RequiredArgsConstructor
 public class TagService {
 
     private final TagRepository tagRepository;
     private final TagToPostRepository tagToPostRepository;
 
-    public TagService(TagRepository tagRepository,
-                      TagToPostRepository tagToPostRepository) {
-        this.tagRepository = tagRepository;
-        this.tagToPostRepository = tagToPostRepository;
-    }
 
     public void addTags(String[] tags) {
         for (String tag : tags) {

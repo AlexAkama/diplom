@@ -1,6 +1,7 @@
 package project.service;
 
 import com.github.cage.GCage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,10 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class CaptchaService {
 
     private final Random random = new Random();
-
 
     private final CaptchaCodeRepository captchaCodeRepository;
     private final ImageService imageService;
@@ -28,11 +29,6 @@ public class CaptchaService {
      */
     @Value("${config.captcha.timeout}")
     private int captchaTimeout;
-
-    public CaptchaService(CaptchaCodeRepository captchaCodeRepository, ImageService imageService) {
-        this.captchaCodeRepository = captchaCodeRepository;
-        this.imageService = imageService;
-    }
 
     public ResponseEntity<CaptchaDto> getCaptcha() throws IOException {
 
@@ -57,7 +53,7 @@ public class CaptchaService {
         var limit = new Date(System.currentTimeMillis() - AppConstant.minuteToMillis(captchaTimeout));
         captchaCodeRepository.deleteAllByTimeBefore(limit);
         Optional<CaptchaCode> result = captchaCodeRepository.findCaptchaCodeBySecretCode(secret);
-        return result.isPresent() && result.get().getCode().equals(code);
+        return result.isPresent() && result.get().getCode().equals(code.toUpperCase());
     }
 
     /**
@@ -68,7 +64,7 @@ public class CaptchaService {
      * @return строка случайных символов заданной длинны
      */
     private String randomString(int length) {
-        char[] chars = "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx1234567890".toCharArray();
+        char[] chars = "ACEFGHJKLMNPQRUVWXY1234567890".toCharArray();
         var stringBuilder = new StringBuilder();
         for (var i = 0; i < length; i++) {
             stringBuilder.append(chars[random.nextInt(chars.length)]);

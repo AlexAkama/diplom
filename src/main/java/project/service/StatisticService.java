@@ -1,9 +1,9 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.dto.statistic.StatisticDto;
-import project.exception.NotFoundException;
 import project.exception.UnauthorizedException;
 import project.model.GlobalSetting;
 import project.repository.GlobalSettingRepository;
@@ -14,21 +14,14 @@ import static project.model.enums.GlobalSettings.STATISTICS_IS_PUBLIC;
 import static project.model.enums.GlobalSettingsValue.YES;
 
 @Service
+@RequiredArgsConstructor
 public class StatisticService {
 
     private final GlobalSettingRepository globalSettingRepository;
     private final PostService postService;
     private final UserService userService;
 
-    public StatisticService(GlobalSettingRepository globalSettingRepository,
-                            PostService postService,
-                            UserService userService) {
-        this.globalSettingRepository = globalSettingRepository;
-        this.postService = postService;
-        this.userService = userService;
-    }
-
-    public ResponseEntity<StatisticDto> getAllStatistic() throws NotFoundException, UnauthorizedException {
+    public ResponseEntity<StatisticDto> getAllStatistic() throws UnauthorizedException {
         Optional<GlobalSetting> optionalPublicStatistic =
                 globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
         boolean statisticIsPublic =
@@ -42,7 +35,7 @@ public class StatisticService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<StatisticDto> getUserStatistic() throws NotFoundException, UnauthorizedException {
+    public ResponseEntity<StatisticDto> getUserStatistic() throws UnauthorizedException {
         var user = userService.checkUser();
         StatisticDto response = postService.getUserStatistic(user.getId());
         return ResponseEntity.ok(response);

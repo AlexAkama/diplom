@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import static project.model.enums.ModerationStatus.ACCEPTED;
 import static project.model.enums.ModerationStatus.DECLINED;
 
 @Service
+@RequiredArgsConstructor
 public class SubPostService {
 
     private final UserService userService;
@@ -26,12 +28,6 @@ public class SubPostService {
 
     @Value("${config.comment.minlength.text}")
     private int minTextLength;
-
-    public SubPostService(UserService userService,
-                          PostService postService) {
-        this.userService = userService;
-        this.postService = postService;
-    }
 
     public ResponseEntity<AppResponse> setModerationDecision(ModerationRequest request)
             throws NotFoundException, UnauthorizedException, ForbiddenException {

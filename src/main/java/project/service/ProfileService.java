@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +23,7 @@ import static project.model.enums.ChangeStatus.NO_CHANGE;
 import static project.model.enums.ChangeStatus.TO_CHANGE;
 
 @Service
+@RequiredArgsConstructor
 public class ProfileService {
 
     private final UserService userService;
@@ -40,18 +42,6 @@ public class ProfileService {
     private int restoreTimeout;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
-
-    public ProfileService(UserService userService,
-                          AuthService authService,
-                          ImageService imageService,
-                          EmailService emailService,
-                          RestoreCodeRepository restoreCodeRepository) {
-        this.userService = userService;
-        this.authService = authService;
-        this.imageService = imageService;
-        this.emailService = emailService;
-        this.restoreCodeRepository = restoreCodeRepository;
-    }
 
     private void changeNameIfChecked(String name, String userName, User user, ProfileErrorMap errors) {
         if (name != null && !name.equals(userName)) {

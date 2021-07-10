@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import javax.servlet.http.*;
 import java.security.Principal;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserService userService;
@@ -28,13 +30,6 @@ public class AuthService {
     @Value("${config.password.minlength}")
     private int passwordMinLength;
 
-    public AuthService(UserService userService,
-                       CaptchaService captchaService,
-                       AuthenticationManager authenticationManager) {
-        this.userService = userService;
-        this.captchaService = captchaService;
-        this.authenticationManager = authenticationManager;
-    }
 
     public ResponseEntity<AuthResponse> checkUserAuthorization(Principal principal) throws NotFoundException {
         var response = new AuthResponse();

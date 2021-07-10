@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import static project.model.enums.ModerationStatus.*;
 import static project.model.enums.PostDtoStatus.ANNOUNCE;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
@@ -39,19 +41,6 @@ public class PostService {
     @Value("${config.post.minlength.text}")
     private int minTextLength;
 
-    public PostService(PostRepository postRepository,
-                       PostCommentRepository postCommentRepository,
-                       TagToPostRepository tagToPostRepository,
-                       VoteRepository voteRepository,
-                       UserService userService,
-                       TagService tagService) {
-        this.postRepository = postRepository;
-        this.postCommentRepository = postCommentRepository;
-        this.tagToPostRepository = tagToPostRepository;
-        this.voteRepository = voteRepository;
-        this.userService = userService;
-        this.tagService = tagService;
-    }
 
     public ResponseEntity<PostResponse> addPost(PostRequest request)
             throws NotFoundException, UnauthorizedException, ForbiddenException {
@@ -164,7 +153,7 @@ public class PostService {
     }
 
     public ResponseEntity<PostListDto> getAnnounceListToModeration(int offset, int limit, String status)
-            throws NotFoundException, UnauthorizedException {
+            throws UnauthorizedException {
         var user = userService.checkUser();
         var moderationStatus = valueOf(status.toUpperCase());
         long moderatorId = (moderationStatus == NEW)
@@ -188,7 +177,7 @@ public class PostService {
     }
 
     public ResponseEntity<PostListDto> getAnnounceListByAuthUser(int offset, int limit, String status)
-            throws NotFoundException, UnauthorizedException {
+            throws UnauthorizedException {
         long userId = userService.checkUser().getId();
         var postState = PostState.valueOf(status.toUpperCase());
         int pageNumber = offset / limit;

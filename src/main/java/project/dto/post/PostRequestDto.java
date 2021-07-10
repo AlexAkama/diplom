@@ -1,10 +1,12 @@
 package project.dto.post;
 
+import lombok.Getter;
 import project.model.User;
 import project.model.enums.ModerationStatus;
 
 import java.util.Date;
 
+@Getter
 public class PostRequestDto {
 
     private final boolean active;
@@ -29,34 +31,6 @@ public class PostRequestDto {
         this.time = date;
         this.user = user;
         this.status = status;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String[] getTagArray() {
-        return tagArray;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public ModerationStatus getStatus() {
-        return status;
     }
 
 }

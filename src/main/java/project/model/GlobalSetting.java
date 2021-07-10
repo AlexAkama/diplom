@@ -1,5 +1,7 @@
 package project.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import project.model.enums.GlobalSettingsValue;
 
 import javax.persistence.*;
@@ -17,19 +19,4 @@ public class GlobalSetting extends Identified {
     @Column(length = 3, columnDefinition = "varchar(3) default 'YES'")
     private GlobalSettingsValue value;
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public GlobalSettingsValue getValue() {
-        return value;
-    }
-
-    public void setValue(GlobalSettingsValue value) {
-        this.value = value;
-    }
 }

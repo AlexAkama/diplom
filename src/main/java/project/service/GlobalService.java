@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.dto.global.*;
@@ -20,6 +21,7 @@ import static project.model.enums.GlobalSettingsValue.YES;
  * <h2>Реализация сервиса обработки глобальных запросов блога</h2>
  */
 @Service
+@RequiredArgsConstructor
 public class GlobalService {
 
     /**
@@ -31,16 +33,6 @@ public class GlobalService {
     private final GlobalSettingRepository globalSettingRepository;
     private final TagToPostRepository tagToPostRepository;
     private final PostRepository postRepository;
-
-    public GlobalService(ConfigParameterRepository configParameterRepository,
-                         GlobalSettingRepository globalSettingRepository,
-                         TagToPostRepository tagToPostRepository,
-                         PostRepository postRepository) {
-        this.configParameterRepository = configParameterRepository;
-        this.globalSettingRepository = globalSettingRepository;
-        this.tagToPostRepository = tagToPostRepository;
-        this.postRepository = postRepository;
-    }
 
     /**
      * Получение персональной информации о владельце блога

@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import static project.model.enums.ImageTarget.AVATAR;
 import static project.model.enums.ImageTarget.IMAGE;
 
 @Service
+@RequiredArgsConstructor
 public class ImageService {
 
     private final Random random = new Random();
@@ -61,16 +63,12 @@ public class ImageService {
     @Value("${avatar.height}")
     private int avatarHeight;
 
-    public ImageService(UserService userService) {
-        this.userService = userService;
-    }
-
     public BufferedImage resizeCaptchaImage(BufferedImage originalImage) {
         return resizeImage(originalImage, captchaWidth, captchaHeight);
     }
 
     public ResponseEntity<ImageResponse> saveImage(MultipartFile file)
-            throws UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException {
+            throws UnauthorizedException, ImageSuccess, InternalServerException {
         userService.checkUser();
         ImageErrorMap errors = checkFile(file);
         if (errors.getErrors().isEmpty()) {

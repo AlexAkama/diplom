@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,20 +16,17 @@ import project.security.SecurityUser;
 import static project.model.enums.ModerationStatus.NEW;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     @Value("${avatar.default}")
     private String defaultAvatar;
 
-    public UserService(UserRepository userRepository,
-                       PostRepository postRepository) {
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
-    }
 
     public User createUser(String name, String email, String password) {
         String encodePassword = bCryptPasswordEncoder.encode(password);

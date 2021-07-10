@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.dto.main.AppResponse;
@@ -18,19 +19,13 @@ import static project.model.enums.Vote.DISLIKE;
 import static project.model.enums.Vote.LIKE;
 
 @Service
+@RequiredArgsConstructor
 public class VoteService {
 
     private final UserService userService;
     private final PostService postService;
     private final VoteRepository voteRepository;
 
-    public VoteService(UserService userService,
-                       PostService postService,
-                       VoteRepository voteRepository) {
-        this.userService = userService;
-        this.postService = postService;
-        this.voteRepository = voteRepository;
-    }
 
     public ResponseEntity<AppResponse> setLike(long postId)
             throws NotFoundException, UnauthorizedException {

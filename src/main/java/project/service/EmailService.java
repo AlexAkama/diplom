@@ -1,5 +1,6 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
  * {@link EmailService Oбязательные функции}
  */
 @Service
+@RequiredArgsConstructor
 public class EmailService {
 
     private static final String RESTORE_SUBJECT = "Восстановление пароля";
@@ -36,10 +38,6 @@ public class EmailService {
      */
     @Value("${email.username}")
     private String username;
-
-    public EmailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
 
     /**
      * Отправка простого письма без вложения

@@ -1,7 +1,11 @@
 package project.dto.profile;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+@Getter
+@Setter
 public class ProfileRequest extends ProfileRequestWithoutPhoto {
 
     private MultipartFile photo;
@@ -13,14 +17,6 @@ public class ProfileRequest extends ProfileRequestWithoutPhoto {
 
     public ProfileRequest(ProfileRequestWithoutPhoto request) {
         super(request.getName(), request.getEmail(), request.getPassword(), request.getRemovePhoto());
-    }
-
-    public MultipartFile getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(MultipartFile photo) {
-        this.photo = photo;
     }
 
 }
