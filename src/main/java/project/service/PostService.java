@@ -65,7 +65,7 @@ public class PostService {
                 } else if (user.isModerator()) {
                     status = post.getModerationStatus();
                 } else {
-                    throw new ForbiddenException("Нет прав для измения поста");
+                    throw new ForbiddenException("Нет прав для изменения поста");
                 }
             }
             var date = checkDate(request.getTimestamp());

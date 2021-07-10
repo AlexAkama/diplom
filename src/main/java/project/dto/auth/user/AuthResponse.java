@@ -9,7 +9,6 @@ import project.dto.main.AppResponse;
  */
 @NoArgsConstructor
 @Getter
-@Setter
 public class AuthResponse extends AppResponse {
 
     /**
@@ -19,7 +18,13 @@ public class AuthResponse extends AppResponse {
     private AuthUserDto user;
 
     public AuthResponse(AuthUserDto user) {
+        this.setResult(true);
         this.setUser(user);
+    }
+
+    public void setUser(AuthUserDto user) {
+        this.setResult(true);
+        this.user = user;
     }
 
 }
