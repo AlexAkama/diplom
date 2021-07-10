@@ -5,11 +5,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "post_comments")
-public class PostComment {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@Getter
+@Setter
+public class PostComment extends Identified {
 
     @OneToOne
     private PostComment parent;

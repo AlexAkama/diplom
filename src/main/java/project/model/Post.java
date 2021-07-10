@@ -8,11 +8,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "posts")
-public class Post {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@Getter
+@Setter
+public class Post extends Identified {
 
     @Column(name = "is_active", nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")

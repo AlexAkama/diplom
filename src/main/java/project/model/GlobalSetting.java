@@ -6,11 +6,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "global_settings")
-public class GlobalSetting {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+@Getter
+@Setter
+public class GlobalSetting extends Identified {
 
     @Column(nullable = false)
     private String code;

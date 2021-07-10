@@ -4,11 +4,11 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tag2post")
-public class TagToPost {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class TagToPost extends Identified {
 
     @OneToOne(optional = false)
     private Tag tag;

@@ -11,14 +11,11 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "users")
-public class User {
-
-    /**
-     * Порядковый номер в базе (уникальный, автоинкримент)
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class User extends Identified {
 
     /**
      * Признак модератора

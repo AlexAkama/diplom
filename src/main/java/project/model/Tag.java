@@ -4,11 +4,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tags")
-public class Tag {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+@NoArgsConstructor
+@Getter
+@Setter
+public class Tag extends Identified {
 
     @Column(nullable = false)
     private String name;

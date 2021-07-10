@@ -5,11 +5,10 @@ import java.util.Date;
 
 @Entity
 @Table(name = "restore_codes")
-public class RestoreCode {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@NoArgsConstructor
+@Getter
+@Setter
+public class RestoreCode extends Identified{
 
     @Column(nullable = false)
     private String code;

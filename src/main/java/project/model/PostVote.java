@@ -5,11 +5,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "post_votes")
-public class PostVote {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+@Getter
+@Setter
+public class PostVote extends Identified {
 
     @ManyToOne(optional = false)
     private User user;

@@ -4,11 +4,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "config")
-public class ConfigParameter {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+@Getter
+@Setter
+public class ConfigParameter extends Identified {
 
     private String name;
 
