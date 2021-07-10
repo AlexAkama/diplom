@@ -71,7 +71,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequest request
-    ) throws NotFoundException {
+    ) {
         return authService.login(request);
     }
 
