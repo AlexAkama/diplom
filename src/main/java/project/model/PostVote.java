@@ -22,6 +22,6 @@ public class PostVote extends Identified {
     private Date time;
 
     @Column(nullable = false)
-    private int value;
+    private long value;
 
 }
