@@ -1,7 +1,8 @@
 package project.model;
 
+import lombok.*;
 import org.hibernate.annotations.Type;
-import project.model.emun.Role;
+import project.model.enums.Role;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,14 +12,11 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "users")
-public class User {
-
-    /**
-     * Порядковый номер в базе (уникальный, автоинкримент)
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class User extends Identified {
 
     /**
      * Признак модератора
@@ -63,9 +61,6 @@ public class User {
     private String photo;
 
 
-    public User() {
-    }
-
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
@@ -78,71 +73,6 @@ public class User {
         return isModerator()
                 ? Role.MODERATOR
                 : Role.USER;
-    }
-
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public boolean isModerator() {
-        return moderator;
-    }
-
-    public void setModerator(boolean moderator) {
-        this.moderator = moderator;
-    }
-
-    public Date getRegistrationTime() {
-        return registrationTime;
-    }
-
-    public void setRegistrationTime(Date registrationTime) {
-        this.registrationTime = registrationTime;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
     }
 
 }

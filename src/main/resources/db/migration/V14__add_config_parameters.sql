@@ -1,6 +1,6 @@
 CREATE TABLE `config`
 (
-    `id`    INT(11)      COLLATE utf8_unicode_ci NOT NULL AUTO_INCREMENT,
+    `id`    BIGINT(11)      COLLATE utf8_unicode_ci NOT NULL AUTO_INCREMENT,
     `name`  VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
     `value` VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
     PRIMARY KEY (`id`),

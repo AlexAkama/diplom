@@ -1,14 +1,44 @@
 package project.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import project.dto.statistic.StatisticDto;
-import project.exception.NotFoundException;
 import project.exception.UnauthorizedException;
+import project.model.GlobalSetting;
+import project.repository.GlobalSettingRepository;
 
-public interface StatisticService {
+import java.util.Optional;
 
-    ResponseEntity<StatisticDto> getAllStatistic() throws NotFoundException, UnauthorizedException;
+import static project.model.enums.GlobalSettings.STATISTICS_IS_PUBLIC;
+import static project.model.enums.GlobalSettingsValue.YES;
 
-    ResponseEntity<StatisticDto> getUserStatistic() throws NotFoundException, UnauthorizedException;
+@Service
+@RequiredArgsConstructor
+public class StatisticService {
+
+    private final GlobalSettingRepository globalSettingRepository;
+    private final PostService postService;
+    private final UserService userService;
+
+    public ResponseEntity<StatisticDto> getAllStatistic() throws UnauthorizedException {
+        Optional<GlobalSetting> optionalPublicStatistic =
+                globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
+        boolean statisticIsPublic =
+                optionalPublicStatistic.isPresent() && optionalPublicStatistic.get().getValue() == YES;
+
+        var user = userService.checkUser();
+        StatisticDto response;
+        if (statisticIsPublic || user.isModerator()) {
+            response = postService.getAllStatistic();
+        } else throw new UnauthorizedException("Требуется авторизация");
+        return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<StatisticDto> getUserStatistic() throws UnauthorizedException {
+        var user = userService.checkUser();
+        StatisticDto response = postService.getUserStatistic(user.getId());
+        return ResponseEntity.ok(response);
+    }
 
 }

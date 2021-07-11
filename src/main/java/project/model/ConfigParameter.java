@@ -1,34 +1,18 @@
 package project.model;
 
-import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "config")
-public class ConfigParameter {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+@Getter
+@Setter
+public class ConfigParameter extends Identified {
 
     private String name;
-
     private String value;
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 
 }

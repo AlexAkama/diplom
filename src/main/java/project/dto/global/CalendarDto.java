@@ -1,5 +1,7 @@
 package project.dto.global;
 
+import lombok.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +10,9 @@ import java.util.Map;
  * <tr><td>{@link CalendarDto#years}</td><td>Спсисок годов</td></tr>
  * <tr><td>{@link CalendarDto#posts}</td><td>Карта кол-ва публикаций</td></tr>
  */
+@AllArgsConstructor
+@Getter
+@Setter
 public class CalendarDto {
 
     /**
@@ -19,19 +24,5 @@ public class CalendarDto {
      * Карта кол-ва публикаций: дата - кол-во постов
      */
     private final Map<String, Long> posts;
-
-
-    public CalendarDto(List<String> years, Map<String, Long> posts) {
-        this.years = years;
-        this.posts = posts;
-    }
-
-    public List<String> getYears() {
-        return years;
-    }
-
-    public Map<String, Long> getPosts() {
-        return posts;
-    }
 
 }

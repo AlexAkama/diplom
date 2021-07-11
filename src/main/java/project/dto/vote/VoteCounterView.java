@@ -2,8 +2,8 @@ package project.dto.vote;
 
 public interface VoteCounterView {
 
-    long getLikeCounter();
+    Long getLikeCounter();
 
-    long getDislikeCounter();
+    Long getDislikeCounter();
 
 }

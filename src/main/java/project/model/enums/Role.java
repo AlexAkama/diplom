@@ -1,11 +1,11 @@
-package project.model.emun;
+package project.model.enums;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static project.model.emun.Permission.*;
+import static project.model.enums.Permission.*;
 
 public enum Role {
     GUEST(Set.of(READ)),
@@ -21,7 +21,7 @@ public enum Role {
 
     public Set<SimpleGrantedAuthority> getAuthorities() {
         return permissions.stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
+                .map(permission -> new SimpleGrantedAuthority(permission.getText()))
                 .collect(Collectors.toSet());
     }
 

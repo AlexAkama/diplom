@@ -6,6 +6,9 @@ import project.dto.post.*;
 import project.exception.*;
 import project.service.PostService;
 
+/**
+ * <h2>Контроллер отбработки запросов постов блога</h2>
+ */
 @RestController
 @RequestMapping("/api/post")
 public class PostController {
@@ -16,8 +19,15 @@ public class PostController {
         this.postService = postService;
     }
 
+    /**
+     * Запрос списка постов
+     *
+     * @param offset сдвиг для постраничного вывода
+     * @param limit  кол-во запрашиваемых постов
+     * @param mode режим вывода (сортировка)
+     * @return {@link PostListDto объект с данными постов}
+     */
     @GetMapping
-//    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<PostListDto> getPostList(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,

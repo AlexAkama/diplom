@@ -4,16 +4,18 @@ import project.dto.main.AppErrorMap;
 
 public class ImageErrorMap extends AppErrorMap {
 
+    private static final String IMAGE = "image";
+
     public void addSizeError(long fileSize, long maxSize) {
-        getErrors().put("image", String.format("Размер файла %dMB. Максимально %dMB", fileSize, maxSize));
+        getErrors().put(IMAGE, String.format("Размер файла %dMB. Максимально %dMB", fileSize, maxSize));
     }
 
     public void addFormatError(String format) {
-        getErrors().put("image", String.format("Файл не соответствует формату (%s)", format));
+        getErrors().put(IMAGE, String.format("Файл не соответствует формату (%s)", format));
     }
 
     public void addNotFoundError() {
-        getErrors().put("image", "Файл не найден");
+        getErrors().put(IMAGE, "Файл не найден");
     }
 
 }

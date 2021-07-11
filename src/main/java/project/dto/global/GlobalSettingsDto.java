@@ -1,6 +1,8 @@
 package project.dto.global;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * <h3>Глобальные настройки блога</h3>
@@ -8,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * <tr><td>{@link GlobalSettingsDto#preModeration}</td><td>Обязательная премодерация</td></tr>
  * <tr><td>{@link GlobalSettingsDto#publicStatistic}</td>Доступонсть статистики<td></td></tr>
  */
+@AllArgsConstructor
+@Getter
 public class GlobalSettingsDto {
 
     /**
@@ -27,23 +31,5 @@ public class GlobalSettingsDto {
      */
     @JsonProperty("STATISTICS_IS_PUBLIC")
     private final boolean publicStatistic;
-
-    public GlobalSettingsDto(boolean multiUser, boolean preModeration, boolean publicStatistic) {
-        this.multiUser = multiUser;
-        this.preModeration = preModeration;
-        this.publicStatistic = publicStatistic;
-    }
-
-    public boolean isMultiUser() {
-        return multiUser;
-    }
-
-    public boolean isPreModeration() {
-        return preModeration;
-    }
-
-    public boolean isPublicStatistic() {
-        return publicStatistic;
-    }
 
 }

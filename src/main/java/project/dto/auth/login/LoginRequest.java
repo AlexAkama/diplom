@@ -1,10 +1,14 @@
 package project.dto.auth.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 /**
- *  Данные запроса на вход: почта и пароль
+ * Данные запроса на вход: почта и пароль
  */
+@AllArgsConstructor
+@Getter
+@Setter
 public class LoginRequest {
 
     /**
@@ -18,26 +22,4 @@ public class LoginRequest {
      */
     private String password;
 
-
-    public LoginRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

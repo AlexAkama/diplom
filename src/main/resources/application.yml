@@ -1,8 +1,11 @@
-spring.jpa.hibernate.ddl-auto: none
-
-spring.datasource.url: jdbc:mysql://localhost:3306/diplom?serverTimezone=UTC
-spring.datasource.username: sqluser
-spring.datasource.password: diplomsql
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url:
+    username:
+    password:
 
 config:
   password:
@@ -31,12 +34,12 @@ upload:
     length: 2
 
 avatar:
-  width: 36
-  height: 36
+  width: 90
+  height: 90
   default: /default-1.png
 
 email:
-  host: smtp.gmail.com
-  port: 465
-  username: java10skillbox@gmail.com
-  password: java10rezone
+  host:
+  port:
+  username:
+  password:

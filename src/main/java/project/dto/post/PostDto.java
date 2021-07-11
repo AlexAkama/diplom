@@ -1,23 +1,27 @@
 package project.dto.post;
 
 import com.fasterxml.jackson.annotation.*;
-import project.dto.comment.CommentDto;
+import lombok.Getter;
+import lombok.Setter;
 import project.dto.UserDto;
+import project.dto.comment.CommentDto;
 
 import java.util.List;
 
 @JsonPropertyOrder({"id", "timestamp", "active", "user", "title", "announce", "text",
         "likeCount", "dislikeCount", "commentCount", "viewCount", "comments", "tags"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@Getter
+@Setter
 public class PostDto {
 
     private long id;
     private long timestamp;
-    private boolean active ;
+    private boolean active;
     private UserDto user;
     private String title;
     private String announce;
-    private String text = null;
+    private String text;
     @JsonProperty("likeCount")
     private long likeCounter;
     @JsonProperty("dislikeCount")
@@ -30,110 +34,5 @@ public class PostDto {
     private List<CommentDto> commentList;
     @JsonProperty("tags")
     private List<String> tagList;
-
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public boolean getActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public UserDto getUser() {
-        return user;
-    }
-
-    public void setUser(UserDto user) {
-        this.user = user;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAnnounce() {
-        return announce;
-    }
-
-    public void setAnnounce(String announce) {
-        this.announce = announce;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public long getLikeCounter() {
-        return likeCounter;
-    }
-
-    public void setLikeCounter(long likeCounter) {
-        this.likeCounter = likeCounter;
-    }
-
-    public long getDislikeCounter() {
-        return dislikeCounter;
-    }
-
-    public void setDislikeCounter(long dislikeCounter) {
-        this.dislikeCounter = dislikeCounter;
-    }
-
-    public long getCommentCounter() {
-        return commentCounter;
-    }
-
-    public void setCommentCounter(long commentCounter) {
-        this.commentCounter = commentCounter;
-    }
-
-    public long getViewCounter() {
-        return viewCounter;
-    }
-
-    public void setViewCounter(long viewCounter) {
-        this.viewCounter = viewCounter;
-    }
-
-    public List<CommentDto> getCommentList() {
-        return commentList;
-    }
-
-    public void setCommentList(List<CommentDto> commentList) {
-        this.commentList = commentList;
-    }
-
-    public List<String> getTagList() {
-        return tagList;
-    }
-
-    public void setTagList(List<String> tagList) {
-        this.tagList = tagList;
-    }
 
 }

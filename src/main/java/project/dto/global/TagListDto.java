@@ -1,6 +1,8 @@
 package project.dto.global;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -8,6 +10,8 @@ import java.util.List;
  * <h3>Список тегов</h3>
  * {@link TagListDto#tagList} Список тегов
  */
+@AllArgsConstructor
+@Getter
 public class TagListDto {
 
     /**
@@ -15,15 +19,5 @@ public class TagListDto {
      */
     @JsonProperty("tags")
     private final List<TagDto> tagList;
-
-
-    public TagListDto(List<TagDto> tagList) {
-        this.tagList = tagList;
-    }
-
-
-    public List<TagDto> getTagList() {
-        return tagList;
-    }
 
 }

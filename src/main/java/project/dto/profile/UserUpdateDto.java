@@ -1,6 +1,7 @@
 package project.dto.profile;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 /**
  * Данные для изменения данных пользователя:
@@ -11,6 +12,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * <pre>    - признак удаления/замены автатара</pre>
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@AllArgsConstructor
+@Getter
+@Setter
 public class UserUpdateDto {
 
     /**
@@ -39,46 +43,4 @@ public class UserUpdateDto {
      */
     private int removePhoto;
 
-
-    // GETTERS & SETTERS
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public int getRemovePhoto() {
-        return removePhoto;
-    }
-
-    public void setRemovePhoto(int removePhoto) {
-        this.removePhoto = removePhoto;
-    }
 }

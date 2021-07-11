@@ -5,7 +5,8 @@ import project.dto.main.AppErrorMap;
 public class PasswordChangeErrorMap extends AppErrorMap {
 
     public void addTimeError() {
-        getErrors().put("code", "Ссылка для востановления устарела. <a href=\"/login/restore-password\">Запросить ссылку снова</a>");
+        getErrors().put("code", "Ссылка для восстановления устарела. " +
+                "<a href=\"/login/restore-password\">Запросить ссылку снова</a>");
     }
 
     public void addPasswordError() {

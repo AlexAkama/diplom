@@ -1,15 +1,12 @@
 package project.dto.main;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class Message {
 
-    private final String message;
-
-    public Message(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
+    private final String text;
 
 }

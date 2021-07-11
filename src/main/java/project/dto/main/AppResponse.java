@@ -1,8 +1,13 @@
 package project.dto.main;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Базовый ответ результата
  */
+@Getter
+@Setter
 public class AppResponse {
 
     /**
@@ -15,15 +20,6 @@ public class AppResponse {
      */
     public AppResponse() {
         result = false;
-    }
-
-
-    public boolean isResult() {
-        return result;
-    }
-
-    public void setResult(boolean result) {
-        this.result = result;
     }
 
     public AppResponse ok() {

@@ -1,7 +1,11 @@
 package project.dto.statistic;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@AllArgsConstructor
+@Getter
 public class StatisticDto {
 
     @JsonProperty("postsCount")
@@ -13,37 +17,5 @@ public class StatisticDto {
     @JsonProperty("viewsCount")
     private final long viewCounter;
     private final long firstPublication;
-
-    public StatisticDto(long postCounter,
-                        long likeCounter,
-                        long dislikeCounter,
-                        long viewCounter,
-                        long firstPublication) {
-        this.postCounter = postCounter;
-        this.likeCounter = likeCounter;
-        this.dislikeCounter = dislikeCounter;
-        this.viewCounter = viewCounter;
-        this.firstPublication = firstPublication;
-    }
-
-    public long getPostCounter() {
-        return postCounter;
-    }
-
-    public long getLikeCounter() {
-        return likeCounter;
-    }
-
-    public long getDislikeCounter() {
-        return dislikeCounter;
-    }
-
-    public long getViewCounter() {
-        return viewCounter;
-    }
-
-    public long getFirstPublication() {
-        return firstPublication;
-    }
 
 }

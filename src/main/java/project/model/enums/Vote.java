@@ -1,4 +1,4 @@
-package project.model.emun;
+package project.model.enums;
 
 public enum Vote {
     LIKE(1),

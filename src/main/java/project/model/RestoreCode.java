@@ -1,15 +1,16 @@
 package project.model;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "restore_codes")
-public class RestoreCode {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@NoArgsConstructor
+@Getter
+@Setter
+public class RestoreCode extends Identified{
 
     @Column(nullable = false)
     private String code;
@@ -19,44 +20,9 @@ public class RestoreCode {
 
     private String email;
 
-    public RestoreCode() {
-    }
-
     public RestoreCode(String code) {
         this.code = code;
         this.time = new Date();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
 }

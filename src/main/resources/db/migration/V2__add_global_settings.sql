@@ -1,3 +1,6 @@
-insert into global_settings(code, name) values('MULTIUSER_MODE', 'Многопользовательский режим');
-insert into global_settings(code, name) values('POST_PREMODERATION', 'Премодерация постов');
-insert into global_settings(code, name) values('STATISTICS_IS_PUBLIC','Показывать всем статистику блога');
+insert into global_settings(code, name, value)
+values ('MULTIUSER_MODE', 'Многопользовательский режим', 'YES');
+insert into global_settings(code, name, value)
+values ('POST_PREMODERATION', 'Премодерация постов', 'YES');
+insert into global_settings(code, name, value)
+values ('STATISTICS_IS_PUBLIC', 'Показывать всем статистику блога', 'YES');
