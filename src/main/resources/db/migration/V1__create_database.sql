@@ -1,6 +1,6 @@
 CREATE TABLE `users`
 (
-    `id`           bigint(11)                              NOT NULL AUTO_INCREMENT,
+    `id`           bigint(11)                           NOT NULL AUTO_INCREMENT,
     `code`         varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
     `email`        varchar(255) COLLATE utf8_unicode_ci NOT NULL,
     `is_moderator` integer(4)                           NOT NULL,
@@ -15,15 +15,15 @@ CREATE TABLE `users`
 
 CREATE TABLE `posts`
 (
-    `id`                bigint(11)                               NOT NULL AUTO_INCREMENT,
-    `is_active`         integer(4)                            NOT NULL,
-    `moderation_status` varchar(8) COLLATE utf8_unicode_ci    NOT NULL DEFAULT 'NEW',
-    `text`              varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
-    `time`              datetime(6)                           NOT NULL,
-    `title`             varchar(255) COLLATE utf8_unicode_ci  NOT NULL,
-    `view_count`        bigint(11)                               NOT NULL DEFAULT 0,
-    `moderator_id`      bigint(11)                                        DEFAULT NULL,
-    `user_id`           bigint(11)                               NOT NULL,
+    `id`                bigint(11)                           NOT NULL AUTO_INCREMENT,
+    `is_active`         integer(4)                           NOT NULL,
+    `moderation_status` varchar(8) COLLATE utf8_unicode_ci   NOT NULL DEFAULT 'NEW',
+    `text`              text COLLATE utf8_unicode_ci         NOT NULL,
+    `time`              datetime(6)                          NOT NULL,
+    `title`             varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+    `view_count`        bigint(11)                           NOT NULL DEFAULT 0,
+    `moderator_id`      bigint(11)                                    DEFAULT NULL,
+    `user_id`           bigint(11)                           NOT NULL,
     PRIMARY KEY (`id`),
     KEY `post_moderator_fk` (`moderator_id`),
     KEY `post_user_fk` (`user_id`),
@@ -35,12 +35,12 @@ CREATE TABLE `posts`
 
 CREATE TABLE `post_comments`
 (
-    `id`        bigint(11)                              NOT NULL AUTO_INCREMENT,
+    `id`        bigint(11)                           NOT NULL AUTO_INCREMENT,
     `text`      varchar(255) COLLATE utf8_unicode_ci NOT NULL,
     `time`      datetime(6)                          NOT NULL,
     `parent_id` bigint(11) DEFAULT NULL,
-    `post_id`   bigint(11)                              NOT NULL,
-    `user_id`   bigint(11)                              NOT NULL,
+    `post_id`   bigint(11)                           NOT NULL,
+    `user_id`   bigint(11)                           NOT NULL,
     PRIMARY KEY (`id`),
     KEY `comment_parent_fk` (`parent_id`),
     KEY `comment_post_fk` (`post_id`),
@@ -54,11 +54,11 @@ CREATE TABLE `post_comments`
 
 CREATE TABLE `post_votes`
 (
-    `id`      bigint(11)     NOT NULL AUTO_INCREMENT,
+    `id`      bigint(11)  NOT NULL AUTO_INCREMENT,
     `time`    datetime(6) NOT NULL,
-    `value`   bigint(11)     NOT NULL,
-    `post_id` bigint(11)     NOT NULL,
-    `user_id` bigint(11)     NOT NULL,
+    `value`   bigint(11)  NOT NULL,
+    `post_id` bigint(11)  NOT NULL,
+    `user_id` bigint(11)  NOT NULL,
     PRIMARY KEY (`id`),
     KEY `vote_post_fk` (`post_id`),
     KEY `vote_user_fk` (`user_id`),
@@ -70,7 +70,7 @@ CREATE TABLE `post_votes`
 
 CREATE TABLE `tags`
 (
-    `id`   bigint(11)                              NOT NULL AUTO_INCREMENT,
+    `id`   bigint(11)                           NOT NULL AUTO_INCREMENT,
     `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
@@ -93,7 +93,7 @@ CREATE TABLE `tag2post`
 
 CREATE TABLE `captcha_codes`
 (
-    `id`          bigint(11)                          NOT NULL AUTO_INCREMENT,
+    `id`          bigint(11)                       NOT NULL AUTO_INCREMENT,
     `code`        tinytext COLLATE utf8_unicode_ci NOT NULL,
     `secret_code` tinytext COLLATE utf8_unicode_ci NOT NULL,
     `time`        datetime(6)                      NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE `captcha_codes`
 
 CREATE TABLE `global_settings`
 (
-    `id`    bigint(11)                              NOT NULL AUTO_INCREMENT,
+    `id`    bigint(11)                           NOT NULL AUTO_INCREMENT,
     `code`  varchar(255) COLLATE utf8_unicode_ci NOT NULL,
     `name`  varchar(255) COLLATE utf8_unicode_ci NOT NULL,
     `value` varchar(3) COLLATE utf8_unicode_ci DEFAULT 'NO',

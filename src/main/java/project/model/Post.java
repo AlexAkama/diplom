@@ -35,6 +35,7 @@ public class Post extends Identified {
     private String title;
 
     @Column(nullable = false)
+    @Type(type = "text")
     private String text;
 
     @Column(name = "view_count")
