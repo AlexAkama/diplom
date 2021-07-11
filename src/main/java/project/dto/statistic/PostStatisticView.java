@@ -5,9 +5,9 @@ import java.util.Date;
 
 public interface PostStatisticView {
 
-    long getPostCounter();
+    Long getPostCounter();
 
-    long getViewCounter();
+    Long getViewCounter();
 
     Date getFirstPublication();
 

@@ -322,12 +322,16 @@ public class PostService {
 
     private StatisticDto createStatisticDto(PostStatisticView postData, VoteCounterView voteData) {
         return new StatisticDto(
-                postData.getPostCounter(),
-                voteData.getLikeCounter(),
-                voteData.getDislikeCounter(),
-                postData.getViewCounter(),
+                notNull(postData.getPostCounter()),
+                notNull(voteData.getLikeCounter()),
+                notNull(voteData.getDislikeCounter()),
+                notNull(postData.getViewCounter()),
                 AppConstant.dateToTimestamp(postData.getFirstPublication())
         );
+    }
+
+    private long notNull(Long aLong) {
+        return (aLong == null) ? 0 : aLong;
     }
 
     private Page<Post> getModerationPostPage(ModerationStatus status, long moderatorId, Pageable pageable) {
