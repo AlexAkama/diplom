@@ -53,6 +53,11 @@ public class ImageService {
     private int randomPathPartLength;
 
     /**
+     * Аватар по умолчанию
+     */
+    @Value("${avatar.default}")
+    private String avatarDefault;
+    /**
      * Ширина картинки аватара
      */
     @Value("${avatar.width}")
@@ -116,7 +121,9 @@ public class ImageService {
         String avatar = null;
         if (target == AVATAR) {
             var user = userService.checkUser();
-            avatar = user.getPhoto();
+            if (!user.getPhoto().equals(avatarDefault)) {
+                avatar = user.getPhoto();
+            }
         }
         String filename = file.getOriginalFilename();
         String relativePath;
@@ -138,7 +145,7 @@ public class ImageService {
                 file.transferTo(new File(resultFile));
             }
         } catch (IOException e) {
-            throw new InternalServerException(String.format("Неудалось сохранить файл %s", filename));
+            throw new InternalServerException(String.format("Не удалось сохранить файл %s", filename));
         }
         return relativeFile;
     }
