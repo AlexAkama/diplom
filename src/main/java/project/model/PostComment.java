@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 public class PostComment extends Identified {
 
-    @OneToOne
+    @ManyToOne
     private PostComment parent;
 
     @ManyToOne(optional = false)

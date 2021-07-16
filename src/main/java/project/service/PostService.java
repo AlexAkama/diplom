@@ -1,6 +1,7 @@
 package project.service;
 
 import lombok.RequiredArgsConstructor;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import project.config.AppConstant;
 import project.dto.UserDto;
 import project.dto.comment.CommentDto;
+import project.dto.main.AppResponseWithErrors;
 import project.dto.post.*;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
@@ -29,6 +31,8 @@ import static project.model.enums.PostDtoStatus.ANNOUNCE;
 @RequiredArgsConstructor
 public class PostService {
 
+    private static final int ANNOUNCE_CHAR_LIMIT = 100;
+
     private final PostRepository postRepository;
     private final PostCommentRepository postCommentRepository;
     private final TagToPostRepository tagToPostRepository;
@@ -42,15 +46,15 @@ public class PostService {
     private int minTextLength;
 
 
-    public ResponseEntity<PostResponse> addPost(PostRequest request)
+    public ResponseEntity<AppResponseWithErrors> addPost(PostRequest request)
             throws NotFoundException, UnauthorizedException, ForbiddenException {
         return updatePost(-1, request);
     }
 
-    public ResponseEntity<PostResponse> updatePost(long postId, PostRequest request)
+    public ResponseEntity<AppResponseWithErrors> updatePost(long postId, PostRequest request)
             throws UnauthorizedException, NotFoundException, ForbiddenException {
         var user = userService.checkUser();
-        var response = new PostResponse();
+        var response = new AppResponseWithErrors();
         var errors = checkPostUpdateRequest(request);
         if (errors.isEmpty()) {
             Post post;
@@ -292,9 +296,10 @@ public class PostService {
                 post.getUser().getName()));
         postDto.setTitle(post.getTitle());
         if (status == ANNOUNCE) {
-            postDto.setAnnounce(post.getText()
-                    .substring(0, Math.min(post.getText().length(), 100))
-                    .replaceAll("<[^>]*>", "") + "...");
+            var announce = Jsoup.parse(post.getText()).text();
+            announce = announce.substring(0, Math.min(announce.length(), ANNOUNCE_CHAR_LIMIT));
+            if (announce.length() > ANNOUNCE_CHAR_LIMIT) announce = announce.concat("...");
+            postDto.setAnnounce(announce);
             postDto.setCommentCounter(post.getCommentCounter());
         } else {
             postDto.setActive(post.isActive());

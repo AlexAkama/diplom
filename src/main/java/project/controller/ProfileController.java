@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import project.dto.main.AppResponseWithErrors;
 import project.dto.profile.*;
 import project.exception.*;
 import project.service.ProfileService;
@@ -20,22 +21,22 @@ public class ProfileController {
     }
 
     @PostMapping(value = "/api/profile/my", consumes = {"multipart/form-data"})
-    public ResponseEntity<ProfileResponse> updateProfile(
+    public ResponseEntity<AppResponseWithErrors> updateProfile(
             @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "email", required = false) String email,
             @RequestParam(name = "password", required = false) String password,
             @RequestParam(name = "removePhoto", required = false, defaultValue = "0") int removePhoto,
             @RequestParam(name = "photo", required = false) MultipartFile photo,
             HttpServletRequest httpServletRequest
-    ) throws UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException, BadRequestException {
+    ) throws UnauthorizedException, InternalServerException {
         return profileService.updateProfile(new ProfileRequest(name, email, password, removePhoto, photo), httpServletRequest);
     }
 
     @PostMapping("/api/profile/my")
-    public ResponseEntity<ProfileResponse> updateProfile(
+    public ResponseEntity<AppResponseWithErrors> updateProfile(
             @RequestBody ProfileRequestWithoutPhoto request,
             HttpServletRequest httpServletRequest
-    ) throws UnauthorizedException, NotFoundException, ImageSuccess, InternalServerException, BadRequestException {
+    ) throws UnauthorizedException, InternalServerException {
         return profileService.updateProfile(new ProfileRequest(request), httpServletRequest);
     }
 
