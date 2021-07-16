@@ -2,6 +2,7 @@ package project.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.dto.main.AppResponseWithErrors;
 import project.dto.post.*;
 import project.exception.*;
 import project.service.PostService;
@@ -37,7 +38,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponse> addPost(
+    public ResponseEntity<AppResponseWithErrors> addPost(
             @RequestBody PostRequest request
     ) throws NotFoundException, UnauthorizedException, ForbiddenException {
         return postService.addPost(request);
@@ -49,7 +50,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostResponse> editPost(
+    public ResponseEntity<AppResponseWithErrors> editPost(
             @PathVariable long id,
             @RequestBody PostRequest request
     ) throws ForbiddenException, UnauthorizedException, NotFoundException {
@@ -89,7 +90,7 @@ public class PostController {
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("status") String status
-    ) throws NotFoundException, UnauthorizedException {
+    ) throws UnauthorizedException {
         return postService.getAnnounceListToModeration(offset, limit, status);
     }
 
@@ -98,7 +99,7 @@ public class PostController {
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam("status") String status
-    ) throws NotFoundException, UnauthorizedException {
+    ) throws UnauthorizedException {
         return postService.getAnnounceListByAuthUser(offset, limit, status);
     }
 

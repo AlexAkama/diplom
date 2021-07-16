@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import project.config.AppConstant;
 import project.dto.UserDto;
 import project.dto.comment.CommentDto;
+import project.dto.main.AppResponseWithErrors;
 import project.dto.post.*;
 import project.dto.statistic.PostStatisticView;
 import project.dto.statistic.StatisticDto;
@@ -42,15 +43,15 @@ public class PostService {
     private int minTextLength;
 
 
-    public ResponseEntity<PostResponse> addPost(PostRequest request)
+    public ResponseEntity<AppResponseWithErrors> addPost(PostRequest request)
             throws NotFoundException, UnauthorizedException, ForbiddenException {
         return updatePost(-1, request);
     }
 
-    public ResponseEntity<PostResponse> updatePost(long postId, PostRequest request)
+    public ResponseEntity<AppResponseWithErrors> updatePost(long postId, PostRequest request)
             throws UnauthorizedException, NotFoundException, ForbiddenException {
         var user = userService.checkUser();
-        var response = new PostResponse();
+        var response = new AppResponseWithErrors();
         var errors = checkPostUpdateRequest(request);
         if (errors.isEmpty()) {
             Post post;
