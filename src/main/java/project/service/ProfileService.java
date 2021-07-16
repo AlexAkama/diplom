@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import project.dto.image.ImageErrorMap;
+import project.dto.main.AppResponseWithErrors;
 import project.dto.profile.*;
 import project.exception.*;
 import project.model.RestoreCode;
@@ -90,7 +91,7 @@ public class ProfileService {
         return check;
     }
 
-    public ResponseEntity<ProfileResponse> updateProfile(ProfileRequest request, HttpServletRequest httpServletRequest)
+    public ResponseEntity<AppResponseWithErrors> updateProfile(ProfileRequest request, HttpServletRequest httpServletRequest)
             throws UnauthorizedException, InternalServerException {
 
         var user = userService.checkUser();
@@ -104,7 +105,7 @@ public class ProfileService {
         var photoChange =
                 checkPhotoChangeRequest(request.getRemovePhoto(), file, user, errors);
 
-        var response = new ProfileResponse();
+        var response = new AppResponseWithErrors();
         if (errors.isEmpty()) {
             if (photoChange == TO_CHANGE) {
                 String fileName = imageService.saveAvatar(file);
