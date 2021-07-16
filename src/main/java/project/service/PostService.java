@@ -1,6 +1,7 @@
 package project.service;
 
 import lombok.RequiredArgsConstructor;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,8 @@ import static project.model.enums.PostDtoStatus.ANNOUNCE;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
+    private static final int ANNOUNCE_CHAR_LIMIT = 100;
 
     private final PostRepository postRepository;
     private final PostCommentRepository postCommentRepository;
@@ -293,9 +296,10 @@ public class PostService {
                 post.getUser().getName()));
         postDto.setTitle(post.getTitle());
         if (status == ANNOUNCE) {
-            postDto.setAnnounce(post.getText()
-                    .substring(0, Math.min(post.getText().length(), 100))
-                    .replaceAll("<[^>]*>", "") + "...");
+            var announce = Jsoup.parse(post.getText()).text();
+            announce = announce.substring(0, Math.min(announce.length(), ANNOUNCE_CHAR_LIMIT));
+            if (announce.length() > ANNOUNCE_CHAR_LIMIT) announce = announce.concat("...");
+            postDto.setAnnounce(announce);
             postDto.setCommentCounter(post.getCommentCounter());
         } else {
             postDto.setActive(post.isActive());
