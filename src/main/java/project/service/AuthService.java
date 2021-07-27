@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import project.dto.auth.login.LoginRequest;
 import project.dto.auth.registration.*;
@@ -19,6 +20,8 @@ import java.security.Principal;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     private final UserService userService;
     private final CaptchaService captchaService;
@@ -42,14 +45,17 @@ public class AuthService {
     public ResponseEntity<AuthResponse> login(LoginRequest request) {
         var response = new AuthResponse();
         try {
-            var user = userService.createAuthUserDtoByEmail(request.getEmail());
-            response.setUser(user);
-            var authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    ));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            var user = userService.findByEmail(request.getEmail());
+            if (bCryptPasswordEncoder.matches(request.getPassword(), user.getPassword())) {
+                var userDto = userService.createAuthUserDto(user);
+                response.setUser(userDto);
+                var authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.getEmail(),
+                                request.getPassword()
+                        ));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         } catch (NotFoundException ignore) {
             // в случае неудачи возвращается соответствующий ответ со статусом 200
         }
