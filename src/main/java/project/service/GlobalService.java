@@ -77,11 +77,15 @@ public class GlobalService {
         Optional<GlobalSetting> optionalPreModeration = globalSettingRepository.findByCode(POST_PREMODERATION.name());
         boolean preModeration = optionalPreModeration.isPresent() && optionalPreModeration.get().getValue() == YES;
 
-        Optional<GlobalSetting> optionalPublicStatistic = globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
-        boolean publicStatistic = optionalPublicStatistic.isPresent() && optionalPublicStatistic.get().getValue() == YES;
+        boolean publicStatistic = statisticIsPublic();
 
         return ResponseEntity.ok(new GlobalSettingsDto(multiUser, preModeration, publicStatistic));
     }
+
+    public boolean statisticIsPublic() {
+        Optional<GlobalSetting> optionalPublicStatistic = globalSettingRepository.findByCode(STATISTICS_IS_PUBLIC.name());
+        return optionalPublicStatistic.isPresent() && optionalPublicStatistic.get().getValue() == YES;
+        }
 
     /**
      * Сохранение глобальных настроек блока
